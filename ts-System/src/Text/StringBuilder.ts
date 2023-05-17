@@ -41,7 +41,6 @@ extends StringBuildable {
     
     /** 
      * Size of a single indent. 
-     * Not to be confused with {@link getCurrentIndentationSize}. 
      */
     readonly tabSize: number;
     /** 
