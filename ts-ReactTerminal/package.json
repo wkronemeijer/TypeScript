@@ -1,0 +1,18 @@
+{
+    "name": "@wkronemeijer/react-terminal",
+    "main": "dist/index.js",
+    "types": "dist_t/index.d.ts",
+    "devDependencies": {
+        "@types/node": "*",
+        "typescript": "*"
+    },
+    "dependencies": {
+        "@wkronemeijer/system": "*",
+        "@wkronemeijer/system-node": "*",
+        "react": "*",
+        "react-reconciler": "*"
+    },
+    "bin": {
+        "test-react-terminal": "dist/bin.js"
+    }
+}

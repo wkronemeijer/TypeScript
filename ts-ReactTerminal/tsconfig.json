@@ -1,0 +1,14 @@
+{
+    "extends": "../tsxconfig.json",
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "declarationDir": "./dist_t",
+        
+        "types": [
+            "node",
+            "react",
+            "react-reconciler"
+        ]
+    }
+}
