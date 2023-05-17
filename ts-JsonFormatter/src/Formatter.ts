@@ -1,4 +1,4 @@
-import { assert, ensures, neverPanic, panic, StringBuilder } from "@local/system";
+import { assert, ensures, neverPanic, panic, StringBuilder } from "@wkronemeijer/system";
 
 // NB: We reformat, so we don't have to use toJSON methods or anything
 

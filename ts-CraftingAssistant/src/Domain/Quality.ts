@@ -1,4 +1,4 @@
-import { Newtype, requires } from "@local/system";
+import { Newtype, requires } from "@wkronemeijer/system";
 
 
 export type     Quality = Newtype<number, "Quality">;

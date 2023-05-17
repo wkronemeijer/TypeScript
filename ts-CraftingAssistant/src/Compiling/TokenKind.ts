@@ -1,4 +1,4 @@
-import { Member, StringEnum_create, swear } from "@local/system";
+import { Member, StringEnum_create, swear } from "@wkronemeijer/system";
 
 // Meta note: "kind" discriminate their owner, "type" does not.
 

@@ -1,4 +1,4 @@
-import { AnsiColor, AnsiTextStyle_use, StringBuildable, StringBuilder, stringBuild } from "@local/system";
+import { AnsiColor, AnsiTextStyle_use, StringBuildable, StringBuilder, stringBuild } from "@wkronemeijer/system";
 
 import { DiagnosticKind, DiagnosticKind_getColor, DiagnosticKind_isFatal } from "./DiagnosticKind";
 import { DiagnosticDisplayMode } from "./DiagnosticDisplayMode";

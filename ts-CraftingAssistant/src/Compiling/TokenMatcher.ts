@@ -1,4 +1,4 @@
-import { StringBuildable, StringBuilder, stringBuild } from "@local/system";
+import { StringBuildable, StringBuilder, stringBuild } from "@wkronemeijer/system";
 import { TokenKind } from "./TokenKind";
 
 function possibleContinuationChars(

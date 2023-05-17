@@ -1,6 +1,6 @@
 import { InspectOptions, inspect } from "util";
 
-import { AnsiTextStyle_use, Object_entries, Set_hasAny, StringBuilder } from "@local/system";
+import { AnsiTextStyle_use, Object_entries, Set_hasAny, StringBuilder } from "@wkronemeijer/system";
 
 import { AstNode, AstNode_hasInstance, BlockNode } from "./AstNode";
 

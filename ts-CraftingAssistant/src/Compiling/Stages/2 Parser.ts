@@ -1,4 +1,4 @@
-import { Array_firstElement, Array_lastElement, ExpandType, panic, requires, singularize, terminal } from "@local/system";
+import { Array_firstElement, Array_lastElement, ExpandType, panic, requires, singularize, terminal } from "@wkronemeijer/system";
 
 import { AstNodeKind, AstNodeMap, Decl, ImportStmt, NamespaceDecl, QuantifiedItemExpr, QuantifiedQualifiedItemExpr, QuantityExpr, QuantityRangeExpr, SourceNode, Stmt } from "../../Ast/AstNode";
 import { HasLocation, SourceTextRange } from "../SourceTextRange";

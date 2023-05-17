@@ -5,7 +5,7 @@ import { printError } from "@wkronemeijer/system";
 import { main } from ".";
 
 try {
-    main();
+    main(process.argv.slice(2));
 } catch (err) {
     printError(err);
 }

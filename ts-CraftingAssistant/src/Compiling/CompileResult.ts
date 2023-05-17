@@ -1,4 +1,4 @@
-import { Selector, identity } from "@local/system";
+import { Selector, identity } from "@wkronemeijer/system";
 
 import { DiagnosticCollection, ReadonlyDiagnosticCollection } from "./Diagnostics/DiagnosticCollection";
 

@@ -1,4 +1,4 @@
-import { ExpandType, collect } from "@local/system";
+import { ExpandType, collect } from "@wkronemeijer/system";
 
 import { HasLocation, SourceTextRange } from "../Compiling/SourceTextRange";
 import { Identifier } from "../Domain/Identifier";

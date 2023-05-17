@@ -1,4 +1,4 @@
-import { singularize, terminal } from "@local/system";
+import { singularize, terminal } from "@wkronemeijer/system";
 
 import { AstNode_getNodes } from "../../Ast/AstVisitor";
 import { CompileResult } from "../CompileResult";

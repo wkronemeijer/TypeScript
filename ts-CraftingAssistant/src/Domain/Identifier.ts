@@ -1,4 +1,4 @@
-import { Newtype, requires } from "@local/system";
+import { Newtype, requires } from "@wkronemeijer/system";
 
 const wordRegex = /[A-Z][A-Za-z\-']*/;
 const nameRegex = /[A-Z][A-Za-z\-']*( +[A-Z][A-Za-z\-']*)*/;

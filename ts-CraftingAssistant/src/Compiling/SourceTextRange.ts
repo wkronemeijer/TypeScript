@@ -1,4 +1,4 @@
-import { StringBuildable, StringBuilder, TextLocation, getTextLocation, getTextPreview, requires, from, stringBuild, Array_firstElement, clamp, Array_lastElement } from "@local/system";
+import { StringBuildable, StringBuilder, TextLocation, getTextLocation, getTextPreview, requires, from, stringBuild, Array_firstElement, clamp, Array_lastElement } from "@wkronemeijer/system";
 
 import { SourceCode } from "./SourceCode";
 import { DiagnosticDisplayMode } from "./Diagnostics/DiagnosticDisplayMode";

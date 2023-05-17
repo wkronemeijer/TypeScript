@@ -1,4 +1,4 @@
-import { Predicate, pluralize, requires, singularize, terminal } from "@local/system";
+import { Predicate, pluralize, requires, singularize, terminal } from "@wkronemeijer/system";
 
 import { KeywordTokenKind, PunctionationTokenKind, TokenKind } from "../TokenKind";
 import { DiagnosticCollection } from "../Diagnostics/DiagnosticCollection";

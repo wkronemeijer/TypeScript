@@ -1,4 +1,4 @@
-import { sleep, terminal } from "@local/system";
+import { sleep, terminal } from "@wkronemeijer/system";
 
 function sgr(text: string, ...commands: number[]): void {
     const code = commands.join(";");

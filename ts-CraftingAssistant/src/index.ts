@@ -1,9 +1,9 @@
-import { File, guard, terminal } from "@local/system";
+import { File, guard, terminal } from "@wkronemeijer/system";
 
 import { CompilerHost } from "./Compiling/Compiler";
 import { SourceCode } from "./Compiling/SourceCode";
 
-export function main(args = process.argv.slice(2)): void {
+export function main(args: string[]): void {
     const filePath = args[0];
     guard(filePath, "usage: crafty <file>");
     const host   = new CompilerHost;

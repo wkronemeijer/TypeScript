@@ -1,4 +1,4 @@
-import { AnsiTextStyle_use, CompoundError, StringBuildable, StringBuilder, pluralize, stringBuild } from "@local/system";
+import { AnsiTextStyle_use, CompoundError, StringBuildable, StringBuilder, pluralize, stringBuild } from "@wkronemeijer/system";
 
 import { DiagnosticDisplayMode } from "./DiagnosticDisplayMode";
 import { DiagnosticKind, DiagnosticKind_getColor } from "./DiagnosticKind";

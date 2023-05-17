@@ -1,4 +1,4 @@
-import { from, terminal } from "@local/system";
+import { from, terminal } from "@wkronemeijer/system";
 
 import { scan } from "./Stages/1 Scanner";
 import { parse } from "./Stages/2 Parser";

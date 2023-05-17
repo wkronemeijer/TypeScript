@@ -1,4 +1,4 @@
-import { AnsiColor, Member, Record_toFunction, Record_toTotalFunction, StringEnum_create } from "@local/system";
+import { AnsiColor, Member, Record_toFunction, Record_toTotalFunction, StringEnum_create } from "@wkronemeijer/system";
 
 export type  DiagnosticKind = Member<typeof DiagnosticKind>;
 export const DiagnosticKind = StringEnum_create([

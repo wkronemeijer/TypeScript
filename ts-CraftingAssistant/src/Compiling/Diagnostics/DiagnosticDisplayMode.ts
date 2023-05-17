@@ -1,4 +1,4 @@
-import { Member, StringEnum_create } from "@local/system";
+import { Member, StringEnum_create } from "@wkronemeijer/system";
 
 export type  DiagnosticDisplayMode = Member<typeof DiagnosticDisplayMode>;
 export const DiagnosticDisplayMode = StringEnum_create([
