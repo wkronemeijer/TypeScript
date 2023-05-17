@@ -1,0 +1,17 @@
+# npm
+node_modules
+
+# Packages are installed in the root of the monorepo
+# and thus shared so there are never version mismatches
+# Dependencies are declared in the package.json
+# So there is no need to install packages for each subfolder
+# which makes the lock file useless there.
+*/package-lock.json
+
+# Build output
+dist
+dist_t
+
+# Scratch files
+
+Todo.md

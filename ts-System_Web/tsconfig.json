@@ -1,0 +1,15 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "declarationDir": "./dist_t",
+        
+        "lib":   [
+            "es2022",
+            "ESNext.Intl",
+            "DOM",
+            "DOM.Iterable"
+        ]
+    }
+}

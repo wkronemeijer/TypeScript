@@ -1,0 +1,15 @@
+{
+    "dependencies": {
+        "@types/express": "^4.17.17",
+        "@types/node": "^20.1.0",
+        "@types/react": "^18.2.6",
+        "@types/react-dom": "^18.2.4",
+        "@wkronemeijer/system": "file:ts-System",
+        "@wkronemeijer/system-node": "file:ts-System_Node",
+        "@wkronemeijer/system-web": "file:ts-System_Web",
+        "express": "^4.18.2",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "typescript": "^5.0.4"
+    }
+}

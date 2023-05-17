@@ -1,0 +1,8 @@
+{
+    "name": "@wkronemeijer/system-web",
+    "main": "dist/index.js",
+    "types": "dist_t/index.d.ts",
+    "devDependencies": {
+        "typescript": "*"
+    }
+}

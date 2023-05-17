@@ -1,0 +1,4 @@
+Platform-agnostic is under ./Text/Console/*
+Platform-specific is under ./IO/Terminal/*
+
+Ideal? Maybe not, but an alternative would use circular type imports which are very fragile. 

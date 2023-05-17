@@ -1,0 +1,9 @@
+{
+    "name": "@wkronemeijer/system",
+    "main": "dist/index.js",
+    "types": "dist_t/index.d.ts",
+    "devDependencies": {
+        "@types/node": "*",
+        "typescript": "*"
+    }
+}

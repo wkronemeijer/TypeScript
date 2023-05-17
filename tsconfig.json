@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schemastore.azurewebsites.net/schemas/json/tsconfig.json",
+    "compilerOptions": {
+        //////////
+        // Emit //
+        //////////
+        
+        "module": "commonjs",
+        "declaration": true,
+        "alwaysStrict": true,
+        "inlineSourceMap": true,
+        
+        ////////////////
+        // TypeScript //
+        ////////////////
+        
+        "target": "ES2022",
+        "lib": ["ES2022"],
+        "types": [],
+        "resolveJsonModule": true,
+        "forceConsistentCasingInFileNames": true,
+        
+        ////////////////
+        // Strictness //
+        ////////////////
+        
+        "strict": true,
+        "strictFunctionTypes": true,
+        
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedParameters": false,
+        "noUnusedLocals": false
+    }
+}
