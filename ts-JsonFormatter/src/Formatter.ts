@@ -120,8 +120,7 @@ class Formatter {
     isOneLiner(val: JsonValue): boolean {
         const contentSize = this.estimateSize(val);
         if (contentSize) {
-            const actualSize = contentSize + this.result.getCurrentIndentationSize();
-            return actualSize < this.lengthLimit;
+            return contentSize < this.lengthLimit;
         } else {
             return false;
         }
