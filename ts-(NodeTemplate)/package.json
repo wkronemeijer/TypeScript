@@ -1,0 +1,16 @@
+{
+    "name": "@wkronemeijer/mynewproject",
+    "main": "dist/index.js",
+    "types": "dist_t/index.d.ts",
+    "devDependencies": {
+        "@types/node": "*",
+        "typescript": "*"
+    },
+    "dependencies": {
+        "@wkronemeijer/system": "*",
+        "@wkronemeijer/system-node": "*"
+    },
+    "bin": {
+        "test-mynewproject": "dist/bin.js"
+    }
+}
