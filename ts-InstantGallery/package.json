@@ -1,0 +1,23 @@
+{
+    "name": "@wkronemeijer/instant-gallery",
+    "main": "dist/index.js",
+    "types": "dist_t/index.d.ts",
+    "devDependencies": {
+        "@types/node": "*",
+        "@types/express": "*",
+        "@types/react": "*",
+        "@types/react-dom": "*",
+        "typescript": "*"
+    },
+    "dependencies": {
+        "@wkronemeijer/system": "*",
+        "@wkronemeijer/system-node": "*",
+        "express": "*",
+        "sharp": "*",
+        "react": "*",
+        "react-dom": "*"
+    },
+    "bin": {
+        "instant-gallery": "dist/bin.js"
+    }
+}
