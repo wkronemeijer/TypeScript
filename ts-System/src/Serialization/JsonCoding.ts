@@ -1,7 +1,7 @@
 import { hasKey, couldBeInstanceOf, hasProperty } from "../Types/(deprecated) RuntimeTyping";
 import { assert, requires, ensures } from "../Assert";
 import { String_isWhitespace } from "../Text/String";
-import { specify } from "../Testing";
+import { specify } from "../Testing/Testing";
 
 
 //////////////

@@ -1,6 +1,6 @@
 import { typeof_t, TypeToTypeString } from "./TypeOf";
 import { keyof_t } from "./KeyOf";
-import { specify } from "../Testing";
+import { specify } from "../Testing/Testing";
 import { assert, requires, __unsafeAssert } from "../Assert";
 import { Constructor } from "./Mixins";
 import { neverPanic } from "../Errors/ErrorFunctions";

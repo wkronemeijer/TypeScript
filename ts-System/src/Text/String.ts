@@ -1,4 +1,4 @@
-import { specify } from "../Testing";
+import { specify } from "../Testing/Testing";
 import { assert } from "../Assert";
 
 

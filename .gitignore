@@ -14,6 +14,7 @@ dist_t
 
 # devtool output
 
+*.private.*
 *.generated.*
 
 # Now here's a funny problem: if we remove the index files, and then

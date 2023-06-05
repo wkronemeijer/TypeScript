@@ -56,3 +56,6 @@ export function singularize(
         plural
     }`
 }
+
+// TODO: Use agree
+// The trick: tomato(es)

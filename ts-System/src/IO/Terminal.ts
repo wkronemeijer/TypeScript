@@ -36,16 +36,16 @@ const inspectOptions: InspectOptions = {
 
 export type  UserLogChannel = StringEnum_Member<typeof UserLogChannel>;
 export const UserLogChannel = StringEnum_create([
-    "info",
-    "log", 
-    "warn", 
-    "error",
+    "info",  // non-essential log
+    "log",   // primary user-facing output.
+    "warn",  // warning (duh)
+    "error", // error (duh)
 ] as const).withDefault("log");
 
 export type  DeveloperLogChannel = StringEnum_Member<typeof DeveloperLogChannel>;
 export const DeveloperLogChannel = StringEnum_create([
     "trace", // println debugging
-    "perf", // performance
+    "perf",  // performance
     "meta", // everything else
 ] as const).withDefault("meta");
 
@@ -53,7 +53,7 @@ export const DeveloperLogChannel = StringEnum_create([
 const colorByChannel = Map_fromPartialDictionary<LogChannel, AnsiColor>({
     warn : "yellow",
     error: "red",
-    info : "black",
+    info : "black", // info should be SGR 90, that one is faded in both 
     trace: "magenta",
     perf : "blue",
     meta : "green",

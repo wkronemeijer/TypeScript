@@ -3,9 +3,10 @@
 import { resolve, join, relative, ParsedPath, parse, isAbsolute, sep, normalize } from "path";
 import { pathToFileURL } from "url";
 
-import { satisfiesStrictly } from "../Types/Satisfies";
-import { requires } from "../Assert";
-import { Newtype } from "../Types/Newtype";
+import { satisfiesStrictly } from "../../Types/Satisfies";
+import { requires, swear } from "../../Assert";
+import { notImplemented } from "../../Errors/ErrorFunctions";
+import { Newtype } from "../../Types/Newtype";
 
 /** Underlying path representation (a string). */
 export type RawPath = string;
@@ -56,6 +57,11 @@ export const Path_CurrentDirectory = "." as RelativePath;
 /** Relative path to the parent directory. */
 export const Path_ParentDirectory = ".." as RelativePath;
 
+export const Path_AppData = (function(){
+    const windowsAppdata = process.env.LOCALAPPDATA;
+    swear(windowsAppdata) // sorry nix users, submit a PR :)
+    return AbsolutePath(windowsAppdata);
+}());
 
 ///////////////////
 // Path calculus //
@@ -151,6 +157,10 @@ export function Path_removeExtension<P extends Path>(self: P): P {
     } else {
         return self;
     }
+}
+
+export function Path_addSuffixExtension<P extends Path>(self: P, extension: string): P {
+    notImplemented();
 }
 
 /////////////////////////

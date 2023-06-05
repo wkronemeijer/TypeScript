@@ -9,9 +9,9 @@ Time to expand this with: we can bundle all files into an index.ts, well, than w
 
 */
 
-import { Tally } from "./Tally";
-import { assert } from "./Assert";
-import { AugmentedLoggingFunction } from "./IO/Terminal";
+import { Tally } from "../Tally";
+import { assert } from "../Assert";
+import { AugmentedLoggingFunction } from "../IO/Terminal";
 
 
 /////////////////

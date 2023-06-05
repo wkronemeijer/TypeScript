@@ -25,6 +25,31 @@ type LazyMessage = () => string;
 /** A constructor for errors, with a room for a message. */
 type UnaryErrorConstructor = new (message: Message) => Error;
 
+interface ErrorGuardFunction {
+    <T>(value: T | Error): asserts value is T;
+}
+
+/* Theory for `isOk` is sound
+Just a question of: what do we do with `requires` and `ensures`?
+I think they are cute, but was is the functional difference with `swear`?
+"pre" or "post", they are still programmer bugs.
+guard is exception, swear is error. 
+
+Also means that guard should always have an error message
+since it is user-facing.
+
+swear(1 + 1 === 2) is meaningful
+guard(1 + 1 === 2) is not.
+
+swear.isOk is meaningful
+guard.isOk is too
+
+thing with adding more of these, is that 
+they cause a wild growth of "useful" assertion functions.
+`isOk` is not like that. 
+
+*/
+
 // TypeScript requires us to explicitly type values with an assertion guard, 
 // so we extract all the overloads to this interface.
 // Also good to put some dev comments on these essential functions.

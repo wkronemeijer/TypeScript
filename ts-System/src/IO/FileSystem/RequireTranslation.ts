@@ -3,10 +3,10 @@
 // Which is what this function is for. A wrapper around require.resolve
 
 import { AnyPath, Path_Separator, RelativePath } from "./Path";
-import { Directory, File } from "./FileSystemEntity";
-import { getCallerFile } from "../Reflection/Caller";
-import { requires } from "../Assert";
-import { panic } from "../Errors/ErrorFunctions";
+import { Directory, File } from "./Entity";
+import { getCallerFile } from "../../Reflection/Caller";
+import { requires } from "../../Assert";
+import { panic } from "../../Errors/ErrorFunctions";
 
 interface PathTranslator_Options {
     /** Location of JS files. */

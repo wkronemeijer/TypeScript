@@ -8,9 +8,7 @@
     },
     "dependencies": {
         "@wkronemeijer/system": "*",
-        "@wkronemeijer/system-node": "*",
-        "react": "*",
-        "react-reconciler": "*"
+        "@wkronemeijer/system-node": "*"
     },
     "bin": {
         "test-react-terminal": "dist/bin.js"

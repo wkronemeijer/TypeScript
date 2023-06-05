@@ -1,14 +1,16 @@
 {
-    "extends": "../tsxconfig.json",
+    "extends": "../tsconfig.json",
     "compilerOptions": {
         "rootDir": "./src",
         "outDir": "./dist",
         "declarationDir": "./dist_t",
         
+        "jsx": "react",
+        "jsxFactory": "jsx",
+        "jsxFragmentFactory": "jsx.Fragment",
+        
         "types": [
-            "node",
-            "react",
-            "react-reconciler"
+            "node"
         ]
     }
 }

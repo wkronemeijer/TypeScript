@@ -1,7 +1,7 @@
 import { requires } from "../Assert";
 import { panic } from "../Errors/ErrorFunctions";
-import { Directory, File } from "../IO/FileSystemEntity";
-import { AnyPath, Path_Separator, RelativePath } from "../IO/Path";
+import { Directory, File } from "../IO/FileSystem/Entity";
+import { AnyPath, Path_Separator, RelativePath } from "../IO/FileSystem/Path";
 import { Printable } from "../Traits/Printable";
 import { getCallerFile } from "./Caller";
 

@@ -1,12 +1,12 @@
 // Handle the file system like a set of objects using FileSystemObject
 // then use the type narrowing functions to perform specific functionality.
 
-import { Stats, readFileSync, writeFileSync, lstatSync, readdirSync } from "fs";
+import { Stats, readFileSync, writeFileSync, lstatSync, readdirSync, openSync, closeSync, mkdirSync } from "fs";
 
-import { AbsolutePath, Path_resolve, Path_getDetails, Path_join, Path_changeExtension, RelativePath, Path_getParent, AnyPath, Path_relative, Path_hasDescendant, Path_isRoot, Path_CurrentDirectory } from "./Path";
-import { Printable } from "../Traits/Printable";
-import { Queue } from "../Collections/Queue";
-import { panic } from "../Errors/ErrorFunctions";
+import { AbsolutePath, Path_resolve, Path_getDetails, Path_join, Path_changeExtension, RelativePath, Path_getParent, AnyPath, Path_relative, Path_hasDescendant, Path_isRoot, Path_CurrentDirectory, Path_addSuffixExtension } from "./Path";
+import { Printable } from "../../Traits/Printable";
+import { Queue } from "../../Collections/Queue";
+import { panic } from "../../Errors/ErrorFunctions";
 
 const encoding: BufferEncoding = "utf-8"; 
 
@@ -81,6 +81,10 @@ export class FileSystemEntity implements Printable {
         return new FileSystemEntity(Path_changeExtension(this.path, ext));
     }
     
+    addSuffix(extension: string): FileSystemEntity {
+        return new FileSystemEntity(Path_addSuffixExtension(this.path, extension));
+    }
+    
     /** Returns detailed statistics about this entity. */
     getStats(): Stats | undefined {
         try {
@@ -125,6 +129,26 @@ export class FileSystemEntity implements Printable {
     /** Writes a UTF-8 encoded string to this file. */
     writeText(s: string): void {
         writeFileSync(this.path, s, { encoding });
+    }
+    
+    
+    ////////////////////
+    // Touching 👉👈 //
+    ////////////////////
+    
+    touchFile(): void {
+        let fd;
+        try {
+            fd = openSync(this.path, "a");
+        } finally {
+            if (fd) {
+                closeSync(fd);
+            }
+        }
+    }
+    
+    touchDirectory(): void {
+        mkdirSync(this.path, { recursive: true });
     }
     
     //////////////////////////

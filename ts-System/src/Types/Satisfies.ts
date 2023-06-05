@@ -1,4 +1,4 @@
-import { requires } from "../Assert";
+import { AssertionFunction, requires } from "../Assert";
 import { identity } from "../Function";
 
 /** For regular use, TS 4.9 lets you use the `satisfies` operator directly. For creating pseudo-factory functions, this function is still appropriate. */
@@ -27,11 +27,14 @@ it has elements of:
 */
 
 // Is used by Path, so kinda important ^^
-export function satisfiesStrictly<T, U extends T>(
+export function createChecker<T, U extends T>(
     check: (x: T) => x is U,
+    assertionFunction: AssertionFunction = requires,
 ):         (x: T) =>      U {
     return x => {
-        requires(check(x));
+        assertionFunction(check(x));
         return x;
     }
 }
+
+export const satisfiesStrictly = createChecker;

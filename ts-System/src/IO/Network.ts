@@ -1,6 +1,5 @@
 import { NetworkInterfaceInfo, networkInterfaces } from "os";
 
-
 type IpProtocol = NetworkInterfaceInfo["family"];
 
 /** Retrieve the local IP where this server is accessible. */

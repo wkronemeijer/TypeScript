@@ -1,2 +1,1 @@
-
-export const __SYSTEM_NODE = {};
+export * from "./Modules.generated";
