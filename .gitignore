@@ -12,6 +12,16 @@ node_modules
 dist
 dist_t
 
+# devtool output
+
+*.generated.*
+
+# Now here's a funny problem: if we remove the index files, and then
+# download the monorepo,
+# you can't actually run devtool, 
+# because it needs the modules from system
+# ...
+
 # Scratch files
 
-Todo.md
+Todo.*
