@@ -37,7 +37,7 @@ export async function main(args: string[]): Promise<void> {
     terminal.info(`Discovered ${media.length} media files.`);
     
     terminal.meta("Creating thumbnails...");
-    await terminal.measureTimeAsync("thumbs", () => 
+    await terminal.measureTime_async("thumbs", () => 
         Medium_processThumbs(media)
     );
     

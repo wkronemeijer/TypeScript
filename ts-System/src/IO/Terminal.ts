@@ -185,7 +185,7 @@ interface BonusFunctionality {
     dumpLocals(value: Dictionary<unknown>): void;
     
     measureTime<T>(label: string, func: () => T): T;
-    measureTimeAsync<T>(label: string, func: () => Promise<T>): Promise<T>;
+    measureTime_async<T>(label: string, func: () => Promise<T>): Promise<T>;
     
     passthrough<T>(x: T): T;
 }
@@ -261,7 +261,7 @@ function AugmentedLoggingFunction_create(channel: LogChannel): AugmentedLoggingF
             logger(TimingReport_toString({ label, start, end }));
             return result;
         },
-        async measureTimeAsync(label, func) {
+        async measureTime_async(label, func) {
             const start  = Date.now();
             const result = await func();
             const end    = Date.now();
@@ -297,7 +297,7 @@ const devLoggers  = createLoggers(DeveloperLogChannel.values);
 const bonus: BonusFunctionality = {
     dumpLocals: devLoggers.trace.dumpLocals,
     measureTime: devLoggers.perf.measureTime,
-    measureTimeAsync: devLoggers.perf.measureTimeAsync,
+    measureTime_async: devLoggers.perf.measureTime_async,
     passthrough: userLoggers.log.passthrough,
 };
 

@@ -12,6 +12,9 @@ Time to expand this with: we can bundle all files into an index.ts, well, than w
 import { Tally } from "../Tally";
 import { assert } from "../Assert";
 import { AugmentedLoggingFunction } from "../IO/Terminal";
+import { StringEnum } from "../Data/Textual/StringEnum";
+import { Member } from "../Data/Enumeration";
+import { Record_toFunction } from "../Collections/Record";
 
 
 /////////////////
@@ -23,6 +26,19 @@ enum TestResult {
     Fail    = "✗",
     Pass    = "✓",
 }
+
+type  TestStatus = Member<typeof TestStatus>;
+const TestStatus = StringEnum([
+    "toBeDecided",
+    "failed",
+    "passed",
+]);
+
+export const TestStatus_toSymbol = Record_toFunction<TestStatus, string>({
+    toBeDecided: "?",
+    failed: "✗",
+    passed: "✓",
+});
 
 ///////////////
 // Testables //
@@ -138,6 +154,13 @@ Fun development note:
 
     In 99/100 cases this would make sense, 
     but what's annoying is that it removes the ability to auto-import.
+    
+    Actually, this is out-of-date.
+    Nowdays it imports describe from node:tests (since Node 20)
+    (I'm running Node 16 😳)
+    
+    Another update: node:test is kinda whatever, but it doesn't have a web version.
+    Even worse, it exports an `it` variable. `test` is taken too 🤬
 */
 export function specify(name: string, body: (it: ItFunction) => void): void {
     const  parentContext = currentGlobalContext;

@@ -1,11 +1,11 @@
-import { assert } from "../Assert";
+import { swear } from "../Assert";
 
 
 export interface Ref<T> {
     readonly value: T;
 }
 
-export interface MutableRef<T> extends Ref<T> {
+export interface MutableRef<T> {
     value: T;
 }
 
@@ -23,7 +23,7 @@ class LazyRef<T> implements Ref<T> {
     }
     
     get value(): T {
-        assert(this.isAssigned, "Lazy reference was accessed before it was assigned a value.");
+        swear(this.isAssigned, "Lazy reference was accessed before it was assigned a value.");
         return this.realValue;
     }
     
@@ -40,5 +40,3 @@ export function Ref_create<T>(): Ref<T> {
 /////////////
 // Factory //
 /////////////
-
-

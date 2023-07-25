@@ -104,5 +104,7 @@ input:checked + label > .CMedium {
     grid-column-end: span var(--bigger);
     grid-row-end   : span var(--bigger);
     
+    order: -1;
+    
     /* display: none; */
 }

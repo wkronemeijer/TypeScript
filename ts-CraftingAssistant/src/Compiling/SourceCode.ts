@@ -18,7 +18,7 @@ export class SourceCode implements StringBuildable<[DiagnosticDisplayMode]> {
     }
     
     static fromFile(file: File): SourceCode {
-        const relativeName = RelativePath_toString(Directory.cwd.to(file));
+        const relativeName = RelativePath_toString(Directory.cwd().to(file));
         // const fullName  = Path_toUrl(file.path);
         const blockName  = relativeName;
         const inlineName = relativeName;

@@ -3,7 +3,7 @@
 
 import { Array_firstElement, Array_IndexNotFound, Array_lastElement } from "../../Collections/Array";
 import { compare as System_compare } from "../../Traits/Comparable/Compare";
-import { assert, ensures, requires } from "../../Assert";
+import { assert, ensures, requires, swear } from "../../Assert";
 import { equals as System_equals } from "../../Traits/Equatable/Equals";
 import { EqualityComparer } from "../../Traits/Equatable/EqualityComparer";
 import { StringBuilder } from "../../Text/StringBuilder";
@@ -63,7 +63,7 @@ extends Iterable<E>, Printable {
     
     /** Checks if 2 enum values are equal. */
     readonly equals: EqualityComparer<E>;
-    /** Compares two enum values. */
+    /** Compares two enum values by their ordinal. */
     readonly compare: Comparer<E>;
     /** Returns the larger of two enum values. */
     max(a: E, b: E): E;
@@ -207,7 +207,7 @@ function createStringEnumWithOrdinals<E extends string>(ordinalByName: OrdinalMa
     
     const setOfValues = new Set(values);
     
-    assert(setOfValues.size === values.length, "All members must be unique.");
+    swear(setOfValues.size === values.length, "All members must be unique.");
     
     const hasInstance = (x: unknown): x is E => Set_hasAny(setOfValues, x);
     const check       = (x: unknown): E      => hasInstance(x) ? x : panic(`'${x}' is not a member.`);
@@ -252,15 +252,27 @@ function createStringEnumWithOrdinals<E extends string>(ordinalByName: OrdinalMa
         },
         extend(extraMethodsFactory) {
             return Object.freeze({ ...this, ...extraMethodsFactory(this) });
-        }
+        },
     };
     
     return Object.freeze(result);
 }
 
-export function StringEnum_create<E extends string>(values: StringEnum_Initializer<E>): StringEnum<E> {
+/**
+ * Creates an enum from a set of string values.
+ * Being a runtime value, it can be used for iteration, validation or having a default.
+ * 
+ * When possible, use the plain {@link StringEnum} factory, without the `_create` suffix.
+ */
+export function StringEnum_create<const E extends string>(values: StringEnum_Initializer<E>): StringEnum<E> {
     return createStringEnumWithOrdinals(OrdinalMap_fromInitializer(values));
 }
+
+/**
+ * Creates an enum from a set of string values.
+ * Being a runtime value, it can be used for iteration, validation or having a default.
+ */
+export const StringEnum = StringEnum_create;
 
 ////////////////////////////
 // Companions for `enum`s //

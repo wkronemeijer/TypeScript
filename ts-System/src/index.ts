@@ -1,3 +1,3 @@
 export const __SYSTEM = {};
 
-export * from "./Modules.old.generated";
+export * from "./Modules.generated";

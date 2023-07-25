@@ -12,7 +12,7 @@ const exportsFileName = "Modules.generated.ts";
 const testsFileName   = "Tests.generated.ts";
 
 const generatedPattern = /\.generated\.tsx?/;
-const testPattern      = /\.spec\.tsx?/;
+const testPattern      = /\.(spec|test)\.tsx?/;
 const exportPattern    = /^[^a-z].*\.tsx?/;
 
 /////////////

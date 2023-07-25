@@ -58,8 +58,8 @@ export const Path_CurrentDirectory = "." as RelativePath;
 export const Path_ParentDirectory = ".." as RelativePath;
 
 export const Path_AppData = (function(){
-    const windowsAppdata = process.env.LOCALAPPDATA;
-    swear(windowsAppdata) // sorry nix users, submit a PR :)
+    const windowsAppdata = process.env["LOCALAPPDATA"];
+    swear(windowsAppdata) // sorry *nix users, submit a PR :)
     return AbsolutePath(windowsAppdata);
 }());
 

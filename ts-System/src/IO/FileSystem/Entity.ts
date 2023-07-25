@@ -57,7 +57,7 @@ export class FileSystemEntity implements Printable {
         return Path_isRoot(this.path);
     }
     
-    static get cwd(): Directory {
+    static cwd(this: unknown): Directory {
         return new Directory(Path_CurrentDirectory);
     }
     

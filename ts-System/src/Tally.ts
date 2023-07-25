@@ -27,3 +27,4 @@ export class Tally<T> {
 /////////////
 
 // Can't test, because testing uses this file :X
+// Lmfao, this is where the .spec file comes in. 

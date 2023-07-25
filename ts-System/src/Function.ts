@@ -14,17 +14,22 @@ export const alwaysTrue = constant(true);
 /** Constant &bot; function. */
 export const alwaysFalse = constant(false);
 
-/** Selects the first element of a tuple. */
-export const fst = <T>(array: readonly [T, ...any[]]): T => array[0];
-/** Selects the second element of a tuple. */
-export const snd = <T>(array: readonly [unknown, T, ...any[]]): T => array[1];
-
-export const flip = <T, U>(array: readonly [T, U]): readonly [U, T] => [array[1], array[0]];
-
 export function negate<T>(
     predicate: (value: T) => unknown,
 ):             (value: T) => boolean {
     return value => !predicate(value);
+}
+
+/** 
+ * Placeholder function which does nothing. 
+ * Useful as a default for functions that return `void`. 
+ */
+export function pass(): void {
+    // Placeholder function for functions where 
+    // the primary purpose is a side effect.
+    // (() => {})
+    // 1234567890 == 10 chars
+    // ideally we have a shorter name...
 }
 
 /*
@@ -99,3 +104,15 @@ export function Function_memoize<P extends readonly primitive_t[], R>(
         return result;
     };
 }
+
+/////////////////////
+// Tuple functions // 
+/////////////////////
+// TODO: Relocate (and relocate Function.ts too)
+
+/** Selects the first element of a tuple. */
+export const fst = <T>(array: readonly [T, ...any[]]): T => array[0];
+/** Selects the second element of a tuple. */
+export const snd = <T>(array: readonly [unknown, T, ...any[]]): T => array[1];
+
+export const flip = <T, U>(array: readonly [T, U]): readonly [U, T] => [array[1], array[0]];

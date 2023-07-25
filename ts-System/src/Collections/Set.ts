@@ -88,3 +88,21 @@ export function Set_toTypeGuard<T extends primitive_t>(self: ReadonlySet<T>): (i
     return (item: unknown): item is T => Set_hasAny(self, item);
 }
 export const Set_toFunction: <T extends primitive_t>(self: ReadonlySet<T>) => (item: T) => boolean = Set_toTypeGuard;
+
+
+// TODO: Improve this functions name
+// ...a contraction? Really?
+/**
+ * Checks if an item isn't already in the set. If it isn't, adds the item to the set.
+ * @param self The set to check.
+ * @param item The item to conditionally add.
+ * @returns Whether the item was already in the set.
+ */
+export function Set_hasntYet<T>(self: Set<T>, item: T): boolean {
+    if (!self.has(item)) {
+        self.add(item); 
+        return true;
+    } else {
+        return false;
+    }
+}

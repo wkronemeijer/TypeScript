@@ -366,13 +366,13 @@ Async as a suffix and not Sync because then
 looks wrong, which corresponds to it being wrong. 
 
 Also, Sync should be the default
-Also, measureTimeAsync exists
+Also, measureTime_async exists
 
 Now there is the question of doing 
 the suffix is async
     async$measureTime
 it should be a suffix
-    measureTimeAsync
+    measureTime_async
     measureTime_async
     measureTime$Async
     measureTime$async

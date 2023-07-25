@@ -9,6 +9,7 @@
         "declaration": true,
         "alwaysStrict": true,
         "inlineSourceMap": true,
+        "stripInternal": true,
         
         ////////////////
         // TypeScript //
@@ -26,7 +27,9 @@
         
         "strict": true,
         "strictFunctionTypes": true,
+        // "exactOptionalPropertyTypes": true,
         
+        "noPropertyAccessFromIndexSignature": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedIndexedAccess": true,
         "noUnusedParameters": false,
