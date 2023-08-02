@@ -9,7 +9,7 @@ import { inspect, InspectOptions } from "util";
 
 import { LogMessageFormatter, LogMessageFormatter_Powerline, LogMessageFormatter_Simple } from "../Text/Console/LogMessageFormatter";
 import { StringEnum_create, StringEnum_Member } from "../Data/Textual/StringEnum";
-import { Function_includeProperties } from "../Function";
+import { Function_includeProperties } from "../Data/Function";
 import { Map_fromPartialDictionary } from "../Collections/Map";
 import { TimingReport_toString } from "../Text/Console/TimingReportFormatter";
 import { ArrayMember } from "../Data/Enumeration";
@@ -301,7 +301,10 @@ const bonus: BonusFunctionality = {
     passthrough: userLoggers.log.passthrough,
 };
 
-/** Dedicated developer console. */
+/** 
+ * Dedicated developer console. 
+ * @deprecated Use the developer channels on {@link terminal} instead.
+ */
 export const devTerminal = {
     ...devLoggers,
     ...bonus,

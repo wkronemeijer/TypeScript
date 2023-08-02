@@ -1,4 +1,4 @@
-import { swear } from "@wkronemeijer/system";
+import { panic, swear } from "@wkronemeijer/system";
 import { StoredCliParameter } from "./StoredParameter";
 import { CliParameterLabel, CliParameterLabel_tryParseArgument } from "./Parameters/ParameterLabel";
 import { CliParseResult, ExtendedCliParseResult } from "./ParseResult";

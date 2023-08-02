@@ -1,5 +1,5 @@
 import { AssertionFunction, requires } from "../Assert";
-import { identity } from "../Function";
+import { identity } from "../Data/Function";
 
 /** For regular use, TS 4.9 lets you use the `satisfies` operator directly. For creating pseudo-factory functions, this function is still appropriate. */
 export const satisfiesWeakly: 

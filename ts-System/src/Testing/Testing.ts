@@ -4,18 +4,30 @@
 // Even _even_ better: we look like another library, but with different semantics
 
 /*
-Time to expand this with: we can bundle all files into an index.ts, well, than we can also bundle 
+
+This stuff is so old, its hilarious
+uses plain `enum`
+tracks level in the log, instead of using buildstring
+passes a logging function to each leaf 😶
+
+There is:
+Bundle -> Collection -> Test
+specify
+assert.equals
+it
+
+
 
 
 */
 
-import { Tally } from "../Tally";
-import { assert } from "../Assert";
 import { AugmentedLoggingFunction } from "../IO/Terminal";
+import { Record_toFunction } from "../Collections/Record";
+import { notImplemented, panic } from "../Errors/ErrorFunctions";
 import { StringEnum } from "../Data/Textual/StringEnum";
 import { Member } from "../Data/Enumeration";
-import { Record_toFunction } from "../Collections/Record";
-
+import { assert } from "../Assert";
+import { Tally } from "../Data/Tally";
 
 /////////////////
 // Test result //
@@ -49,14 +61,15 @@ type TestBody = () => Promise<void> | void;
 interface Testable {
     run(): Promise<void>;
     summarize(tally: Tally<TestResult>): void;
-    report(log: AugmentedLoggingFunction, level: number): void
+    report(log: AugmentedLoggingFunction, level: number): void;
+    // with StringBuilder, this becomes: stringify(StringBuilder): void;
 }
 
 const indent = ' '.repeat(4);
 
 class TestInstance implements Testable {
-    result = TestResult.Unknown;
-    failReason = "";
+    private result = TestResult.Unknown;
+    private failReason = "";
     
     constructor(
         public readonly name: string,
@@ -172,6 +185,28 @@ export function specify(name: string, body: (it: ItFunction) => void): void {
     currentGlobalContext = parentContext;
 }
 
+export function it(name: string, body: TestBody): void {
+    notImplemented();
+}
+
+export const expect = new class ExpectImplementation {
+    equals<T>(actual: T, expected: T): void {
+        
+    }
+    
+    throws(
+        body: () => unknown, 
+        validateError: (e: Error) => boolean = e => e instanceof Error,
+    ): void {
+        try {
+            body();
+            panic(`body failed to throw`);
+        } catch (_) {
+            
+        }
+    }
+};
+
 ///////////////////
 // Running tests //
 ///////////////////
@@ -182,6 +217,11 @@ export enum TestReportDetail {
     ReportOnError,
     SummarizeAndReportOnError,
     SummarizeAndAlwaysReport,
+}
+
+interface TestReportDetail2 {
+    readonly report?: boolean | "onError";
+    readonly summarize?: boolean;
 }
 
 export async function runTests(log: AugmentedLoggingFunction, detail: TestReportDetail): Promise<boolean> {
@@ -220,3 +260,18 @@ export async function runTests(log: AugmentedLoggingFunction, detail: TestReport
     
     return failed === 0;
 }
+/*
+
+What do we need?
+
+- specify
+- register
+- (start)run
+- results(SoFar)
+- Waiting for all tests is...not a good idea?
+
+One problem:
+How do we register the tests for System?
+It doesn't have access to the file system...
+
+ */

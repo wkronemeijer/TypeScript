@@ -3,7 +3,7 @@ import { deprecated, notImplemented } from "../Errors/ErrorFunctions";
 import { compare, compareAny } from "../Traits/Comparable/Compare";
 import { Comparable } from "../Traits/Comparable/Comparable";
 import { Comparer } from "../Traits/Comparable/Comparer";
-import { identity } from "../Function";
+import { identity } from "../Data/Function";
 import { Truthy } from "../Types/Truthy";
 
 export interface Selector<T, U> {

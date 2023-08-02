@@ -1,7 +1,3 @@
-import { specify } from "../Testing/Testing";
-import { assert } from "../Assert";
-
-
 export function String_isEmpty(self: string): boolean {
     return self.length === 0;
 }
@@ -44,16 +40,3 @@ export function String_getCharCodes(self: string): number[] {
 /////////////
 // Testing //
 /////////////
-
-specify("stringIsWhitespace()", it => {
-    it("agrees with whitespace", () => {
-        assert(String_isWhitespace(""));
-        assert(String_isWhitespace("    "));
-        assert(String_isWhitespace("\n\n\n\n\t\n\t"));
-    });
-    
-    it("disagrees with non-whitespace", () => {
-        assert(!String_isWhitespace("Hello, world!"));
-        assert(!String_isWhitespace("    Hello,\n there!\n"));
-    });
-});

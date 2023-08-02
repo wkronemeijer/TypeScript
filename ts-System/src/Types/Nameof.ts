@@ -1,7 +1,7 @@
 // nameof equivalent
 // derived from https://stackoverflow.com/a/37057212
 
-import { requires } from "./Assert";
+import { requires } from "../Assert";
 
 /** Used with an object shorthand to return the name of a variable, analogous to C&sharp;'s `nameof` operator.
  * ```
@@ -15,4 +15,3 @@ export function nameof<
     requires(keys.length === 1, `'object' must have exactly 1 own enumerable property.`);
     return keys[0] as keyof O;
 }
-

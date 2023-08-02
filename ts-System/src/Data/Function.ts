@@ -1,6 +1,6 @@
-import { requires } from "./Assert";
-import { Newtype } from "./Types/Newtype";
-import { primitive_t } from "./Types/Primitive";
+import { requires } from "../Assert";
+import { Newtype } from "../Types/Newtype";
+import { primitive_t } from "../Types/Primitive";
 
 /** The identity function. */
 export const identity = <T>(x: T) => x;
