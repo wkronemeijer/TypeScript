@@ -1,4 +1,7 @@
-import { devTerminal, File, requires } from "@wkronemeijer/system";
+import { pathToFileURL } from "url";
+
+import { File, requires, terminal } from "@wkronemeijer/system";
+
 import { formatJson_HaskellStyle } from "./Formatter";
 
 export function main(args: string[]) {
@@ -11,8 +14,10 @@ export function main(args: string[]) {
     const inputFile  = new File(inputPath);
     const outputFile = inputFile.changeExtension(".hsfmt.json") // "(H)a(s)kell (f)or(m)a(t)"
     
+    const inputUri = pathToFileURL(inputPath);
+    
     const input  = inputFile.readText();
-    const output = devTerminal.measureTime(`format(${inputPath})`, () => 
+    const output = terminal.measureTime(`format(${inputUri})`, () => 
         formatJson_HaskellStyle(input, { lineLengthLimit })
     );
     

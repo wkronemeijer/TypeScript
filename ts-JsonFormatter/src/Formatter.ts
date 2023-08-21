@@ -1,4 +1,6 @@
-import { assert, ensures, neverPanic, panic, StringBuilder } from "@wkronemeijer/system";
+import { StringBuilder } from "@wkronemeijer/system";
+
+const { min, max } = Math;
 
 // NB: We reformat, so we don't have to use toJSON methods or anything
 
@@ -48,50 +50,24 @@ class Formatter {
     // Size estimation //
     /////////////////////
     
-    estimatePrimitiveSize(prim: JsonPrimitive): Measure {
-        switch (typeof prim) {
-            case "object" : return 4
-            case "boolean": return prim ? 4 : 5
-            case "number" : return String(prim).length
-            case "string" : return prim.length + 2 // ""
-            default       : neverPanic(prim);
-        }
+    private estimatePrimitiveLineSize(prim: JsonPrimitive): number {
+        return 1;
     }
     
-    estimateArraySize(arr: JsonArray): Measure {
-        let total: ReturnType<typeof this.estimateArraySize> = 2;
-        let isNotEmpty = false;
+    private estimateArrayLineSize(arr: JsonArray): number {
+        let keyCount: number = 0;
         for (const item of arr) {
-            const itemSize = this.estimateSize(item)
-            if (itemSize && total < this.lengthLimit) {
-                total += itemSize + 2 // ", "
-            } else {
-                return false;
-            }
-            isNotEmpty = true;
+            keyCount += this.estimateSize(item);
         }
-        if (isNotEmpty) {
-            return total - 2; // strip trailing ", "
-        } else {
-            return total;
-        }
+        return max(1, keyCount);
     }
     
-    estimateObjectSize(obj: JsonObject): Measure {
-        let total: ReturnType<typeof this.estimateObjectSize> = 2;
-        let isNotEmpty = false;
+    private estimateObjectSize(obj: JsonObject): number {
+        let keyCount: number = 0;
         for (const key in obj) {
-            const item = obj[key] ?? panic();
-            const keySize  = this.estimateSize(key);
-            const itemSize = this.estimateSize(item);
-            if (keySize && itemSize && total < this.lengthLimit) {
-                total += keySize + 2 + itemSize + 2; // ": " and ", "
-            } else {
-                return false;
-            }
-            isNotEmpty = true;
+            keyCount += this.estimateSize(obj[key]!);
         }
-        return total;
+        return max(1, keyCount);
         // if (isNotEmpty) {
         //     return total - 2; // strip trailing ", "
         // } else {
@@ -101,29 +77,20 @@ class Formatter {
         // 2 spaces == ", ".length
     }
     
-    estimateSize(val: JsonValue): Measure {
-        let result: Measure;
+    private estimateSize(val: JsonValue): number {
         if (typeof val === "object" && val !== null) {
             if (val instanceof Array) {
-                result = this.estimateArraySize(val);
+                return this.estimateArrayLineSize(val);
             } else {
-                result = this.estimateObjectSize(val);
+                return this.estimateObjectSize(val);
             }
         } else {
-            result = this.estimatePrimitiveSize(val);
+            return this.estimatePrimitiveLineSize(val);
         }
-        ensures(result !== 0, 
-            () => `Size ${result} should be >0.`);
-        return result;
     }
     
     isOneLiner(val: JsonValue): boolean {
-        const contentSize = this.estimateSize(val);
-        if (contentSize) {
-            return contentSize < this.lengthLimit;
-        } else {
-            return false;
-        }
+        return this.estimateSize(val) === 1;
     }
     
     //////////////
@@ -136,7 +103,7 @@ class Formatter {
     
     visitArray(arr: JsonArray): void {
         if (this.isOneLiner(arr)) {
-            this.result.append("[");
+            this.result.append("[ ");
             let isFirst = true;
             for (const item of arr) {
                 if (!isFirst) {
@@ -145,25 +112,25 @@ class Formatter {
                 this.visit(item);
                 isFirst = false;
             }
-            this.result.append("]");
+            this.result.append(" ]");
         } else {
             this.result.appendLine();
-            this.result.indent();
             let isFirst = true;
             for (const item of arr) {
                 this.result.append(isFirst ? "[ " : ", ");
+                this.result.indent();
                 this.visit(item);
+                this.result.dedent();
                 this.result.appendLine();
                 isFirst = false;
             }
             this.result.append("]");
-            this.result.dedent();
         }
     }
     
     visitObject(object: JsonObject): void {
         if (this.isOneLiner(object)) {
-            this.result.append("{");
+            this.result.append("{ ");
             let isFirst = true;
             for (const key in object) {
                 const item = object[key]!;
@@ -175,22 +142,31 @@ class Formatter {
                 this.visit(item);
                 isFirst = false;
             }
-            this.result.append("}");
+            this.result.append(" }");
         } else {
             this.result.appendLine();
-            this.result.indent();
             let isFirst = true;
             for (const key in object) {
                 const item = object[key]!;
                 this.result.append(isFirst ? "{ " : ", ");
                 this.visit(key);
                 this.result.append(": ");
-                this.visit(item);
+                
+                // Without this the 0 indent property values get 4 extra spaces
+                // ...which shouldn't happen, because StringBuilder only indents when you include a newline.
+                // TODO: Work out why this happens.
+                if (this.isOneLiner(item)) {
+                    this.visit(item);
+                } else {
+                    this.result.indent();
+                    this.visit(item);
+                    this.result.dedent();
+                }
+                
                 this.result.appendLine();
                 isFirst = false;
             }
             this.result.append("}");
-            this.result.dedent();
         }
     }
     
@@ -210,7 +186,11 @@ class Formatter {
     // Access //
     ////////////
     
-    static stringify(val: JsonValue, options: FormatterOptions): string {
+    static stringify(
+        this: unknown, 
+        val: JsonValue, 
+        options: FormatterOptions = {},
+    ): string {
         const formatter = new Formatter(options);
         formatter.visit(val);
         return formatter.result.toString();
@@ -222,5 +202,5 @@ export function formatJson_HaskellStyle(
     options: FormatterOptions = {},
 ): string {
     const value = JSON.parse(json) as JsonValue;
-    return Formatter.stringify(value, options);
+    return Formatter.stringify(value, options).trim();
 }
