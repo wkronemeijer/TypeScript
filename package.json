@@ -4,11 +4,13 @@
         "devtool": "devtool.cjs"
     },
     "dependencies": {
+        "@types/luxon": "^3.3.1",
+        "@wkronemeijer/react-terminal": "file:ts-ReactTerminal",
         "@wkronemeijer/system": "file:ts-System",
         "@wkronemeijer/system-node": "file:ts-System_Node",
         "@wkronemeijer/system-web": "file:ts-System_Web",
-        "@wkronemeijer/react-terminal": "file:ts-ReactTerminal",
         "express": "^4.18.2",
+        "luxon": "^3.3.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-reconciler": "^0.29.0",
@@ -16,11 +18,13 @@
         "sharp": "^0.32.1"
     },
     "devDependencies": {
-        "typescript": "^5.1.3",
-        "@types/node": "^20.1.0",
         "@types/express": "^4.17.17",
+        "@types/mocha": "^10.0.1",
+        "@types/node": "^20.1.0",
         "@types/react": "^18.2.6",
         "@types/react-dom": "^18.2.4",
-        "@types/react-reconciler": "^0.28.2"
+        "@types/react-reconciler": "^0.28.2",
+        "mocha": "^10.2.0",
+        "typescript": "^5.1.3"
     }
 }
