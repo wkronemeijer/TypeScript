@@ -6,7 +6,8 @@
         "declarationDir": "./dist_t",
         
         "types": [
-            "node"
+            "node",
+            "mocha"
         ]
     }
 }
