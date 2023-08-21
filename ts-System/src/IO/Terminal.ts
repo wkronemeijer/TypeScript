@@ -9,6 +9,7 @@ import { inspect, InspectOptions } from "util";
 
 import { LogMessageFormatter, LogMessageFormatter_Powerline, LogMessageFormatter_Simple } from "../Text/Console/LogMessageFormatter";
 import { StringEnum_create, StringEnum_Member } from "../Data/Textual/StringEnum";
+import { stringBuild, StringBuildable } from "../Text/StringBuilder";
 import { Function_includeProperties } from "../Data/Function";
 import { Map_fromPartialDictionary } from "../Collections/Map";
 import { TimingReport_toString } from "../Text/Console/TimingReportFormatter";
@@ -102,6 +103,9 @@ function __repr(value: unknown): string {
     }
 }
 
+// used for symmetry
+const __build = stringBuild;
+
 ////////////////////////////////
 // Basic terminal interaction //
 ////////////////////////////////
@@ -154,8 +158,21 @@ interface TargetFunctionality {
     
     /** Prints its argument to this channel. */
     write(value: unknown): void;
+    
     /** Prints its argument to this channel, and appends a newline. */
     writeLine(value?: unknown): void;
+    
+    /** Includes a {@link StringBuildable} in this channel. */
+    include<TArgs extends readonly any[] = []>(
+        buildable: StringBuildable<TArgs>,
+        ...args: TArgs
+    ): void;
+    
+    /** Includes a {@link StringBuildable} in this channel, and appends a newline. */
+    includeLine<TArgs extends readonly any[] = []>(
+        buildable: StringBuildable<TArgs>, 
+        ...args: TArgs
+    ): void;
 }
 
 interface ChannelFunctionality {
@@ -229,8 +246,26 @@ function AugmentedLoggingFunction_create(channel: LogChannel): AugmentedLoggingF
         get target()          { return target             },
         set target(newTarget) {        target = newTarget },
         
-        write:       value => isEnabled && __write    (target, __repr(value)),
-        writeLine:   value => isEnabled && __writeLine(target, __repr(value)),
+        write(value) {
+            if (isEnabled) {
+                __write(target, __repr(value));
+            }
+        },
+        writeLine(value) {
+            if (isEnabled) {
+                __writeLine(target, __repr(value));
+            }
+        },
+        include(buildable, ...args) {
+            if (isEnabled) {
+                __write(target, __build(buildable, ...args));
+            }
+        },
+        includeLine(buildable, ...args) {
+            if (isEnabled) {
+                __writeLine(target, __build(buildable, ...args));
+            }
+        },
         
         ///////////////////////////
         // Channel functionality //
