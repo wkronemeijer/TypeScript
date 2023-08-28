@@ -1,4 +1,5 @@
 import { swear } from "../Assert";
+import {check} from "../Errors/ErrorFunctions"
 import { uppercase } from "./Casing";
 
 export {};
@@ -6,7 +7,7 @@ export {};
 describe("Casing", () => {
     describe("uppercase", () => {
         it("uppercases", () => {
-            swear(uppercase("foo") === "FOO");
+            check(uppercase("foo"), "FOO");
         });
     });
 });

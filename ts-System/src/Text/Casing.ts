@@ -7,12 +7,12 @@ import { identity } from "../Data/Function";
 
 /** Analogous to the {@link Uppercase} intrinsic type function. */
 export function uppercase<S extends string>(str: S): Uppercase<S> {
-    return str.charAt(0).toUpperCase() + str.slice(1) as Uppercase<S>;
+    return str.toUpperCase() as Uppercase<S>;
 }
 
 /** Analogous to the {@link Lowercase} intrinsic type function. */
 export function lowercase<S extends string>(str: S): Lowercase<S> {
-    return str.charAt(0).toUpperCase() + str.slice(1) as Lowercase<S>;
+    return str.toLowerCase() as Lowercase<S>;
 }
 
 /** Analogous to the {@link Capitalize} intrinsic type function. */
