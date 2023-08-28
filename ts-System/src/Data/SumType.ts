@@ -1,5 +1,10 @@
-import { swear } from "../Assert";
 import { ExpandType, UnionToIntersection } from "../Types/Magic";
+import { swear } from "../Assert";
+import { Object_getName } from "./Object";
+
+///////////
+// Cases //
+///////////
 
 export interface HasKind<K extends string> {
     readonly kind: K;
@@ -13,33 +18,43 @@ export type Case<
     & P
 >;
 
-type DistributeCaseMethod<TSelf, TArg extends HasKind<string>, TResult> = TArg extends any ? { 
-    [P in TArg["kind"]]: (this: TSelf, options: TArg) => TResult 
+////////////////////
+// Matching cases //
+////////////////////
+
+type HandlerForEachCase<
+    TCase extends HasKind<string>, 
+    TArgs extends any[], 
+    TResult,
+> = TCase extends any ? { 
+    readonly [P in TCase["kind"]]: (options: TCase, ...args: TArgs) => TResult 
 } : never;
 
-export type UnionMatcher<TSelf, TArg extends HasKind<string>, TResult> = ExpandType<UnionToIntersection<DistributeCaseMethod<TSelf, TArg, TResult>>>;
+export type UnionMatcher<
+    TCase extends HasKind<string>, 
+    TArgs extends any[], 
+    TResult,
+> = ExpandType<UnionToIntersection<HandlerForEachCase<TCase, TArgs, TResult>>>;
 
-export function matchItself<TSelf, TArg extends HasKind<string>, TResult>(
-    matcher: TSelf & UnionMatcher<TSelf, TArg, TResult>, 
-    arg: TArg, 
-): TResult {
-    return matchWithContext(matcher, arg, matcher);
+/**
+ * Creates a function that calls the appropriate method for handling a specific case.
+ * 
+ * For recursive enums, it is recommended you put this function as a property initalizer in a class. 
+ */
+export function UnionMatcher<
+    TCase extends HasKind<string>, 
+    TArgs extends any[], 
+    TResult,
+>(
+    self: UnionMatcher<TCase, TArgs, TResult>
+): (case_: TCase, ...args: TArgs) => TResult {
+    return (case_, ...args) => {
+        const kind = case_.kind;
+        const leafMatcher = (self as any)[kind] as unknown;
+        if (!(typeof leafMatcher === "function")) {
+            const name = Object_getName(self);
+            throw new Error(`${name} is missing case for '${kind}'.`);
+        }
+        return leafMatcher.call(self, case_, ...args);
+    }
 }
-
-export function matchWithContext<TSelf, TArg extends HasKind<string>, TResult>(
-    matcher: UnionMatcher<TSelf, TArg, TResult>, 
-    arg: TArg, 
-    thisArg: TSelf, 
-): TResult {
-    const caseMatcher = (matcher as any)[arg.kind] as unknown;
-    swear(typeof caseMatcher === "function");
-    return caseMatcher.call(thisArg, arg);
-}
-
-export const visit = matchWithContext;
-
-/*
-
-    
-    
-*/

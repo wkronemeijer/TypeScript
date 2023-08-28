@@ -1,10 +1,18 @@
 import { swear } from "../Assert";
-import { Case, UnionMatcher, matchWithContext, matchItself, visit } from "./SumType";
+import { panic } from "../Errors/ErrorFunctions";
+import { Case, UnionMatcher } from "./SumType";
 
 export {};
 
-type Env = Map<string, number>;
+/////////////////////////////////////
+// Version 1: on a specific object //
+/////////////////////////////////////
 
+///////////////////////////////////
+// Version 2: on a regular class //
+///////////////////////////////////
+
+type Env = Map<string, number>;
 
 type LiteralExpr = Case<"literal", {
     readonly value: number;
@@ -25,82 +33,49 @@ type Expr =
     | AddExpr
 ;
 
-const evaluator: UnionMatcher<Env, Expr, number> = {
-    add({ left, right }) {
-        return evaluate(left, this) + evaluate(right, this);
-    },
-    literal({ value }) {
-        return value;
-    },
-    var({ name }) {
-        return this.get(name) ?? 0;
-    },
-}
-
-// unfortunately needs a trampoline...
-// ...but, it is better this way. 
-
-function evaluate(expr: Expr, env: Env = new Map): number {
-    return visit(evaluator, expr, env);
-}
-
 class Calculator {
-    constructor(
-        private readonly env: Env = new Map,
-    ) { }
-    
-    get(name: string): number {
-        return this.env.get(name) ?? 0;
+    add({ left, right }: AddExpr, env: Env): number {
+        return this.eval(left, env) + this.eval(right, env);
     }
     
-    set(name: string, value: number): void {
-        this.env.set(name, value);
+    literal({ value }: LiteralExpr, bool: Env): number {
+        return bool ? value : 0;
     }
     
-    add({ left, right }: AddExpr): number {
-        return this.eval(left) + this.eval(right);
+    var({ name }: VarExpr, env: Env): number {
+        return env.get(name) ?? panic();
     }
     
-    literal({ value }: LiteralExpr): number {
-        return value;
-    }
-    
-    var({ name }: VarExpr): number {
-        return this.get(name);
-    }
-    
-    eval(expr: Expr): number {
-        matchItself(this, expr);
-        
-        // \/ this part is ugly
-        const result = visit(this,expr, this);
-        return result;
-    }
+    eval = UnionMatcher<Expr, [env: Env], number>(this);
 }
 
-(function(){
-    const env = new Map([
-        ["x", 10],
-        ["y", 20]
-    ])
-    
-    const expr: Expr = {
-        kind: "add",
-        left: {
+describe("UnionMatcher", () => {
+    it("handles recursion", () => {
+        const env = new Map([
+            ["x", 10],
+            ["y", 20],
+        ])
+        
+        const expr: Expr = {
             kind: "add",
             left: {
-                kind: "var",
-                name: "x",
+                kind: "add",
+                left: {
+                    kind: "var",
+                    name: "x",
+                },
+                right: {
+                    kind: "literal",
+                    value: 30,
+                }
             },
             right: {
-                kind: "literal",
-                value: 30,
-            }
-        },
-        right: {
-            kind: "var",
-            name: "y",
-        },
-    };
-    swear(evaluate(expr, env) === 60);
-}())
+                kind: "var",
+                name: "y",
+            },
+        };
+        
+        const ti84 = new Calculator;
+        swear(ti84.eval(expr, env) === 60);
+    });
+});
