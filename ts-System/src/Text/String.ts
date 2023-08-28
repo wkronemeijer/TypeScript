@@ -36,7 +36,3 @@ export function String_getCharCodes(self: string): number[] {
     }
     return result;
 }
-
-/////////////
-// Testing //
-/////////////

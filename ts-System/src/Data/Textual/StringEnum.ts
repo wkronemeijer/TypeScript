@@ -3,7 +3,7 @@
 
 import { Array_firstElement, Array_IndexNotFound, Array_lastElement } from "../../Collections/Array";
 import { compare as System_compare } from "../../Traits/Comparable/Compare";
-import { assert, ensures, requires, swear } from "../../Assert";
+import { ensures, requires, swear } from "../../Assert";
 import { equals as System_equals } from "../../Traits/Equatable/Equals";
 import { EqualityComparer } from "../../Traits/Equatable/EqualityComparer";
 import { StringBuilder } from "../../Text/StringBuilder";
@@ -27,7 +27,16 @@ export interface StringEnum<E extends string>
 extends Iterable<E>, Printable {
     /** All values, in ascending order. */
     readonly values: readonly E[];
+    
+    /** All values as a set. Renamed for intellisense. */
+    readonly setOfValues: ReadonlySet<E>;
+    
     toString(): string;
+    
+    //////////////
+    // Defaults //
+    //////////////
+    
     /** Default value for this enum. 
      * 
      * Note that reserved names can used for properties (but not for identifiers). */
@@ -35,15 +44,6 @@ extends Iterable<E>, Printable {
     
     /** Returns a new {@link StringEnum} with a different {@link StringEnum.default}. */
     withDefault(newDefault: E): this;
-    
-    /** 
-     * Returns a new {@link StringEnum} with extra methods. 
-     * @deprecated Just use `MyType_extensionMethod`, its just as long. 
-    */
-    extend<M extends {}>(extraMethods: (Self: this) => M): this & M;
-    
-    /** All values as a set. Renamed for intellisense. */
-    readonly setOfValues: ReadonlySet<E>;
     
     /** Verifies that given argument is a member of this enum. */
     check(x: unknown): E;
@@ -172,7 +172,6 @@ function stringifyStringEnum<E extends string>(values: OrdinalMap<E>): string {
     
     result.append("StringEnum { ");
     for (const [value, ordinal] of values) {
-        
         result.append('"');
         result.append(value); // I would use util.inspect, but that requires node
         // TODO: Is there a universal util.inspect equivalent?
@@ -250,9 +249,6 @@ function createStringEnumWithOrdinals<E extends string>(ordinalByName: OrdinalMa
         withDefault(newDefault) {
             return Object.freeze({ ...this, default: newDefault });
         },
-        extend(extraMethodsFactory) {
-            return Object.freeze({ ...this, ...extraMethodsFactory(this) });
-        },
     };
     
     return Object.freeze(result);
@@ -261,19 +257,15 @@ function createStringEnumWithOrdinals<E extends string>(ordinalByName: OrdinalMa
 /**
  * Creates an enum from a set of string values.
  * Being a runtime value, it can be used for iteration, validation or having a default.
- * 
- * When possible, use the plain {@link StringEnum} factory, without the `_create` suffix.
  */
-export function StringEnum_create<const E extends string>(values: StringEnum_Initializer<E>): StringEnum<E> {
+export function StringEnum<const E extends string>(values: StringEnum_Initializer<E>): StringEnum<E> {
     return createStringEnumWithOrdinals(OrdinalMap_fromInitializer(values));
 }
 
 /**
  * Creates an enum from a set of string values.
  * Being a runtime value, it can be used for iteration, validation or having a default.
+ * 
+ * @deprecated Use the plain {@link StringEnum} factory, without the `_create` suffix.
  */
-export const StringEnum = StringEnum_create;
-
-////////////////////////////
-// Companions for `enum`s //
-////////////////////////////
+export const StringEnum_create = StringEnum;

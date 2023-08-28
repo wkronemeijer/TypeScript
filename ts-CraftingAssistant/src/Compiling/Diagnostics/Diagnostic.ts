@@ -5,7 +5,7 @@ import { DiagnosticDisplayMode } from "./DiagnosticDisplayMode";
 import { SourceTextRange } from "../SourceTextRange";
 
 export class Diagnostic 
-implements StringBuildable<[DiagnosticDisplayMode]> {
+implements StringBuildable<[mode: DiagnosticDisplayMode]> {
     private readonly color: AnsiColor;
     
     readonly isFatal   : boolean;

@@ -1,6 +1,6 @@
 import { pathToFileURL } from "url";
 
-import { File, requires, terminal } from "@wkronemeijer/system";
+import { File, StringEnum, requires, terminal } from "@wkronemeijer/system";
 
 import { formatJson_HaskellStyle } from "./Formatter";
 

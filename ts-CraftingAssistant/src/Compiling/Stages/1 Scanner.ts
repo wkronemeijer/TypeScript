@@ -130,12 +130,6 @@ class Scanner {
         this.addToken("<integer>");
     }
     
-    scanQuality(): void {
-        this.matchWhile(isQualityChar);
-        this.addToken("<quality>");
-        this.report("warning", "Quality is not (yet) supported.");
-    }
-    
     scanString(): void {
         // We don't support string escapes
         // Nor multiline strings :^)
@@ -185,8 +179,6 @@ class Scanner {
             this.addToken(c);
         } else if (isDigit(c)) {
             this.scanInteger();
-        } else if (isQualityChar(c)) {
-            this.scanQuality();
         } else if (isWordChar(c)) {
             this.scanWordOrKeyword();
         } else {

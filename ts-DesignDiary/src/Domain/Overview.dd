@@ -1,0 +1,59 @@
+==> Structure
+
+I've got a folder structure like so:
+```
+2023/
+    06/
+    07/
+    08/
+        01.dd
+        02.dd
+        04.dd
+```
+
+Each file is like this one, with topics denoted with `==>`.
+Which leads to the ontology:
+
+==> Ontology
+
+Each file is a "stack" (physical metaphor) of notes written on that day.
+Dates are based on when I woke up (because some are technically written the next day at 01:00 or so).
+
+- Notebook 1:N files {
+    Notebook is essentially a directory.
+}
+- Date 1:1 File {
+    Can't have 2 files with the same name.
+}
+- File 1-to-many Notes {
+    You can fit as many `==>`s as you want into a single file.
+}
+
+Note that sheafs are dated to the day, but not further than that;
+notes are associated with a day, but are not ordered.
+
+In one line:
+    Notebook 1:N Dates 1:1 Sheafs 1:M Notes
+
+"Sheaf" because "Stack" has the wrong connotation (it is not LIFO)
+Bundle sounds weird
+
+NoteBook
+NoteSheaf
+NoteBundle
+NoteStack
+NoteEntry
+
+Note
+NoteSheaf
+NoteSheafCollection
+
+==> Thinking
+
+Feeling the urge to go for a sprawling OO(TM) solution...
+I really want extension functions, they are such a nice way of structuring your code. 
+Overloadable ("open") funs are quite rare.
+Interfaces are the largest category. 
+
+Also note I want to store this in a JSON file, with which
+come all sorts of serialization issues. 

@@ -1,10 +1,5 @@
-
-
-// aaaaaand the award for the must useless function goes to:
-// Exists for symmetry with 
-
-import { compare } from "../Traits/Comparable/Compare";
 import { Comparable } from "../Traits/Comparable/Comparable";
+import { compare } from "../Traits/Comparable/Compare";
 
 /** Returns the first valid index of an array. */
 export function Array_firstIndex(array: ArrayLike<any>): number | undefined {
@@ -33,7 +28,6 @@ export function Array_randomElement<T>(array: ArrayLike<T>): T | undefined {
 /** Value indicating that the requested item was not found. */
 export const Array_IndexNotFound = -1;
 
-
 /** "Soft freezes" (= cools) an array by removing the mutation methods from the type. Useful if you are using template literal type maps over the `_Values` of an enumeration. */
 export function Array_cool<T>(array: T[]): readonly T[] {
     return array;
@@ -44,9 +38,10 @@ export function Array_normalize<T>(singletonOrList: T | readonly T[]): readonly 
     return singletonOrList instanceof Array ? singletonOrList : [singletonOrList];
 }
 
-export function Array_insertInOrder<T extends Comparable>(list: T[], element: T): void {
-    list.push(element);
-    list.sort(compare);
+export function Array_insertInOrder<T extends Comparable>(orderedList: T[], element: T): void {
+    // TODO: Use insertion sort
+    orderedList.push(element);
+    orderedList.sort(compare);
 }
 
 export function Array_shuffle<T>(array: T[]): void {

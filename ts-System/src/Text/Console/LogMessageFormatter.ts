@@ -103,3 +103,20 @@ export const LogMessageFormatter_Simple: LogMessageFormatter = req => {
         .replace(matchArrow, (_, label: string) => `[${label}]`)
     );
 }
+
+/////////////
+// Default //
+/////////////
+
+interface LogMessageFormatter_getDefault_Options {
+    readonly useColor?: boolean;
+}
+
+export function LogMessageFormatter_getDefault(
+    options: LogMessageFormatter_getDefault_Options = {}
+): LogMessageFormatter {
+    return (options.useColor ?
+        LogMessageFormatter_Powerline :
+        LogMessageFormatter_Simple
+    );
+}

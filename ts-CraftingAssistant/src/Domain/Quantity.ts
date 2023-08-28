@@ -1,6 +1,5 @@
 import { Newtype, requires } from "@wkronemeijer/system";
 
-
 export type     Quantity = Newtype<number, "Quantity">;
 export function Quantity(number: number): Quantity {
     requires(number >= 0, "quantity should be non-negative.");

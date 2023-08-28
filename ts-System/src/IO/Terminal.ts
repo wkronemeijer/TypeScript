@@ -7,13 +7,13 @@
 
 import { inspect, InspectOptions } from "util";
 
-import { LogMessageFormatter, LogMessageFormatter_Powerline, LogMessageFormatter_Simple } from "../Text/Console/LogMessageFormatter";
-import { StringEnum_create, StringEnum_Member } from "../Data/Textual/StringEnum";
+import { LogMessageFormatter, LogMessageFormatter_getDefault } from "../Text/Console/LogMessageFormatter";
 import { stringBuild, StringBuildable } from "../Text/StringBuilder";
 import { Function_includeProperties } from "../Data/Function";
-import { Map_fromPartialDictionary } from "../Collections/Map";
+import { Record_toPartialFunction } from "../Collections/Record";
 import { TimingReport_toString } from "../Text/Console/TimingReportFormatter";
-import { ArrayMember } from "../Data/Enumeration";
+import { ArrayMember, Member } from "../Data/Enumeration";
+import { StringEnum } from "../Data/Textual/StringEnum";
 import { Dictionary } from "../Collections/Dictionary";
 import { AnsiColor } from "../Text/Console/TextDecoration";
 import { from } from "../Collections/Sequence";
@@ -35,23 +35,23 @@ const inspectOptions: InspectOptions = {
 // >>>            \/           <<< // 
 /////////////////////////////////////
 
-export type  UserLogChannel = StringEnum_Member<typeof UserLogChannel>;
-export const UserLogChannel = StringEnum_create([
+export type  UserLogChannel = Member<typeof UserLogChannel>;
+export const UserLogChannel = StringEnum([
     "info",  // non-essential log
     "log",   // primary user-facing output.
     "warn",  // warning (duh)
     "error", // error (duh)
 ] as const).withDefault("log");
 
-export type  DeveloperLogChannel = StringEnum_Member<typeof DeveloperLogChannel>;
-export const DeveloperLogChannel = StringEnum_create([
+export type  DeveloperLogChannel = Member<typeof DeveloperLogChannel>;
+export const DeveloperLogChannel = StringEnum([
     "trace", // println debugging
     "perf",  // performance
     "meta", // everything else
 ] as const).withDefault("meta");
 
 // >>> Add a custom color here <<<
-const colorByChannel = Map_fromPartialDictionary<LogChannel, AnsiColor>({
+const colorByChannel = Record_toPartialFunction<LogChannel, AnsiColor>({
     warn : "yellow",
     error: "red",
     info : "black", // info should be SGR 90, that one is faded in both 
@@ -67,8 +67,8 @@ const colorByChannel = Map_fromPartialDictionary<LogChannel, AnsiColor>({
 // >>>                         <<< // 
 /////////////////////////////////////
 
-export type  LogChannel = StringEnum_Member<typeof LogChannel>;
-export const LogChannel = StringEnum_create([
+export type  LogChannel = Member<typeof LogChannel>;
+export const LogChannel = StringEnum([
     ...UserLogChannel.values,
     ...DeveloperLogChannel.values,
 ] as const).withDefault(UserLogChannel.default);
@@ -128,17 +128,17 @@ function readLine(prompt?: string): Promise<string> {
 // Logging //
 /////////////
 
-function getInitialTarget(channel: LogChannel): Target {
-    return channel !== "error" ? stdout : stderr;
+function LogChannel_getInitialTarget(self: LogChannel): Target {
+    return self !== "error" ? stdout : stderr;
 }
 
-function getInitialIsEnabled(channel : LogChannel): boolean {
+function LogChannel_getInitialIsEnabled(self: LogChannel): boolean {
     // TODO: Add a check for DEV_MODE
     return true;
 }
 
-function getInitialHasLabel(channel : LogChannel): boolean {
-    return DeveloperLogChannel.hasInstance(channel);
+function LogChannel_getInitialHasLabel(self: LogChannel): boolean {
+    return DeveloperLogChannel.hasInstance(self);
 }
 
 const maxChannelWidth = from(LogChannel.values).max(channel => channel.length);
@@ -191,7 +191,6 @@ interface ChannelFunctionality {
     attachLabel(): void;
     /** Detaches the label from all messages from this channel. */
     detachLabel(): void;
-    
 }
 
 interface BonusFunctionality {
@@ -213,15 +212,12 @@ extends TargetFunctionality, ChannelFunctionality, BonusFunctionality { }
 export interface AugmentedLoggingFunction
 extends Augmented, LoggingFunction { }
 
-const formatMessage: LogMessageFormatter = hasColorDisplay ? 
-    LogMessageFormatter_Powerline : 
-    LogMessageFormatter_Simple
-;
+const formatMessage: LogMessageFormatter = LogMessageFormatter_getDefault({ useColor: hasColorDisplay });
 
 function AugmentedLoggingFunction_create(channel: LogChannel): AugmentedLoggingFunction {
-    let target    = getInitialTarget(channel);
-    let isEnabled = getInitialIsEnabled(channel);
-    let hasLabel  = getInitialHasLabel(channel);
+    let target    = LogChannel_getInitialTarget(channel);
+    let isEnabled = LogChannel_getInitialIsEnabled(channel);
+    let hasLabel  = LogChannel_getInitialHasLabel(channel);
     
     // Logging functionality
     const logger: LoggingFunction = (value: unknown): void => {
@@ -231,7 +227,7 @@ function AugmentedLoggingFunction_create(channel: LogChannel): AugmentedLoggingF
                 channel, 
                 moment: new Date,
                 message: __repr(value),
-                color: colorByChannel.get(channel),
+                color: colorByChannel(channel),
                 maxChannelLength: maxChannelWidth,
                 showLabel: hasLabel,
             }));

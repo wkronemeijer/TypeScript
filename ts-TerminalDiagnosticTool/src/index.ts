@@ -1,11 +1,5 @@
-import { sleep, terminal } from "@wkronemeijer/system";
-
-
 const echo = (s: string) => process.stdout.write(s);
 const cr = () => echo("\n");
-
-
-
 
 function sgr(text: string, ...commands: number[]): void {
     const code = commands.join(";");

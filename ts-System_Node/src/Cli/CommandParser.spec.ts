@@ -1,7 +1,6 @@
 import { StringEnum, swear } from "@wkronemeijer/system";
 import { CliParameterTools } from "./Parameters/ParameterTools";
 import { CliCommandParser } from "./CommandParser";
-import { describe, it } from "node:test";
 
 const Align = StringEnum([
     "bottom",
@@ -71,7 +70,6 @@ if (mode.kind === "default") {
 } else if (mode.kind === "sum") {
     mode
 }
-
 
 describe("CommandParser", () => {
     it("parses rest arguments", () => {

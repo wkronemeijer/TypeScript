@@ -9,7 +9,7 @@ export const DiagnosticKind = StringEnum_create([
 
 export const DiagnosticKind_isFatal = Record_toTotalFunction<DiagnosticKind, boolean>({
     error: true,
-}, false);
+}, false); 
 
 export const DiagnosticKind_getColor = Record_toFunction<DiagnosticKind, AnsiColor>({
     info: "white",

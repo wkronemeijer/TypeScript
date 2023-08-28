@@ -1,20 +1,19 @@
 import { StringBuildable, StringBuilder, stringBuild } from "@wkronemeijer/system";
-import { TokenKind } from "./TokenKind";
 
-function possibleContinuationChars(
+function* possibleContinuationChars(
     tokens: Iterable<string>,
     lexemeSoFar: string,
 ): Iterable<string> {
-    const result = new Set<string>;
     let nextChar;
+    
     for (const token of tokens) {
-        if (token.startsWith(lexemeSoFar)) {
-            if (nextChar = token[lexemeSoFar.length]) {
-                result.add(nextChar);
-            }
+        if (
+            token.startsWith(lexemeSoFar) && 
+            (nextChar = token[lexemeSoFar.length])
+        ) {
+            yield nextChar;
         }
     }
-    return result;
 }
 
 //////////////////////
@@ -29,7 +28,6 @@ extends StringBuildable {
     accept(char: string): TokenMatcherNode | false;
     willAccept(char: string): boolean;
 }
-
 
 interface TokenMatcherNode_Terminal
 extends TokenMatcherNode_Base {

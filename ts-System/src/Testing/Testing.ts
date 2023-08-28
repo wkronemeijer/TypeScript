@@ -185,10 +185,6 @@ export function specify(name: string, body: (it: ItFunction) => void): void {
     currentGlobalContext = parentContext;
 }
 
-export function it(name: string, body: TestBody): void {
-    notImplemented();
-}
-
 export const expect = new class ExpectImplementation {
     equals<T>(actual: T, expected: T): void {
         

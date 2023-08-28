@@ -40,3 +40,19 @@ export function mildPanic(reason?: string): never {
 export function neverPanic(missingCase: never): never {
     throw new Error(`Missing a case for '${missingCase}'.`);
 }
+
+/////////////////////////
+// Assertion functions //
+/////////////////////////
+
+export function check<
+    TActual, 
+    const TExpected extends TActual,
+>(
+    actual: TActual, 
+    expected: TExpected,
+): asserts actual is TExpected {
+    if (actual !== expected) {
+        throw new Error(`Expected ${expected}, actual: ${actual}`);
+    }
+}

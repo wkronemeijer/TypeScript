@@ -1,13 +1,12 @@
+// TODO: use a proper ICU setup
 
 /** 
- * Makes the word agree with the count. 
+ * Makes the word agree with the count, to replace e.g. "1 message(s)". 
  * Returns the count and the inflected noun.
  * ```ts
  * pluralize(4, "cat") === "4 cats"
  * ```
- * Useful if you think "1 message(s)" is ugly. 
- * 
- * @deprecated {@link singularize} reads better
+ * {@link singularize} usually reads better: `singularize(n, "stacks")`
  */
 export function pluralize(
     count: number, 
@@ -22,21 +21,13 @@ export function pluralize(
     }`;
 }
 
-/* 
-// TODO: Not too happy with the name
-At the same time, it being short and convenient is good
-Candidates: mayPluralize, agreeCount, agreeNumber
-...don't sound as good as pluralize
-Besides, as ESL it is clear enough.
-
-Also, whether or not to include count. There are uses where you do not want the number, at the same time the current usage would require a local variable. 
-Arguments for both, lets see how usage before changing anything. 
-
-Alright usage time: maybe provide the plural and derive the singular? most enums are singular however.
-*/
-
 function deriveSingular(plural: string): string {
-    return plural.endsWith('s') ? plural.slice(0, -1) : plural;
+    return (
+        // plural.endsWith("ies") ? plural.slice(0, -3) + "y" : 
+        // plural.endsWith("es")  ? plural.slice(0, -2)       : 
+        plural.endsWith("s")   ? plural.slice(0, -1)       : 
+        plural
+    );
 }
 
 /** 
@@ -57,5 +48,12 @@ export function singularize(
     }`
 }
 
-// TODO: Use agree
-// The trick: tomato(es)
+export function singularizeNameof(table: Record<string, number | undefined>): string {
+    const result = new Array<string>;
+    for (const [key, value] of Object.entries(table)) {
+        if (value !== undefined) {
+            result.push(singularize(value, key));
+        }
+    }
+    return result.join(", ");
+}

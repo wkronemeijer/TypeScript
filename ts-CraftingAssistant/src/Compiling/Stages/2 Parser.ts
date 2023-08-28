@@ -1,8 +1,7 @@
 import { Array_firstElement, Array_lastElement, ExpandType, panic, requires, singularize, terminal } from "@wkronemeijer/system";
 
-import { AstNodeKind, AstNodeMap, Decl, ImportStmt, NamespaceDecl, QuantifiedItemExpr, QuantifiedQualifiedItemExpr, QuantityExpr, QuantityRangeExpr, SourceNode, Stmt } from "../../Ast/AstNode";
+import { AstNodeKind, AstNodeMap, Decl, ImportStmt, QuantifiedItemExpr, QuantityExpr, QuantityRangeExpr, ReagentDecl, SourceNode, Stmt } from "../../Ast/AstNode";
 import { HasLocation, SourceTextRange } from "../SourceTextRange";
-import { Quality, Quality_default } from "../../Domain/Quality";
 import { DiagnosticCollection } from "../Diagnostics/DiagnosticCollection";
 import { DiagnosticKind } from "../Diagnostics/DiagnosticKind";
 import { CompileResult } from "../CompileResult";
@@ -150,7 +149,7 @@ class Parser {
         const start = this.currentToken;
         return () => {
             const end  = this.previousToken;
-            return spanning(start, end);
+            return this.spanning(start, end);
         }
     }
     
@@ -159,7 +158,7 @@ class Parser {
         const start = this.previousToken;
         return () => {
             const end  = this.previousToken;
-            return spanning(start, end);
+            return this.spanning(start, end);
         }
     }
     
@@ -210,12 +209,6 @@ class Parser {
         return this.finishQuantity();
     }
     
-    quality(): Quality {
-        const token = this.consume("<quality>");
-        const tier = token.lexeme.length;
-        return Quality(tier);
-    }
-    
     /////////////////
     // Expressions //
     /////////////////
@@ -229,20 +222,6 @@ class Parser {
         }
         const location = span();
         return { kind: "QuantifiedItemExpr", location, item, quantity };
-    }
-    
-    itemQuantityQualityExpr(): QuantifiedQualifiedItemExpr {
-        let item, quantity, quality;
-        const span = this.recordPosition();
-        {
-            const subExpr  = this.itemQuantityExpr();
-            item     = subExpr.item;
-            quantity = subExpr.quantity;
-            quality  = this.checkOne("<quality>") ? this.quality() : Quality_default;
-        }
-        const location = span();
-        
-        return { kind: "QuantifiedQualifiedItemExpr", item, location, quantity, quality };
     }
     
     finishQuantityRangeExpr(): QuantityRangeExpr {
@@ -276,6 +255,12 @@ class Parser {
     // Declarations //
     //////////////////
     
+    itemDecl(): ReagentDecl {
+        const $ = this.composeNode("ReagentDecl");
+        const item = this.identifier();
+        return $({ item });
+    }
+    
     innerStmts(): Stmt[] {
         const stmts = new Array<Stmt>;
         let stmt;
@@ -287,20 +272,9 @@ class Parser {
         return stmts;
     }
     
-    namespaceDecl(): NamespaceDecl {
-        const $ = this.composeNode("NamespaceDecl");
-        this.consume("namespace");
-        const identifier = this.identifier();
-        
-        
-        return $({name, contents});
-        
-    }
-    
-    
     decl(): Decl {
         if (this.check("item")) {
-            
+            return this.itemDecl();
         } else {
             this.error(`Unexpected token <${this.currentToken}>.`);
         }
@@ -309,7 +283,7 @@ class Parser {
     ////////////////
     // Statements //
     ////////////////
-        
+    
     importStmt(): ImportStmt {
         const $ = this.composeNode("ImportStmt");
         this.consume("import");

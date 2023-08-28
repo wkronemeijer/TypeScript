@@ -1,7 +1,7 @@
-import { AnsiTextStyle_use, CompoundError, StringBuildable, StringBuilder, pluralize, stringBuild } from "@wkronemeijer/system";
+import { AnsiTextStyle_use, StringBuildable, StringBuilder, pluralize, stringBuild } from "@wkronemeijer/system";
 
-import { DiagnosticDisplayMode } from "./DiagnosticDisplayMode";
 import { DiagnosticKind, DiagnosticKind_getColor } from "./DiagnosticKind";
+import { DiagnosticDisplayMode } from "./DiagnosticDisplayMode";
 import { Diagnostic } from "./Diagnostic";
 
 // Because plural is not different enough
@@ -91,7 +91,6 @@ implements   DiagnosticCollection            {
                 unset: unsetColor,
             } = AnsiTextStyle_use({ color: DiagnosticKind_getColor(kind) });
             
-            
             if (!isFirst) {
                 result.append(", ");
             }
@@ -99,7 +98,7 @@ implements   DiagnosticCollection            {
             const count = this.count(kind);
             if (count > 0) {
                 result.append(setColor);
-            }            
+            }
             result.append(pluralize(count, kind));
             if (count > 0) {
                 result.append(unsetColor);

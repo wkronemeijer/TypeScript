@@ -3,7 +3,6 @@ import { ExpandType, collect } from "@wkronemeijer/system";
 import { HasLocation, SourceTextRange } from "../Compiling/SourceTextRange";
 import { Identifier } from "../Domain/Identifier";
 import { Quantity } from "../Domain/Quantity";
-import { Quality } from "../Domain/Quality";
 
 /*
 Real talk: the divisions of expressions, declarations and statements makes little sense for this language
@@ -28,12 +27,6 @@ export type QuantifiedItemExpr = NewAstNode<"QuantifiedItemExpr", {
     readonly quantity: Quantity; 
 }>;
 
-export type QuantifiedQualifiedItemExpr = NewAstNode<"QuantifiedQualifiedItemExpr", { 
-    readonly item: Identifier; 
-    readonly quantity: Quantity; 
-    readonly quality: Quality;
-}>; 
-
 export type FixedQuantityExpr = NewAstNode<"FixedQuantityExpr", {
     readonly quantity: Quantity;
 }>;
@@ -50,7 +43,6 @@ export type QuantityExpr =
 
 export type Expr = 
     | QuantifiedItemExpr
-    | QuantifiedQualifiedItemExpr
     | FixedQuantityExpr
     | QuantityRangeExpr
 ;

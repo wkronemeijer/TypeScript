@@ -1,42 +1,57 @@
-import { swear } from "../Assert";
+import { StringEnum } from "./Textual/StringEnum";
+import { check } from "../Errors/ErrorFunctions";
 
-
+/** 
+ * A mutable reference to a value. 
+ * 
+ * Mutable by default as readonly is the default for arguments.
+ */
 export interface Ref<T> {
-    readonly value: T;
+    value: T;
 }
 
-export interface MutableRef<T> {
-    value: T;
+export function Ref<T>(value: T): Ref<T> {
+    return { value };
+}
+
+/** 
+ * A readonly reference to a value. 
+ */
+export interface ReadonlyRef<T> {
+    readonly value: T;
 }
 
 //////////////
 // Lazy ref //
 //////////////
 
-class LazyRef<T> implements Ref<T> {
-    private isAssigned = false;
-    private realValue!: T;
+const WriteOnceRefState = StringEnum([
+    "uninitialized",
+    "initialized",
+]);
+
+class WriteOnceRef<T> 
+implements Ref<T> {
+    private state = WriteOnceRefState.default;
+    private actualValue!: T;
     
     constructor() {
         // For v8's hidden class
-        (this.realValue as any) = undefined;
+        (this.actualValue as any) = null;
     }
     
     get value(): T {
-        swear(this.isAssigned, "Lazy reference was accessed before it was assigned a value.");
-        return this.realValue;
+        check(this.state, "initialized");
+        return this.actualValue;
     }
     
     set value(newValue: T) {
-        this.isAssigned = true;
-        this.realValue  = newValue;
+        check(this.state, "uninitialized");
+        this.actualValue = newValue;
+        this.state = "initialized";
     }
 }
 
-export function Ref_create<T>(): Ref<T> {
-    return new LazyRef;
+Ref.writeOnce = function WriteOnce<T>(): Ref<T> {
+    return new WriteOnceRef;
 }
-
-/////////////
-// Factory //
-/////////////
