@@ -1,10 +1,19 @@
+// weird part: multiset looks like a set, but has a very different contract
+// multiset is a collection, but not a (plain) set
+
 export class MultiSet<T> implements Iterable<readonly [T, number]> {
     private readonly store: Map<T, number>;
-    readonly size: number;
+    
+    get size(): number {
+        let total = 0;
+        for (const subtotal of this.store.values()) {
+            total += subtotal;
+        }
+        return total;
+    }
     
     constructor(iterable?: Iterable<readonly [T, number]>) {
         this.store = new Map(iterable);
-        this.size  = this.store.size;
     }
     
     count(value: T): number {
@@ -14,7 +23,7 @@ export class MultiSet<T> implements Iterable<readonly [T, number]> {
     has(value: T): boolean {
         return this.count(value) > 0;
     }
-        
+    
     add(value: T): this {
         this.store.set(value, this.count(value) + 1);
         return this;
@@ -38,13 +47,5 @@ export class MultiSet<T> implements Iterable<readonly [T, number]> {
     
     [Symbol.iterator](): IterableIterator<readonly [T, number]> {
         return this.entries();
-    }
-    
-    getTotalCount(): number {
-        return (
-            Array.from(this.store.entries())
-            .map(([_, b]) => b)
-            .reduce((a, b) => a + b, 0)
-        );
     }
 }
