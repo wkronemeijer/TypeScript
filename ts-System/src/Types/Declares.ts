@@ -1,3 +1,0 @@
-// Counterpart to HasInstance
-
-export {}
