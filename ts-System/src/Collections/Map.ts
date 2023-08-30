@@ -1,7 +1,8 @@
-import { primitive_t } from "../Types/Primitive";
-import { keyof_t } from "../Types/KeyOf";
-import { Selector } from "./Sequence";
 import { Dictionary, Dictionary_create, Dictionary_toMap } from "./Dictionary";
+import { MapLike, MutableMapLike } from "./MapLike";
+import { primitive_t } from "../Types/Primitive";
+import { Selector } from "./Sequence";
+import { keyof_t } from "../Types/KeyOf";
 
 /** noot noot */
 export function Map_map<K, V, W>(
@@ -64,16 +65,16 @@ export function Map_reverse<A extends primitive_t, B extends primitive_t>(
     return backwardMap;
 }
 
-export function Map_hasAny<K extends primitive_t>(
-    self: ReadonlyMap<K, unknown>, 
-    value: unknown,
-): value is K {
-    return self.has(value as any);
+export function Map_hasAny<K>(
+    self: MapLike<K, unknown>, 
+    key: unknown,
+): key is K {
+    return self.has(key as any);
 }
 
 // Wtf is this?
 export function Map_update<K, V>(
-    map: Map<K, V>, 
+    map: MutableMapLike<K, V>, 
     key: K, 
     initializer: Selector<K, V>, 
     update: Selector<V, V>
@@ -85,7 +86,7 @@ export function Map_update<K, V>(
 }
 
 export function Map_increment<K>(
-    self: Map<K, number>,
+    self: MutableMapLike<K, number>,
     key: K,
 ): void {
     self.set(key, (self.get(key) ?? 0) + 1);
