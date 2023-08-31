@@ -5,6 +5,7 @@
     "tasks": [
         {
             "type": "typescript",
+            "tsconfig": "tsconfig.json",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -17,10 +18,26 @@
                 "showReuseMessage": true,
                 "clear": true
             },
-            "tsconfig": "tsconfig.json",
             "problemMatcher": [
                 "$tsc"
             ]
+        },
+        {
+            "type": "npm",
+            "script": "test",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": []
         }
     ]
 }
