@@ -49,6 +49,7 @@ extends Iterable<E>, Printable {
     check(x: unknown): E;
     /** Checks if a random value belongs to this enum. */
     hasInstance(x: unknown): x is E;
+    [Symbol.hasInstance](x: unknown): x is E;
     
     /** The smallest value in this enum. */
     readonly minimum: E;
@@ -233,6 +234,7 @@ function createStringEnumWithOrdinals<E extends string>(ordinalByName: OrdinalMa
         equals,
         setOfValues,
         hasInstance,
+        [Symbol.hasInstance]: hasInstance,
         check,
         compare,
         min,
