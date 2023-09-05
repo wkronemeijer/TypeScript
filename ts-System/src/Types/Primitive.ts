@@ -1,8 +1,8 @@
-/** 
- * Primitives, not compound values. 
- * Defined by having _value_ and **not** _reference_ equality. 
- */
-export type primitive_t = 
+/** A union of all possible `keyof` types. */
+export type keyof_t = keyof any;
+
+/** All primitive values with _value_ (and not _reference_) equality. */
+export type value_t = 
     | undefined 
     | null 
     | boolean
@@ -12,10 +12,7 @@ export type primitive_t =
     | symbol
 ;
 
-/** 
- * Dual of {@link primitive_t}. 
- * Defined by having reference equality. 
- */
+/** Dual of {@link value_t}, defined by having reference equality. */
 export type reference_t = 
     // | Function // object includes functions
     | object

@@ -1,5 +1,5 @@
 import { requires } from "../Assert";
-import { primitive_t } from "./Primitive";
+import { value_t } from "./Primitive";
 
 /////////////
 // Newtype //
@@ -18,7 +18,7 @@ interface Nominal<S extends string | symbol> {
  * const refreshRate = 60 as Hertz;
  */
 export type Newtype<
-    T extends primitive_t, 
+    T extends value_t, 
     S extends string | symbol,
 > = T & Nominal<S>;
 
