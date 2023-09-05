@@ -1,5 +1,5 @@
 import { panic } from "../Errors/ErrorFunctions";
-import { primitive_t } from "../Types/Primitive";
+import { value_t } from "../Types/Primitive";
 
 ////////////////
 // Cached set //
@@ -48,7 +48,7 @@ export function Set_createDeterminer<T, K extends string>(
 // TODO: Find a more technical term for 'loose'
 // TODO: replace it with some subset of primitive
 
-export function Set_hasAny<T extends primitive_t>(set: ReadonlySet<T>, value: unknown): value is T {
+export function Set_hasAny<T extends value_t>(set: ReadonlySet<T>, value: unknown): value is T {
     return set.has(value as any);
 }
 
@@ -84,10 +84,10 @@ export function Set_dequeue<T>(self: Set<T>): T | undefined {
 }
 
 
-export function Set_toTypeGuard<T extends primitive_t>(self: ReadonlySet<T>): (item: unknown) => item is T {
+export function Set_toTypeGuard<T extends value_t>(self: ReadonlySet<T>): (item: unknown) => item is T {
     return (item: unknown): item is T => Set_hasAny(self, item);
 }
-export const Set_toFunction: <T extends primitive_t>(self: ReadonlySet<T>) => (item: T) => boolean = Set_toTypeGuard;
+export const Set_toFunction: <T extends value_t>(self: ReadonlySet<T>) => (item: T) => boolean = Set_toTypeGuard;
 
 
 // TODO: Improve this functions name

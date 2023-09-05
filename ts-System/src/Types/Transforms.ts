@@ -1,9 +1,8 @@
+import { keyof_t } from "./Primitive";
 
 ///////////////////////////
 // Mutability transforms //
 ///////////////////////////
-
-import { keyof_t } from "./KeyOf";
 
 // Really ought to be in the standard typescript type library
 // Doc comments modeled after Readonly

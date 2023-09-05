@@ -1,4 +1,4 @@
-import { keyof_t } from "../Types/KeyOf";
+import { keyof_t } from "../Types/Primitive";
 
 /////////////////////////
 // Record --> Function //

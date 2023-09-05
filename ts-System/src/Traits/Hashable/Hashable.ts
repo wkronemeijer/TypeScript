@@ -1,6 +1,6 @@
 //custom hash codes for js...
 
-import { primitive_t } from "../../Types/Primitive";
+import { value_t } from "../../Types/Primitive";
 import { EquatableObject } from "../Equatable/Equatable";
 import { HashCode } from "./HashCode";
 
@@ -15,6 +15,6 @@ extends EquatableObject {
 }
 
 export type Hashable =
-    | primitive_t
+    | value_t
     | HashableObject
 ;

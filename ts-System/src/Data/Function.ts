@@ -1,6 +1,6 @@
 import { requires } from "../Assert";
 import { Newtype } from "../Types/Newtype";
-import { primitive_t } from "../Types/Primitive";
+import { value_t } from "../Types/Primitive";
 
 /** The identity function. */
 export const identity = <T>(x: T) => x;
@@ -67,7 +67,7 @@ export function Function_includeProperties<F extends Function, O extends object>
 // Memoization //
 /////////////////
 
-export function Function_precompute<T extends primitive_t, R>(
+export function Function_precompute<T extends value_t, R>(
     possibleInputs: Iterable<T>,
     expensiveFunction: (x: T) => R,
 ): typeof expensiveFunction {
@@ -83,11 +83,11 @@ const MemoizationKey_seperator = '\x1F';
 // ...which is unlikely to show up in most values.
 
 type     MemoizationKey = Newtype<string, "MemoizationKey">;
-function MemoizationKey(parts: readonly primitive_t[]): MemoizationKey {
+function MemoizationKey(parts: readonly value_t[]): MemoizationKey {
     return parts.join(MemoizationKey_seperator) as MemoizationKey;
 }
 
-export function Function_memoize<P extends readonly primitive_t[], R>(
+export function Function_memoize<P extends readonly value_t[], R>(
     expensiveFunc: (...params: P) => R
 ):        (...params: P) => R {
     const cache = new Map<MemoizationKey, R>;
