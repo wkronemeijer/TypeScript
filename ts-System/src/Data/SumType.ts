@@ -1,6 +1,5 @@
 import { ExpandType, UnionToIntersection } from "../Types/Magic";
-import { swear } from "../Assert";
-import { Object_getName } from "./Object";
+import { getDescriptiveName } from "./GetName";
 
 ///////////
 // Cases //
@@ -52,7 +51,7 @@ export function UnionMatcher<
         const kind = case_.kind;
         const leafMatcher = (self as any)[kind] as unknown;
         if (!(typeof leafMatcher === "function")) {
-            const name = Object_getName(self);
+            const name = getDescriptiveName(self);
             throw new Error(`${name} is missing case for '${kind}'.`);
         }
         return leafMatcher.call(self, case_, ...args);

@@ -95,31 +95,3 @@ export function Object_defineWriteOnceProperty<
 export const Object_entries: (object: {}) => [string, unknown][] = Object.entries;
 /** Wraps {@link Object.values}, but returns `unknown` instead. */
 export const Object_values : (object: {}) => unknown[] = Object.values;
-
-////////////
-// Naming //
-////////////
-
-const toStringTag: typeof Symbol.toStringTag = Symbol.toStringTag;
-
-const constructor = "constructor";
-const defaultConstructorName = ({}).constructor.name;
-
-export function Object_getName(object: object): string {
-    if (
-        toStringTag in object &&
-        typeof object[toStringTag] === "string"
-    ) {
-        return object[toStringTag];
-    } else if (
-        constructor in object && 
-        typeof object[constructor] === "function"
-    ) {
-        const name = object[constructor].name
-        if (name !== defaultConstructorName) {
-            return name;
-        }
-    }
-    // when inheriting from plain `Object` or `null`
-    return "(anonymous object)";
-}
