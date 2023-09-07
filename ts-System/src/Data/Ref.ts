@@ -1,5 +1,5 @@
 import { StringEnum } from "./Textual/StringEnum";
-import { check } from "../Errors/ErrorFunctions";
+import { check } from "../Errors/Check";
 
 /** 
  * A mutable reference to a value. 

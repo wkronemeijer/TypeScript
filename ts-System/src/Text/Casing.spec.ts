@@ -1,5 +1,5 @@
 import { swear } from "../Assert";
-import {check} from "../Errors/ErrorFunctions"
+import { check } from "../Errors/Check";
 import { uppercase } from "./Casing";
 
 export {};
