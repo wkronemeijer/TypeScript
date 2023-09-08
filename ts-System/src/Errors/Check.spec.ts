@@ -21,22 +21,20 @@ describe("check", () => {
         }
     }
     
-    describe("#()", () => {
-        it("handles basic equality", () => {
-            check(10, 10);
-            check.throws(() => check(10, 20));
-        });
-        
-        it("uses SameValueZero", () => {
-            check(0, -0);
-            check(NaN, NaN);
-            check(false, false);
-        });
-        
-        it("checks reference identity", () => {
-            check.throws(() => {
-                check(new vec2(3, 4), new vec2(3, 4));
-            });
+    it("handles basic equality", () => {
+        check(10, 10);
+        check.throws(() => check(10, 20));
+    });
+    
+    it("uses SameValueZero", () => {
+        check(0, -0);
+        check(NaN, NaN);
+        check(false, false);
+    });
+    
+    it("checks reference identity", () => {
+        check.throws(() => {
+            check(new vec2(3, 4), new vec2(3, 4));
         });
     });
     
