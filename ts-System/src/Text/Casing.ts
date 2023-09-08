@@ -112,16 +112,3 @@ export function WordCase_apply<S extends string, CO extends WordCase>(
 export function WordCase_applyRange<S extends string, CO extends WordCase>(str: S, casings: readonly CO[]): WordCase_Apply<S, CO>[] {
     return casings.map(casing => WordCase_apply(str, casing));
 }
-
-/////////////////
-// Word casing //
-/////////////////
-
-export type CompoundWordCase = (typeof CompoundWordCase_Values)[number];
-export const CompoundWordCase_Values = [
-    "camelCase",
-    "PascalCase",
-    "snake_case",
-    "kebab-case",
-    "Header-Case",
-] as const;
