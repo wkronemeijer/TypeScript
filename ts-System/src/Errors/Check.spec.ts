@@ -2,8 +2,8 @@ import { EquatableObject } from "../Traits/Equatable/Equatable";
 import { Falsy } from "../Types/Truthy";
 import { check } from "./Check";
 
-describe("check", () => {
-    class vec2 implements EquatableObject {
+describe("check()", () => {
+    class Point implements EquatableObject {
         constructor(
             readonly x: number,
             readonly y: number,
@@ -34,7 +34,7 @@ describe("check", () => {
     
     it("checks reference identity", () => {
         check.throws(() => {
-            check(new vec2(3, 4), new vec2(3, 4));
+            check(new Point(3, 4), new Point(3, 4));
         });
     });
     
@@ -51,10 +51,10 @@ describe("check", () => {
         });
         
         // FIXME: This doesn't work, and I expect equals it to blame.
-        it.skip("checks custom equality", () => {
-            const p1 = new vec2(3, 4);
-            const p2 = new vec2(3, 4); // different instance, same value
-            const p3 = new vec2(5, 2); // different value
+        it("checks custom equality", () => {
+            const p1 = new Point(3, 4);
+            const p2 = new Point(3, 4); // different instance, same value
+            const p3 = new Point(5, 2); // different value
             
             check.equals(p1, p2);
             check.equals(p2, p1);
@@ -64,7 +64,36 @@ describe("check", () => {
         });
     });
     
-    describe(".instanceOf", () => {
+    describe(".same()", () => {
+        it("handles basic equality", () => {
+            check.same(10, 10);
+            check.throws(() => check(10, 20));
+        });
+        
+        it("uses SameValueZero", () => {
+            check.same(0, -0);
+            check.same(NaN, NaN);
+            check.same(false, false);
+        });
+        
+        // FIXME: This doesn't work, and I expect equals it to blame.
+        it("ignores custom equality", () => {
+            const p1 = new Point(3, 4);
+            const p2 = new Point(3, 4); // different instance, same value
+            const p3 = new Point(5, 2); // different value
+            
+            check.same(p1, p1);
+            check.same(p2, p2);
+            check.same(p3, p3);
+            
+            check.throws(() => check.same(p1, p2));
+            check.throws(() => check.same(p2, p1));
+            check.throws(() => check.same(p1, p3));
+            check.throws(() => check.same(p3, p2));
+        });
+    });
+    
+    describe(".instanceOf()", () => {
         it("accepts instances", () => {
             check.instanceOf([], Object);
             check.instanceOf([], Array);
@@ -122,7 +151,7 @@ describe("check", () => {
         });
     });
     
-    describe.skip(".throwsInstanceOf", () => {
+    describe(".throwsInstanceOf", () => {
         it("does throws when the function doesn't", () => {
             try {
                 check.throwsInstanceOf(Error, () => 0);
@@ -143,7 +172,9 @@ describe("check", () => {
                 check.throwsInstanceOf(Error, () => {
                     throw "Should be caught.";
                 });
-            } catch { }
+            } catch {
+                return;
+            }
             throw new Error("Doesn't throw.");
         });
     });

@@ -3,9 +3,9 @@ import { InstanceOwner } from "../Types/InstanceOwner";
 import { equalsAny } from "../Traits/Equatable/Equals";
 import { Falsy } from "../Types/Truthy";
 
-const {isNaN} = Number;
+const { isNaN } = Number;
 
-function SameValueZero(a: unknown, b: unknown): boolean {
+export function SameValueZero(a: unknown, b: unknown): boolean {
     return ((a === b) || (isNaN(a) && isNaN(b)));
 }
 
@@ -16,12 +16,23 @@ function checkBuiltinEquals<TActual, const TExpected extends TActual>(
     expected: TExpected,
 ): asserts actual is TExpected {
     if (!SameValueZero(actual, expected)) {
-        throw new Error(`Expected ${expected}, actual: ${actual}`);
+        throw new Error(`Expected '${expected}', actual: '${actual}'`);
+    }
+}
+
+check.same = 
+/** Checks actual is the same value as expected, using the "SameValueZero" algorithm. */
+function checkBuiltinEquals<TActual, const TExpected extends TActual>(
+    actual: TActual,
+    expected: TExpected,
+): asserts actual is TExpected {
+    if (!SameValueZero(actual, expected)) {
+        throw new Error(`Expected ${actual} to be the same as '${expected}'.`);
     }
 }
 
 check.equals = 
-/** Checks actual equals expected, using equals. */
+/** Checks actual equals expected, using `equals`. */
 function checkExtensibleEquals<TActual, const TExpected extends TActual>(
     actual: TActual,
     expected: TExpected,
@@ -54,14 +65,14 @@ check.is = check.instanceOf;
 check.ok  = 
 function checkIsTrue(value: unknown): asserts value {
     if (!value) {
-        throw new Error(`Expected ${value} to be truthy.`);
+        throw new Error(`Expected '${value}' to be truthy.`);
     }
 };
 
 check.notOk = 
 function checkIsFalse(value: unknown): asserts value is Falsy {
     if (value) {
-        throw new Error(`Expected ${value} to be falsy.`);
+        throw new Error(`Expected '${value}' to be falsy.`);
     }
 };
 
@@ -76,7 +87,7 @@ check.isUndefined =
 /** Checks the argument is undefined. */
 function checkIsUndefined(value: unknown): asserts value is undefined {
     if (value !== undefined) {
-        throw new Error(`Expected ${value} to be undefined.`);
+        throw new Error(`Expected '${value}' to be undefined.`);
     }
 };
 
@@ -93,7 +104,7 @@ check.matches = function matchesRegexp(
     expectedPattern: RegExp,
 ): void {
     if (!expectedPattern.test(actual)) {
-        throw new Error(`Expected ${actual} to match ${expectedPattern}.`);
+        throw new Error(`Expected '${actual}' to match ${expectedPattern}.`);
     }
 }
 

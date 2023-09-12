@@ -1,17 +1,10 @@
-import { Equatable, EquatableObject } from "./Equatable";
+import { Equatable, EquatableObject, EquatableObject_hasInstance } from "./Equatable";
 
 ///////////////////
 // Object equals //
 ///////////////////
 
-const    isEquatableObject_key = "equals" satisfies keyof EquatableObject;
-function isEquatableObject(object: object): object is EquatableObject {
-    return (
-        isEquatableObject_key in object && 
-        object.equals === "function"
-        // Could check the length, but any competing functions would also have length 1.
-    );
-}
+const isEquatableObject = EquatableObject_hasInstance
 
 function equalsObject(lhs: object, rhs: object): boolean {
     if (
@@ -23,8 +16,6 @@ function equalsObject(lhs: object, rhs: object): boolean {
         // TODO: Why do we cast it to Boolean? Should it not already be boolean?
     } else {
         return lhs === rhs; 
-        // Technically superfluous, but requires post-condition from another function
-        // in other words, it would be too fragile.
     }
 }
 
@@ -43,7 +34,7 @@ function isObject(object: unknown): object is object {
 }
 
 /** 
- * Checks any two values for equality. 
+ * Checks any two values for equality, using the SameValueZero method. 
  * Invokes {@link EquatableObject} when appropriate. 
  */
 export function equalsAny(a: unknown, b: unknown): boolean {
@@ -62,7 +53,7 @@ export function equalsAny(a: unknown, b: unknown): boolean {
 }
 
 /** 
- * Checks two values for equality. 
+ * Checks two values for equality, using the SameValueZero method. 
  * Invokes {@link EquatableObject} when appropriate. 
  * 
  * To compare two values of any type, use {@link equalsAny}. 
