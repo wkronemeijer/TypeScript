@@ -19,7 +19,7 @@ export function Record_toFunction<K extends keyof_t, V>(
  * Turns a partial record into a partial function. 
  * Missing cases default to given default. 
  */
-export function Record_toTotalFunction<K extends keyof_t, V>(
+export function PartialRecord_toTotalFunction<K extends keyof_t, V>(
     self: Partial<Record<K, V>>, 
     default_: V,
 ): (x: K) => V {
@@ -30,14 +30,16 @@ export function Record_toTotalFunction<K extends keyof_t, V>(
  * Turns a partial record into a partial function. 
  * Missing cases default to undefined. 
  */
-export function Record_toPartialFunction<K extends keyof_t, V>(
+export function PartialRecord_toPartialFunction<K extends keyof_t, V>(
     self: Partial<Record<K, V>>,
 ): (x: K) => V | undefined {
     // Replacing this with Record_toFunction gets messy type wise:
     // duplicating it is simpler.
-    return Record_toTotalFunction(self, undefined);
+    return PartialRecord_toTotalFunction(self, undefined);
 }
 
-////////////////////
-// Record --> Map //
-////////////////////
+// TODO: Remove
+/** @deprecated Use `PartialRecord_XXX`. */
+export const Record_toTotalFunction = PartialRecord_toTotalFunction;
+/** @deprecated Use `PartialRecord_XXX`. */
+export const Record_toPartialFunction = PartialRecord_toPartialFunction;
