@@ -1,3 +1,4 @@
+import { FunctionalInterface_createTypeGuard } from "../../Types/FunctionalInterface";
 import { value_t } from "../../Types/Primitive";
 
 ///////////////
@@ -14,17 +15,7 @@ export interface EquatableObject {
     equals(other: this): boolean;
 }
 
-const methodName = "equals" satisfies keyof EquatableObject;
-
-export function EquatableObject_hasInstance(object: unknown): object is EquatableObject {
-    return (
-        typeof object === "object"               &&
-        object !== null                          &&
-        methodName in object                     &&
-        typeof object[methodName] === "function" && 
-        object[methodName].length === 1
-    );
-}
+export const EquatableObject_hasInstance = FunctionalInterface_createTypeGuard("equals")<EquatableObject>(1);
 
 export type Equatable = 
     | value_t 
