@@ -1,42 +1,40 @@
-// Functions ment for strings of length 1, a.k.a. chars.
+// Functions ment for strings with 1 codepoint.
+// Same as `Char` in Haskell.
 
+import { Newtype } from "../Types/Newtype";
 
+const twoUnitThreshold = 0x1_0000;
 
+function expectedLength(string: string): number {
+    const codePoint = string.codePointAt(0);
+    if (codePoint !== undefined) {
+        return (codePoint >= twoUnitThreshold) ? 2 : 1;
+    } else {
+        return -1;
+    }
+}
 
-type char = string;
+export function char_hasInstance(string: string) {
+    return string.length === expectedLength(string);
+}
+
+/** A single Unicode code point. */
+export type     char = Newtype<string, "char">;
+export function char(string: string): char {
+    if (!(char_hasInstance(string))) {
+        throw new Error(`'${string}' does not constitute a single code point.`);
+    }
+    return string as string as any;
+}
+
+Object.defineProperty(char, Symbol.hasInstance, {
+    value: char_hasInstance,
+});
 
 /** Extracts the code points of a string. */
 export function characters(s: string): char[] {
-    return Array.from(s);
+    return Array.from(s) as string[] as any;
 }
-
-export function isChar(c: unknown): c is char {
-    return (
-        (typeof c === "string") &&
-        (c.length === expectedLength(c))
-    );
-}
-
-// TODO: Wtf even is whitespace? And what about line seperators?
-/** Test if a character is a kind of "whitespace". */
-export function isEmptyChar(c: char): boolean {
-    return isChar(c) && /[ \n\t]/.test(c);
-}
-
-const re_SurrogatePair = /[\uD800-\uDFFF]{2}/;
-
-function expectedLength(c: string) {
-    return isSurrogatePair(c) ? 2 : 1;
-}
-
-/** 
- * Returns true if the character forms a surrogate pair (to get beyond the 16-bit limitation of UCS-2). 
- * @deprecated Matches a 1-length string with a 2-length regex? Wut?
- */
-export function isSurrogatePair(c: char): boolean {
-    return re_SurrogatePair.test(c);
-}
-
 
 export function Char_isSurrogate(self: char): boolean {
     return (
