@@ -1,7 +1,7 @@
-import { Printable } from "../Traits/Printable";
-import { stringBuild, StringBuildable, StringBuilder } from "./StringBuilder";
+import { stringBuild, StringBuilder } from "./StringBuilder";
+import { StringBuildable } from "./StringBuildable";
 
-export class TextLocation implements StringBuildable, Printable {
+export class TextLocation implements StringBuildable {
     public constructor(
         /** 1-based vertical offset. */
         readonly ln: number,
@@ -39,4 +39,3 @@ export function getTextLocation(s: string, offset: number): TextLocation {
     
     return new TextLocation(ln, col);
 }
-

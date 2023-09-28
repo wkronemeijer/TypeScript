@@ -8,11 +8,13 @@
 import { inspect, InspectOptions } from "util";
 
 import { LogMessageFormatter, LogMessageFormatter_getDefault } from "../Text/Console/LogMessageFormatter";
-import { stringBuild, StringBuildable } from "../Text/StringBuilder";
 import { Function_includeProperties } from "../Data/Function";
 import { Record_toPartialFunction } from "../Collections/Record";
 import { TimingReport_toString } from "../Text/Console/TimingReportFormatter";
 import { ArrayMember, Member } from "../Data/Enumeration";
+import { StringBuildable } from "../Text/StringBuildable";
+import { StringTarget } from "../Text/StringTarget";
+import { stringBuild } from "../Text/StringBuilder";
 import { StringEnum } from "../Data/Textual/StringEnum";
 import { Dictionary } from "../Collections/Dictionary";
 import { AnsiColor } from "../Text/Console/TextDecoration";
@@ -152,7 +154,7 @@ export interface LoggingFunction {
     (value: unknown): void;
 }
 
-interface TargetFunctionality {
+interface TargetFunctionality extends StringTarget {
     /** Output of this channel is redirected to this {@link NodeJS.WriteStream}. */
     target: Target;
     
@@ -252,6 +254,18 @@ function AugmentedLoggingFunction_create(channel: LogChannel): AugmentedLoggingF
                 __writeLine(target, __repr(value));
             }
         },
+        
+        append(string) {
+            if (string) {
+                this.write(string);
+            }
+        },
+        
+        appendLine(string) {
+            this.append(string);
+            this.writeLine();
+        },
+        
         include(buildable, ...args) {
             if (isEnabled) {
                 __write(target, __build(buildable, ...args));
