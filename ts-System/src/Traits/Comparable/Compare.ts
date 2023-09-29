@@ -1,24 +1,27 @@
-import { Ordering, Ordering_GT, Ordering_LT, Ordering_EQ } from "./Ordering";
-import { ComparableObject, Comparable } from "./Comparable";
+import { Ordering, Ordering_Greater, Ordering_Less, Ordering_Equal } from "./Ordering";
+import { Comparable, ComparableObject_hasInstance } from "./Comparable";
 import { typeofWithNull } from "../../Types/TypeOfExtended";
 import { Comparer } from "./Comparer";
+
+const { isNaN } = Number;
 
 ////////////////////////
 // Compare primitives //
 ////////////////////////
 
 function nativeCompare(lhs: any, rhs: any): Ordering {
-    if      (lhs > rhs) return Ordering_GT;
-    else if (lhs < rhs) return Ordering_LT;
-    else                return Ordering_EQ;
+    if      (lhs > rhs) return Ordering_Greater;
+    else if (lhs < rhs) return Ordering_Less;
+    else                return Ordering_Equal;
 }
 
 function numberCompare(lhs: number, rhs: number): Ordering {
-    return Ordering(lhs - rhs);
+    const difference = lhs - rhs;
+    return isNaN(difference) ? Ordering_Equal : Ordering(difference);
 }
 
 function constantEqual(lhs: unknown, rhs: unknown): Ordering {
-    return Ordering_EQ;
+    return Ordering_Equal;
 }
 
 const compareUndefined: Comparer<undefined> = constantEqual;
@@ -42,14 +45,7 @@ function compareFunction(lhs: Function, rhs: Function): Ordering {
 // Compare objects //
 /////////////////////
 
-const    isComparableObject_key = "compare" satisfies keyof ComparableObject;
-function isComparableObject(object: object): object is ComparableObject {
-    return (
-        isComparableObject_key in object &&
-        object.compare === "function"
-        // Could check the length, but any competing functions would also have length 1.
-    );
-}
+const isComparableObject = ComparableObject_hasInstance;
 
 const    constructorName_key = "constructor" satisfies keyof Object;
 function constructorName(object: object): string {
@@ -126,7 +122,13 @@ function comparePerType<T>(a: T, b: T): Ordering {
 // Generic compare //
 /////////////////////
 
-/** Like {@link compare}, but can be used on any two values. */
+/** 
+ * Like {@link compare}, but can be used on any two values.
+ * 
+ * Note that when used as the comparator for {@link Array.sort}, 
+ * `undefined` is always sorted last, 
+ * ignoring the ordering imposed by this function.
+ */
 export function compareAny(a: unknown, b: unknown): Ordering {
     return Ordering(
         compareTypeof(typeofWithNull(a), typeofWithNull(b)) ||

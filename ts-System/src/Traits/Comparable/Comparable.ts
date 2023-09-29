@@ -18,11 +18,9 @@ export const ComparableObject_hasInstance = FunctionalInterface_createTypeGuard(
 /** 
  * All values that are explicitly comparable. 
  * Objects must implement {@link ComparableObject}.
+ * To compare functions, use {@link compareAny} directly.
  */
 export type Comparable = 
     | value_t
     | ComparableObject
-    // | Function 
-    // Skipped to prevent accidently not applying functions
-    // You can always use compareAny directly
 ;
