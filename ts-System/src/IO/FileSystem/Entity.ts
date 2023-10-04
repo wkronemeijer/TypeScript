@@ -102,9 +102,11 @@ export class FileSystemEntity implements Printable {
     /**Returns the type if this entity exists, `undefined` otherwise. */
     getKind(): FileSystemEntity_Kind | undefined {
         const stats = this.getStats();
-        if      (stats?.isFile()     ) return "file";
-        else if (stats?.isDirectory()) return "directory";
-        else                           return undefined;
+        switch (true) {
+            case stats?.isFile()     : return "file";
+            case stats?.isDirectory(): return "directory";
+            default                  : return undefined;
+        }
     }
     
     /** Returns whether this entity exists and is a file. */

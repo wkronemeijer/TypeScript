@@ -10,9 +10,11 @@ const { isNaN } = Number;
 ////////////////////////
 
 function nativeCompare(lhs: any, rhs: any): Ordering {
-    if      (lhs > rhs) return Ordering_Greater;
-    else if (lhs < rhs) return Ordering_Less;
-    else                return Ordering_Equal;
+    switch(true) {
+        case lhs > rhs: return Ordering_Greater;
+        case lhs < rhs: return Ordering_Less;
+        default       : return Ordering_Equal;
+    }
 }
 
 function numberCompare(lhs: number, rhs: number): Ordering {
