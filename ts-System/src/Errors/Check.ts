@@ -1,13 +1,8 @@
 import { getDescriptiveName } from "../Data/GetName";
 import { InstanceOwner } from "../Types/InstanceOwner";
+import { SameValueZero } from "../Data/SameValueZero";
 import { equalsAny } from "../Traits/Equatable/Equals";
 import { Falsy } from "../Types/Truthy";
-
-const { isNaN } = Number;
-
-export function SameValueZero(a: unknown, b: unknown): boolean {
-    return ((a === b) || (isNaN(a) && isNaN(b)));
-}
 
 export const check = 
 /** Checks actual equals expected, using the "SameValueZero" algorithm. */
