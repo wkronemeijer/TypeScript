@@ -31,6 +31,8 @@ function checkBuiltinEquals<TActual, const TExpected extends TActual>(
     }
 }
 
+check.areIdentical = check.same;
+
 check.equals = 
 /** Checks actual equals expected, using `equals`. */
 function checkExtensibleEquals<TActual, const TExpected extends TActual>(
@@ -41,6 +43,8 @@ function checkExtensibleEquals<TActual, const TExpected extends TActual>(
         throw new Error(`Expected ${expected}, actual: ${actual}`);
     }
 };
+
+check.areEqual = check.equals;
 
 check.instanceOf = 
 /** Checks whether the value is actually an instance of the given instanceOwner. */
@@ -55,12 +59,12 @@ function checkInstanceOf<E>(
     }
 }
 
-check.is = check.instanceOf;
+check.is           = check.instanceOf;
+check.isInstanceOf = check.instanceOf;
 
 ////////////////
 // Primitives //
 ////////////////
-
 
 check.ok  = 
 function checkIsTrue(value: unknown): asserts value {
@@ -69,12 +73,16 @@ function checkIsTrue(value: unknown): asserts value {
     }
 };
 
+check.isTrue = check.ok;
+
 check.notOk = 
 function checkIsFalse(value: unknown): asserts value is Falsy {
     if (value) {
         throw new Error(`Expected '${value}' to be falsy.`);
     }
 };
+
+check.isFalse = check.notOk;
 
 check.isDefined = 
 function checkIsDefined<T>(value: T): asserts value is Exclude<T, undefined> {
@@ -91,15 +99,13 @@ function checkIsUndefined(value: unknown): asserts value is undefined {
     }
 };
 
-
-
 ////////////////////
 // Matches regexp //
 ////////////////////
 
 // TODO: what should we do with global regexps?
 
-check.matches = function matchesRegexp(
+check.matches = function matchesRegExp(
     actual: string,
     expectedPattern: RegExp,
 ): void {
