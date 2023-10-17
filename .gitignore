@@ -1,11 +1,5 @@
 # npm
 node_modules
-
-# Packages are installed in the root of the monorepo
-# and thus shared so there are never version mismatches
-# Dependencies are declared in the package.json
-# So there is no need to install packages for each subfolder
-# which makes the lock file useless there.
 */package-lock.json
 
 # Build output
@@ -13,16 +7,4 @@ dist
 dist_t
 
 # devtool output
-
-*.private.*
 *.generated.*
-
-# Now here's a funny problem: if we remove the index files, and then
-# download the monorepo,
-# you can't actually run devtool, 
-# because it needs the modules from system
-# ...
-
-# Scratch files
-
-Todo.*
