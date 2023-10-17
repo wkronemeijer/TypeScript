@@ -20,17 +20,17 @@ export function Array_lastElement<T>(array: ArrayLike<T>): T | undefined {
 }
 
 /** Picks a random element from an array and returns it. Returns undefined if the array is empty. */
-export function Array_randomElement<T>(array: ArrayLike<T>): T | undefined {
-    const index = Math.trunc(Math.random() * array.length);
-    return array[index];
+export function Array_randomElement<T>(self: ArrayLike<T>): T | undefined {
+    const index = Math.trunc(Math.random() * self.length);
+    return self[index];
 }
 
 /** Value indicating that the requested item was not found. */
 export const Array_IndexNotFound = -1;
 
 /** "Soft freezes" (= cools) an array by removing the mutation methods from the type. Useful if you are using template literal type maps over the `_Values` of an enumeration. */
-export function Array_cool<T>(array: T[]): readonly T[] {
-    return array;
+export function Array_cool<T>(self: T[]): readonly T[] {
+    return self;
 }
 
 // TODO: should have its on Types/ module
@@ -38,31 +38,28 @@ export function Array_normalize<T>(singletonOrList: T | readonly T[]): readonly 
     return singletonOrList instanceof Array ? singletonOrList : [singletonOrList];
 }
 
-export function Array_insertInOrder<T extends Comparable>(orderedList: T[], element: T): void {
+export function Array_insertInOrder<T extends Comparable>(self: T[], element: T): void {
     // TODO: Use insertion sort
-    orderedList.push(element);
-    orderedList.sort(compare);
+    self.push(element);
+    self.sort(compare);
 }
 
-export function Array_shuffle<T>(array: T[]): void {
-    // https://stackoverflow.com/a/2450976
-    let currentIndex = array.length, randomIndex;
+export function Array_swap<T>(self: T[], i: number, j: number): void {
+    [self[i], self[j]] = [self[j]!, self[i]!];
+}
 
+export function Array_shuffle<T>(self: T[]): void {
+    // https://stackoverflow.com/a/2450976
+    let randomIndex  = 0;
+    let currentIndex = self.length;
+    
     // While there remain elements to shuffle.
-    while (currentIndex != 0) {
-        
+    while (currentIndex !== 0) {
         // Pick a remaining element.
-        randomIndex = Math.floor(currentIndex * Math.random());
-        currentIndex--;
+        randomIndex   = Math.floor(currentIndex * Math.random());
+        currentIndex -= 1;
         
-        // And swap it with the current element.
-        [
-            array[currentIndex],
-            array[randomIndex]
-        ] = [
-            array[randomIndex]!,
-            array[currentIndex]!,
-        ];
+        Array_swap(self, currentIndex, randomIndex);
     }
 }
 
