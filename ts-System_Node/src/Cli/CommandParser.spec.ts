@@ -21,57 +21,59 @@ const {
     AcceptRestArguments, 
 } = CliParameterTools;
 
-const parser = new CliCommandParser({
-    default: {
-        0: optional(directory()),
-        1: nullable(directory()),
-        depth: optional(number({
-            minimum: 0,
-        }), {
-            default: Infinity,
-        }),
-        repeat: optional(integer({
-            minimum: 1,
-            maximum: 1000,
-        })),
-        search: string(),
-        recurse: optional(flag()),
-        force: optional(flag()),
-        // required flags for something like 
-        //    rm mySecretFolder --YesIAmReallySure
-        bogus: optional(parameter({
-            parse: String,
-        }), {
-            default: "Nameless map",
-        }),
-    },
-    install: {
-        target: string(),
-        align: optional(enumeration({
-            values: Align,
-        })),
-    },
-    sum: {
-        [AcceptRestArguments]: true,
-        force: optional(flag()),
-    },
-});
-
 ///////////
 // Usage //
 ///////////
 
-const mode = parser.parse();
-if (mode.kind === "default") {
-    const dir = mode[0];
-    dir;
-} else if (mode.kind === "install") {
-    mode
-} else if (mode.kind === "sum") {
-    mode
-}
-
 describe("CommandParser", () => {
+    const parser = new CliCommandParser({
+        default: {
+            0: optional(directory()),
+            1: nullable(directory()),
+            depth: optional(number({
+                minimum: 0,
+            }), {
+                default: Infinity,
+            }),
+            repeat: optional(integer({
+                minimum: 1,
+                maximum: 1000,
+            })),
+            search: string(),
+            recurse: optional(flag()),
+            force: optional(flag()),
+            // required flags for something like 
+            //    rm mySecretFolder --YesIAmReallySure
+            bogus: optional(parameter({
+                parse: String,
+            }), {
+                default: "Nameless map",
+            }),
+        },
+        install: {
+            target: string(),
+            align: optional(enumeration({
+                values: Align,
+            })),
+        },
+        sum: {
+            [AcceptRestArguments]: true,
+            force: optional(flag()),
+        },
+    });
+    
+    it("parses simple case", () => {        
+        const mode = parser.parse(["sum", "--force"]);
+        if (mode.kind === "default") {
+            const dir = mode[0];
+            dir;
+        } else if (mode.kind === "install") {
+            mode
+        } else if (mode.kind === "sum") {
+            mode
+        }
+    });
+
     it("parses rest arguments", () => {
         const result = parser.parse(["sum"]);
         swear(result.kind === "sum");
