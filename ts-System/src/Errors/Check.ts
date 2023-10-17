@@ -4,6 +4,125 @@ import { SameValueZero } from "../Data/SameValueZero";
 import { equalsAny } from "../Traits/Equatable/Equals";
 import { Falsy } from "../Types/Truthy";
 
+type errorConstructor = new(message: string, options?: ErrorOptions) => Error;
+
+// The core interface
+interface AssertionFunction {
+    (value: unknown): asserts value;
+}
+
+interface ExtendedAssertionFunction {
+    (value: unknown): asserts value;
+    (value: unknown, message: string): asserts value;
+    readonly errorConstructor: errorConstructor;
+}
+
+/////////////////////////////////
+// Assertion function subtypes //
+/////////////////////////////////
+
+interface EqualsAssertionFunction {
+    <TActual, const TExpected extends TActual>(
+        actual: TActual,
+        expected: TExpected,
+    ): asserts actual is TExpected;
+}
+
+interface InstanceOfAssertionFunction {
+    <E>(
+        actual: unknown, 
+        expectedInstanceOwner: InstanceOwner<E>,
+    ): asserts actual is E;
+}
+
+interface TrueAssertionFunction {
+    (value: unknown): asserts value;
+}
+
+interface FalseAssertionFunction {
+    <T>(value: T): asserts value is Extract<T, Falsy>;
+}
+
+interface UndefinedAssertionFunction {
+    (value: unknown): asserts value is undefined;
+}
+
+interface DefinedAssertionFunction {
+    <T>(value: T): asserts value is Exclude<T, undefined>;
+}
+
+interface RegExpAssertionFunction {
+    (
+        actual: string,
+        expectedPattern: RegExp,
+    ): void;
+    // Something tells me one day TS will support regeces in the type system.
+}
+
+interface ThrowsAssertionFunction {
+    (throwingFunc: () => unknown): void
+}
+
+interface ThrowsInstanceOfAssertionFunction {
+    // Flipped order to be more readable.
+    <TError extends Error>(
+        errorOwner: InstanceOwner<TError>,
+        throwingFunc: () => unknown,
+    ): void;
+}
+
+interface OkAssertionFunction {
+    <T>(value: T): asserts value is Exclude<T, Error>;
+}
+
+interface ErrorAssertionFunction {
+    <T>(value: T): asserts value is Extract<T, Error>;
+}
+
+interface PolishedAssertionFunction {
+    (value: unknown, message?: string): asserts value;
+    
+    /** Uses SameValueZero. */
+    readonly areIdentical: EqualsAssertionFunction;
+    readonly areEqual: EqualsAssertionFunction;
+    
+    readonly isInstanceOf: InstanceOfAssertionFunction;
+    
+    readonly isTrue: TrueAssertionFunction;
+    readonly isFalse: FalseAssertionFunction;
+    
+    // null isn't used that much in TS
+    readonly isDefined: DefinedAssertionFunction;
+    readonly isUndefined: UndefinedAssertionFunction;
+    
+    readonly throws: ThrowsAssertionFunction;
+    readonly throwsInstanceOf: ThrowsInstanceOfAssertionFunction;
+    
+    readonly matchesPattern: RegExpAssertionFunction;
+    
+    // isOk does something radically different than ok, which seems like a bad idea.
+    readonly isOk: OkAssertionFunction;
+    readonly isError: ErrorAssertionFunction;
+    
+    /** @deprecated Use isEqual */
+    readonly equals: EqualsAssertionFunction;
+    /** @deprecated Use isIdentical*/
+    readonly same: EqualsAssertionFunction;
+    /** @deprecated Use isInstanceOf */
+    readonly is: InstanceOfAssertionFunction;
+    /** @deprecated Use isInstanceOf */
+    readonly instanceOf: InstanceOfAssertionFunction;
+    /** @deprecated Use isTrue */
+    readonly ok: TrueAssertionFunction;
+    /** @deprecated Use isFalse */
+    readonly notOk: FalseAssertionFunction;
+    
+    /** @deprecated */
+    readonly matches: RegExpAssertionFunction;
+}
+
+// export declare const check2: PolishedAssertionFunction;
+
 export const check = 
 /** Checks actual equals expected, using the "SameValueZero" algorithm. */
 function checkBuiltinEquals<TActual, const TExpected extends TActual>(

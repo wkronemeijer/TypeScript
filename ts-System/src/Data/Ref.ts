@@ -41,12 +41,12 @@ implements Ref<T> {
     }
     
     get value(): T {
-        check(this.state, "initialized");
+        check.same(this.state, "initialized");
         return this.actualValue;
     }
     
     set value(newValue: T) {
-        check(this.state, "uninitialized");
+        check.same(this.state, "uninitialized");
         this.actualValue = newValue;
         this.state = "initialized";
     }
