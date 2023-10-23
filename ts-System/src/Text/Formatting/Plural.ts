@@ -1,5 +1,7 @@
 // TODO: use a proper ICU setup
 
+const { abs } = Math;
+
 /** 
  * Makes the word agree with the count, to replace e.g. "1 message(s)". 
  * Returns the count and the inflected noun.
@@ -13,7 +15,7 @@ export function pluralize(
     singular: string, 
     plural = `${singular}s`, // long live JS default arguments
 ): string {
-    return `${count} ${count === 1 ?
+    return `${count} ${abs(count) === 1 ?
         // 1 cat
         singular :
         // 0 cats, 2+ cats, 0.9999 cats, NaN cats
@@ -40,7 +42,7 @@ export function singularize(
     plural: string, 
     singular = deriveSingular(plural),
 ): string {
-    return `${count} ${count === 1 ?
+    return `${count} ${abs(count) === 1 ?
         // 1 cat
         singular :
         // 0 cats, 2+ cats, 0.9999 cats, NaN cats
