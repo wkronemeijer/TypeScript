@@ -1,6 +1,5 @@
 import { AssertionFunction, requires } from "../Assert";
 import { identity } from "../Data/Function";
-import { InstanceOwner_declare } from "./InstanceOwner";
 
 /** 
  * For regular use, TS 4.9 lets you use the `satisfies` operator directly. 
