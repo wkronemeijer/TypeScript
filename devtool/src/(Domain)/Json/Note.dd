@@ -1,0 +1,2 @@
+A quick google search didn't give me any packages that provide a TypeScript definition for files like `package.json` or `tsconfig.json`.
+If you do find one, and it is compatible with what I have, do make an issue for it.

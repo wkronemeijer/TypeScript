@@ -8,3 +8,6 @@ dist_t
 
 # devtool output
 *.generated.*
+ts-*/.vscode/*
+ts-*/package.json
+ts-*/package-lock.json

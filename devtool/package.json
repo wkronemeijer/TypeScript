@@ -1,0 +1,13 @@
+{
+    "name": "@wkronemeijer/devtool2",
+    "main": "dist/index.js",
+    "devDependencies": {
+        "@types/node": "*",
+        "typescript": "*"
+    },
+    "dependencies": {
+    },
+    "bin": {
+        "devtool2": "dist/bin.js"
+    }
+}
