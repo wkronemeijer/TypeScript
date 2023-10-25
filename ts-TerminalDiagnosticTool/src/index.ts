@@ -32,10 +32,6 @@ function checkSgr() {
     cr();
 }
 
-async function checkCursor() {
-    
-}
-
 export async function main(args = process.argv.slice(2)): Promise<void> {    
     checkSgr();
     
@@ -63,14 +59,13 @@ export async function main(args = process.argv.slice(2)): Promise<void> {
     for (let g = 0; g <= 0xFF; g+=step) {
     for (let b = 0; b <= 0xFF; b+=step) {
         const i = (r << 16) + (g << 8) + b;
-        const msg = i.toString(16).toUpperCase().padStart(6, '0') + ' ';
+        const msg = ` ${i.toString(16).toUpperCase().padStart(6, '0')} `;
         
-        echo(`\x1B[38;2;${r};${g};${b}m${msg}\x1B[0m`);
+        echo(`\x1B[48;2;${r};${g};${b}m${msg}\x1B[0m`);
         
         if (++valuesThisRow >= valuesPerRow) {
             cr();
             valuesThisRow = 0;
         }
-        
     }}}
 }
