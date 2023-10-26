@@ -19,6 +19,8 @@ export type UnionToIntersection<U> = (
  * TS does not see that and will require a cast.
  * 
  * Useful for experimenting with type functions.
+ * 
+ * NB: Does not honor call signatures.
  */
 export type ExpandType<T> = {} & { [P in keyof T]: T[P] };
 
