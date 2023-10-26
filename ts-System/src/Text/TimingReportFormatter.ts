@@ -1,6 +1,6 @@
-import { humanizeDuration } from "../Formatting/Duration";
-import { StringBuilder } from "../StringBuilder";
-import { requires } from "../../Assert";
+import { humanizeDuration } from "./Formatting/Duration";
+import { StringBuilder } from "./StringBuilder";
+import { requires } from "../Assert";
 
 export interface TimingReport {
     readonly label: string;
