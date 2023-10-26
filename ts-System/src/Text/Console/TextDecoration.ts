@@ -1,9 +1,11 @@
 // Q: Why don't you split it up into more files?
 // A: Because I don't think it makes the code any clearer. 
 
-import { StringEnum_create, StringEnum_Member } from "../../Data/Textual/StringEnum";
-import { Newtype } from "../../Types/Newtype";
+import { DecoratedString } from "./DecoratedString";
 import { StringBuilder } from "../StringBuilder";
+import { StringEnum } from "../../Data/Textual/StringEnum";
+import { Newtype } from "../../Types/Newtype";
+import { Member } from "../../Data/Enumeration";
 
 ///////////////
 // AnsiColor //
@@ -23,8 +25,8 @@ import { StringBuilder } from "../StringBuilder";
 //     Unset = 9
 // }
 
-export type  AnsiColor = StringEnum_Member<typeof AnsiColor>;
-export const AnsiColor = StringEnum_create({
+export type  AnsiColor = Member<typeof AnsiColor>;
+export const AnsiColor = StringEnum({
     /** Black in dark mode, white in light mode. */
     black: 0,
     red: 1,
@@ -43,8 +45,8 @@ export const AnsiColor = StringEnum_create({
 // Font weight //
 /////////////////
 
-export type  AnsiFontWeight = StringEnum_Member<typeof AnsiFontWeight>;
-export const AnsiFontWeight = StringEnum_create([
+export type  AnsiFontWeight = Member<typeof AnsiFontWeight>;
+export const AnsiFontWeight = StringEnum([
     "unset",
     "bold",
 ] as const).withDefault("unset");
@@ -171,7 +173,7 @@ export function AnsiTextStyle_use(stl: AnsiTextStyle): AnsiTextStyle_use_Result 
 }
 
 /** Paints a string by adding ANSI escape codes. For more fine-grained control, use  */
-export function paintString(string: string, paint: AnsiTextStyle): string {
+export function paintString(string: string, paint: AnsiTextStyle): DecoratedString {
     const result = new StringBuilder();
     
     const { isActive, apply, unset } = AnsiTextStyle_use(paint);
@@ -180,5 +182,5 @@ export function paintString(string: string, paint: AnsiTextStyle): string {
     result.append(string);
     if (isActive) { result.append(unset) }
     
-    return result.toString();
+    return DecoratedString(result.toString());
 }
