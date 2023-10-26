@@ -1,7 +1,8 @@
 // Analogous to System.Runtime.CompilerServices
 
+import { panic } from "@wkronemeijer/system";
+
 import { AbsolutePath } from "../IO/FileSystem/Path";
-import { panic } from "../Errors/ErrorFunctions";
 import { File } from "../IO/FileSystem/Entity";
 
 type CallStackFormatter = NonNullable<typeof Error.prepareStackTrace>;

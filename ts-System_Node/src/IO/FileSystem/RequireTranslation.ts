@@ -2,11 +2,11 @@
 // WHOOPS! You are using TS, which means its somewhere else entirely
 // Which is what this function is for. A wrapper around require.resolve
 
+import { panic, requires } from "@wkronemeijer/system";
+
 import { AnyPath, Path_Separator, RelativePath } from "./Path";
 import { Directory, File } from "./Entity";
 import { getCallerFile } from "../../Reflection/Caller";
-import { requires } from "../../Assert";
-import { panic } from "../../Errors/ErrorFunctions";
 
 interface PathTranslator_Options {
     /** Location of JS files. */

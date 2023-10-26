@@ -1,12 +1,9 @@
 // Wraps nodejs's path module, to maintain information about the kind of path.
 
+import { Newtype, notImplemented, requires, satisfiesStrictly, swear } from "@wkronemeijer/system";
+
 import { resolve, join, relative, ParsedPath, parse, isAbsolute, sep, normalize } from "path";
 import { pathToFileURL } from "url";
-
-import { satisfiesStrictly } from "../../Types/Satisfies";
-import { requires, swear } from "../../Assert";
-import { notImplemented } from "../../Errors/ErrorFunctions";
-import { Newtype } from "../../Types/Newtype";
 
 /** Underlying path representation (a string). */
 export type RawPath = string;

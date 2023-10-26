@@ -1,12 +1,11 @@
 // Handle the file system like a set of objects using FileSystemObject
 // then use the type narrowing functions to perform specific functionality.
 
+import { Printable, Queue, panic } from "@wkronemeijer/system";
+
 import { Stats, readFileSync, writeFileSync, lstatSync, readdirSync, openSync, closeSync, mkdirSync } from "fs";
 
 import { AbsolutePath, Path_resolve, Path_getDetails, Path_join, Path_changeExtension, RelativePath, Path_getParent, AnyPath, Path_relative, Path_hasDescendant, Path_isRoot, Path_CurrentDirectory, Path_addSuffixExtension } from "./Path";
-import { Printable } from "../../Traits/Printable";
-import { Queue } from "../../Collections/Queue";
-import { panic } from "../../Errors/ErrorFunctions";
 
 const encoding: BufferEncoding = "utf-8"; 
 
