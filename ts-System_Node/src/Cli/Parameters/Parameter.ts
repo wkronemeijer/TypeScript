@@ -1,4 +1,6 @@
-import { Deferred, Deferred_normalize, Directory, File, StringEnum, Thunk, clamp, collect, notImplemented, panic, pass, swear } from "@wkronemeijer/system";
+import { StringEnum, Thunk, clamp, collect, panic, pass, swear } from "@wkronemeijer/system";
+
+import { Directory, File } from "../../IO/FileSystem/Entity";
 
 //////////////////
 // Capabilities //
@@ -34,21 +36,21 @@ type AmbientDefaultCapability<T> = {
     readonly getAmbientDefault?: Thunk<T> 
 };
 
-type BaseCapabilities<T> = 
+type BaseCapabilities<T> = (
     & AliasCapability<T>
     & DescriptionCapability<T>
-;
+);
 
 type CommonCapabilities<T> = BaseCapabilities<T>;
 
-type ExtensionCapabilities<T> = 
-    & AliasCapability<T>
-    & DescriptionCapability<T>
-    & ArityCapability<T>
-    & ValidateCapability<T>
-;
+// type ExtensionCapabilities<T> = 
+//     & AliasCapability<T>
+//     & DescriptionCapability<T>
+//     & ArityCapability<T>
+//     & ValidateCapability<T>
+// ;
 
-type AllCapabilities<T> = 
+type AllCapabilities<T> = (
     & AliasCapability<T>
     & DescriptionCapability<T>
     & ArityCapability<T>
@@ -56,7 +58,9 @@ type AllCapabilities<T> =
     & ParseCapability<T>
     & AmbientDefaultCapability<T>
     & AmbientValidateCapability<T>
-;
+);
+
+// Leads to a model of "last moment" and "already provided"
 
 //////////////////
 // CliParameter //

@@ -1,8 +1,9 @@
 import { ExpandType, swear } from "@wkronemeijer/system";
-import { CliParameterLabel } from "./Parameters/ParameterLabel";
+
 import { CliParseResult, CliCommandTree_Translate } from "./ParseResult";
 import { CliSubcommandTree, CliCommandTree } from "./CommandTree";
 import { CliSubcommandParser } from "./SubcommandParser";
+import { CliParameterLabel } from "./Parameters/ParameterLabel";
 
 export interface CliCommandParser<T extends CliCommandTree> {
     /**
@@ -20,7 +21,7 @@ interface CliCommandParserConstructor {
 
 export const CliCommandParser
 :            CliCommandParserConstructor 
-= class      CliCommandParserImplementation<const T extends CliCommandTree>
+= class      CliCommandParserImpl<const T extends CliCommandTree>
 implements   CliCommandParser<T> {
     readonly subparsersByLabel = new Map<CliParameterLabel, CliSubcommandParser>;
     readonly defaultSubparser: CliSubcommandParser;

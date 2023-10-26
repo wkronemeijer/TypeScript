@@ -1,8 +1,8 @@
 import { Newtype, Object_explicitKeys, Set_hasAny, from, swear } from "@wkronemeijer/system";
+
 import { CliParseResult } from "../ParseResult";
 
 export type CliParameterLabel = Newtype<string, "CliParameterLabel">;
-
 
 const forbiddenLabels = from(Object_explicitKeys<CliParseResult>({
     kind: true,
