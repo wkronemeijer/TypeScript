@@ -18,14 +18,3 @@ export const inspectValue = ReplaceableFunction((
 ): DecoratedString => {
     return DecoratedString(String(value));
 });
-
-////////////////////
-// Multi-platform //
-////////////////////
-// TODO: Remove when common inspect is implemented
-
-if (isRunAsNodeCjs()) {
-    // @ts-ignore
-    const inspect = module.require("util").inspect;
-    inspectValue.replace(value => typeof value === "string" ? value : inspect(value));
-}

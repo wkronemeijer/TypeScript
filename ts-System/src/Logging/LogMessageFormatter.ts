@@ -116,15 +116,3 @@ export const LogMessageFormatter_Simple: LogMessageFormatter = req => {
 }
 
 export const formatLogMessage = ReplaceableFunction(LogMessageFormatter_PlainText);
-
-////////////////////
-// Multi-platform //
-////////////////////
-
-if (isRunAsNodeCjs()) {
-    // @ts-ignore
-    const stdout = process.stdout;
-    if (stdout.isTTY && stdout.hasColors()) {
-        formatLogMessage.replace(PowerlineLogMessageFormatter);
-    }
-}
