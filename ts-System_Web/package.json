@@ -2,6 +2,11 @@
     "name": "@wkronemeijer/system-web",
     "main": "dist/index.js",
     "types": "dist_t/index.d.ts",
+    "scripts": {
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "test": "ts-mocha src/**/*.spec.ts"
+    },
     "devDependencies": {
         "typescript": "*"
     }
