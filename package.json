@@ -10,6 +10,7 @@
         "@wkronemeijer/system": "file:ts-System",
         "@wkronemeijer/system-node": "file:ts-System_Node",
         "@wkronemeijer/system-web": "file:ts-System_Web",
+        "esbuild": "^0.19.5",
         "express": "^4.18.2",
         "http-server": "^14.1.1",
         "jsdom": "^22.1.0",
@@ -22,13 +23,13 @@
     },
     "devDependencies": {
         "@types/express": "^4.17.17",
+        "@types/jsdom": "^21.1.4",
+        "@types/luxon": "^3.3.1",
         "@types/mocha": "^10.0.1",
         "@types/node": "^20.1.0",
         "@types/react": "^18.2.6",
         "@types/react-dom": "^18.2.4",
         "@types/react-reconciler": "^0.28.2",
-        "@types/jsdom": "^21.1.4",
-        "@types/luxon": "^3.3.1",
         "mocha": "^10.2.0",
         "ts-node": "^10.9.1",
         "typescript": "^5.2.1-rc"
