@@ -5,8 +5,12 @@
         "outDir": "./dist",
         "declarationDir": "./dist_t",
         
+        "lib": [
+            "ES2022", 
+            "WebWorker"
+        ],
         "types": [
-            "node",
+            // "node",
             "mocha"
         ]
     }
