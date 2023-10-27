@@ -1,4 +1,4 @@
-import { terminal } from "../IO/Terminal";
+import { terminal } from "../Logging/Terminal";
 import { Exception } from "../Assert";
 
 //////////////////////////////////////////////

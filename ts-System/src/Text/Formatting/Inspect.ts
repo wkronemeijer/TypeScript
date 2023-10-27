@@ -1,9 +1,6 @@
 import { ReplaceableFunction } from "../../Multiplatform/ReplaceableFunction";
 import { DecoratedString } from "../Console/DecoratedString";
-
-// TODO: Expand on the common util.inspect replacement
-// web-util-inspect also works, so idk
-// Doesn't need to be perfect, after all.
+import { isRunAsNodeCjs } from "../../Multiplatform/PlatformQuery";
 
 interface InspectOptions {
     depth?: number;
@@ -22,8 +19,13 @@ export const inspectValue = ReplaceableFunction((
     return DecoratedString(String(value));
 });
 
-// 🤢
+////////////////////
+// Multi-platform //
+////////////////////
 // TODO: Remove when common inspect is implemented
-if ("process" in globalThis && "require" in globalThis) {
-    inspectValue.replace((globalThis as any).require("util").inspect);
+
+if (isRunAsNodeCjs()) {
+    // @ts-ignore
+    const inspect = module.require("util").inspect;
+    inspectValue.replace(value => typeof value === "string" ? value : inspect(value));
 }

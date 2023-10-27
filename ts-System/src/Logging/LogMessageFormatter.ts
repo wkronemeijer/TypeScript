@@ -1,0 +1,130 @@
+import { AnsiTextStyle_set, AnsiTextStyle_use, SgrCommand_ResetAll } from "../Text/Console/TextDecoration";
+import { ReplaceableFunction } from "../Multiplatform/ReplaceableFunction";
+import { isRunAsNodeCjs } from "../Multiplatform/PlatformQuery";
+import { StringBuilder } from "../Text/StringBuilder";
+import { inspectValue } from "../Text/Formatting/Inspect";
+import { Date_toHHmm } from "../Data/Date";
+import { LogMessage } from "./LogMessage";
+import { LogChannel } from "./LogChannel";
+
+// Formatter feels more of a problem for the implementor
+// Can still provide the type and a default tho.
+export interface LogMessageFormatter {
+    (req: LogMessage): string;
+}
+
+const PowerlineArrow = "\uE0B0";
+const ChannelWidth   = LogChannel.maxLength;
+
+////////////////
+// Plain text //
+////////////////
+
+export const LogMessageFormatter_PlainText: LogMessageFormatter = message => {
+    const {
+        channel,
+        instant,
+        showLabel,
+        showTime,
+        value,
+    } = message;
+    
+    const result = new StringBuilder;
+    
+    if (showTime) {
+        result.append("[");
+        result.append(Date_toHHmm(instant));
+        result.append("] ");
+    }
+    
+    if (showLabel) {
+        result.append("[");
+        result.append(channel.padEnd(ChannelWidth));
+        result.append("] ");
+    }
+    
+    result.append(inspectValue(value) || " "); // reminder: !!"" == false
+    
+    return result.toString();
+};
+// Powerline //
+export const PowerlineLogMessageFormatter: LogMessageFormatter = message => {
+    const {
+        channel, 
+        instant, 
+        color, 
+        showLabel, 
+        showTime,
+        value,
+    } = message;
+    const result = new StringBuilder;
+    
+    if (showTime || showLabel) {
+        const {
+            apply: setBg, unset: unsetBg,
+        } = AnsiTextStyle_use({ background: color ?? "white" });
+        
+        const {
+            apply: setBold, unset: unsetBold,
+        } = AnsiTextStyle_use({ fontWeight: "bold" });
+        
+        result.append(setBg);
+        result.append(" ");
+        
+        if (showTime) {
+            result.append(Date_toHHmm(instant));
+            result.append(" ");
+        }
+        
+        ///////////
+        // Label //
+        ///////////
+        if (showLabel) {
+            result.append(setBold);
+            result.append(channel.padEnd(ChannelWidth));
+            result.append(" ");
+            result.append(unsetBold);
+        }
+
+        result.append(unsetBg);
+    }
+
+    result.append(AnsiTextStyle_set({ color }));
+    if (showLabel) {
+        result.append(PowerlineArrow);
+        result.append(" ");
+    }
+    result.append(inspectValue(value) || " "); // reminder: !!"" == false
+    result.append(SgrCommand_ResetAll); // don't taint the console
+
+    return result.toString();
+};
+
+////////////////////
+// Non-VT version //
+////////////////////
+
+const matchArrow = /(.*)\uE0B0/;
+const matchSgr = /\x1B\[[\d,]+m/g; // g needed by replaceAll
+
+export const LogMessageFormatter_Simple: LogMessageFormatter = req => {
+    return (
+        PowerlineLogMessageFormatter(req)
+        .replaceAll(matchSgr, "")
+        .replace(matchArrow, (_, label: string) => `[${label}]`)
+    );
+}
+
+export const formatLogMessage = ReplaceableFunction(LogMessageFormatter_PlainText);
+
+////////////////////
+// Multi-platform //
+////////////////////
+
+if (isRunAsNodeCjs()) {
+    // @ts-ignore
+    const stdout = process.stdout;
+    if (stdout.isTTY && stdout.hasColors()) {
+        formatLogMessage.replace(PowerlineLogMessageFormatter);
+    }
+}
