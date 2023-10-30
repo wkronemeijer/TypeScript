@@ -6,7 +6,7 @@ import { value_t } from "../Types/Primitive";
 export const identity = <T>(x: T) => x;
 
 /** The constant function. */
-export const constant = <T>(x: T) => <U>(_: U) => x;
+export const constant = <T>(x: T) => <U>(_?: U) => x;
 
 /** Constant &top; function. */
 export const alwaysTrue = constant(true);
