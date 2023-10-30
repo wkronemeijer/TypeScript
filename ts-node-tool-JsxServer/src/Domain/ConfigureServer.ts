@@ -56,7 +56,7 @@ export function configureServer(RootFolder: string): express.Express {
     <link rel="stylesheet" href="/Style.css">
 </head>
 <body>
-    <ul>${files.map(file => {
+    <ul class="__ServerIndex">${files.map(file => {
         const relativeUrl = pathToFileURL(file).href.slice(1 + pathToFileURL(RootFolder).href.length); // +1 for the '/'
         return `<li><a href="${relativeUrl}">${decodeURIComponent(relativeUrl)}</a></li>`;
     }).join("")}</ul>

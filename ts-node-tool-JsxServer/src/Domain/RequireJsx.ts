@@ -3,7 +3,7 @@ import { swear, terminal } from "@wkronemeijer/system";
 import * as esbuild from "esbuild";
 import { renderToStaticMarkup } from "react-dom/server";
 
-export const ReactFilePattern = /\.[jt]sx$/;
+export const ReactFilePattern = /\.page\.[jt]sx$/;
 
 export function isReactFile(filePath: string) {
     return ReactFilePattern.test(filePath);
