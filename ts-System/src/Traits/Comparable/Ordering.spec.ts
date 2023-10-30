@@ -7,4 +7,7 @@ describe("Ordering", () => {
         check.equals(Ordering(Ordering_Equal), Ordering_Equal);
         check.equals(Ordering(Ordering_Greater), Ordering_Greater);
     });
+    it("NaN is normalized to EQ", () => {
+        check.equals(Ordering(NaN), Ordering_Equal);
+    });
 });

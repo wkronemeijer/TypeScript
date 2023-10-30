@@ -1,5 +1,7 @@
 import { Newtype } from "../../Types/Newtype";
 
+const { isNaN } = Number;
+
 /**
  * Represents the relative ordering of two items, 
  * using the same format as {@link Array.sort}.
@@ -18,7 +20,7 @@ import { Newtype } from "../../Types/Newtype";
 export type     Ordering = Newtype<number, "Ordering">;
 export function Ordering(number: number): Ordering {
     // Any value is actually allowed, only the sign matters
-    return Math.sign(number) as Ordering;
+    return Math.sign(isNaN(number) ? 0 : number) as Ordering;
 }
 
 export const Ordering_Less    = Ordering(-1);
