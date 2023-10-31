@@ -50,7 +50,6 @@ describe("check()", () => {
             check.equals(false, false);
         });
         
-        // FIXME: This doesn't work, and I expect equals it to blame.
         it("checks custom equality", () => {
             const p1 = new Point(3, 4);
             const p2 = new Point(3, 4); // different instance, same value
@@ -76,7 +75,6 @@ describe("check()", () => {
             check.same(false, false);
         });
         
-        // FIXME: This doesn't work, and I expect equals it to blame.
         it("ignores custom equality", () => {
             const p1 = new Point(3, 4);
             const p2 = new Point(3, 4); // different instance, same value
