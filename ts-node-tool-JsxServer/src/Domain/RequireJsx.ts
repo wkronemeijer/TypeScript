@@ -24,6 +24,7 @@ export async function renderJsx(filePath: string): Promise<string> {
         bundle: true,
         write: false,
         format: "cjs",
+        sourcemap: "inline",
         jsx: "automatic",
     });
     const sourceCode = buildResult.outputFiles?.[0]?.text ?? "";
