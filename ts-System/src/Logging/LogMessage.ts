@@ -3,7 +3,6 @@ import { AnsiColor } from "../Text/Console/TextDecoration";
 
 // TODO: Unify, and strip escape codes when outputting to not isatty
 // TODO: logmessageformatter selection should be an expect function
-// TODO: powerlineformatter should only be a thing for node (even if it does not depend on node-specific code)
 // Although...xterm.js does exist.
 // Ehhh, the nesteddecoratedtext will be common, ansi is node-specific.
 

@@ -29,8 +29,6 @@ function constantEqual(lhs: unknown, rhs: unknown): Ordering {
 const compareUndefined: Comparer<undefined> = constantEqual;
 const compareNull     : Comparer<null>      = constantEqual;
 const compareBoolean  : Comparer<boolean>   = nativeCompare;
-// TODO: NaN really screws up nativeCompare
-// Find a way to sort NaNs last
 const compareNumber   : Comparer<number>    = numberCompare;
 const compareBigInt   : Comparer<bigint>    = nativeCompare;
 const compareString   : Comparer<string>    = nativeCompare;

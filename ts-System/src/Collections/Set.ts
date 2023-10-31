@@ -43,11 +43,6 @@ export function Set_createDeterminer<T, K extends string>(
     return x => map.get(x);
 }
 
-// LooseHas
-
-// TODO: Find a more technical term for 'loose'
-// TODO: replace it with some subset of primitive
-
 export function Set_hasAny<T extends value_t>(set: ReadonlySet<T>, value: unknown): value is T {
     return set.has(value as any);
 }

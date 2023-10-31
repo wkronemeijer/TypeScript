@@ -216,7 +216,6 @@ export class Sequence<T> implements Iterable<T> {
         }());
     }
     
-    // TODO: Make these return pairs, not maps
     associateBy<K>(
         keySelector: Selector<T, K>
     ): Sequence<[K, T]> {

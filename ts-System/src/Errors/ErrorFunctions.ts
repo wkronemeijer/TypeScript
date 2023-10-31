@@ -29,13 +29,11 @@ export function panic(reason?: string): never {
     throw new Error(reason);
 }
 
-// TODO: Improve this name. 
 /** Throw an exception. The only honorable option when no other course of action remains. */
 export function mildPanic(reason?: string): never {
     throw new Exception(reason);
 }
 
-// TODO: Better name.
 /** Just like `panic`, except for those cases where some variable has been narrowed to `never`. */
 export function neverPanic(missingCase: never): never {
     throw new Error(`Missing a case for '${missingCase}'.`);
