@@ -1,5 +1,6 @@
 import { Comparable } from "../Traits/Comparable/Comparable";
 import { compare } from "../Traits/Comparable/Compare";
+import { value_t } from "../Types/Primitive";
 
 /** Returns the first valid index of an array. */
 export function Array_firstIndex(array: ArrayLike<any>): number | undefined {
@@ -69,4 +70,8 @@ export function Array_isEmpty(arr: readonly unknown[]): boolean {
 
 export function Array_isNotEmpty(arr: readonly unknown[]): boolean {
     return arr.length !== 0;
+}
+
+export function Array_includesAny<T extends value_t>(self: ReadonlyArray<T>, value: unknown): value is T {
+    return self.includes(value as any);
 }

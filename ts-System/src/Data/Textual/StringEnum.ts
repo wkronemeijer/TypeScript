@@ -1,146 +1,164 @@
-// NB: Boolean("") == false
-// Remember that!
-
 import { Array_firstElement, Array_IndexNotFound, Array_lastElement } from "../../Collections/Array";
+import { StringEnumPlaceholder_hasInstance } from "./StringEnumPlaceholder";
 import { compare as System_compare } from "../../Traits/Comparable/Compare";
-import { ensures, requires, swear } from "../../Assert";
-import { equals as System_equals } from "../../Traits/Equatable/Equals";
+import { StringEnumInitializer } from "./StringEnumInitializer";
+import { ensures, requires } from "../../Assert";
 import { EqualityComparer } from "../../Traits/Equatable/EqualityComparer";
 import { StringBuilder } from "../../Text/StringBuilder";
+import { inspectValue } from "../../Text/Formatting/Inspect";
 import { ArrayMember } from "../Enumeration";
 import { Map_reverse } from "../../Collections/Map";
 import { Set_hasAny } from "../../Collections/Set";
 import { Printable } from "../../Traits/Printable";
+import { Ordering } from "../../Traits/Comparable/Ordering";
 import { Comparer } from "../../Traits/Comparable/Comparer";
 import { panic } from "../../Errors/ErrorFunctions";
+
+const { isFinite, isNaN, isInteger, isSafeInteger } = Number;
 
 /////////////////////
 // StringEnum type //
 /////////////////////
 
-export type StringEnum_Member<EAny extends StringEnum<any>> =
-    EAny extends StringEnum<infer E> ? E : never
-;
-
-// Techincally, this stuff should be stratified by features
 export interface StringEnum<E extends string> 
 extends Iterable<E>, Printable {
-    /** All values, in ascending order. */
+    //////////////////////////
+    // Collection of values //
+    //////////////////////////
+    
+    /** 
+     * All values, in ascending order of ordinal. 
+     */
     readonly values: readonly E[];
     
-    /** All values as a set. Renamed for intellisense. */
+    /** 
+     * All values as a set. 
+    */
+    // Renamed for intellisense. 
     readonly setOfValues: ReadonlySet<E>;
     
-    toString(): string;
+    /** 
+     * Iterates over all values, in ascending order of ordinal. 
+     */
+    [Symbol.iterator](): Iterator<E>;
     
     //////////////
     // Defaults //
     //////////////
     
-    /** Default value for this enum. 
-     * 
-     * Note that reserved names can used for properties (but not for identifiers). */
+    /** 
+     * Default value for this enum. 
+     */
     readonly default: E;
     
-    /** Returns a new {@link StringEnum} with a different {@link StringEnum.default}. */
+    /** 
+     * Returns a modified {@link StringEnum} with the given member as {@link StringEnum.default}. 
+     */
     withDefault(newDefault: E): this;
     
-    /** Verifies that given argument is a member of this enum. */
-    check(x: unknown): E;
-    /** Checks if a random value belongs to this enum. */
+    ////////////////
+    // Membership //
+    ////////////////
+    
+    /** 
+     * Checks if an arbitrary value is a member of this enum. 
+     */
     hasInstance(x: unknown): x is E;
+    
+    /** 
+     * Checks if an arbitrary value is a member of this enum. 
+     */
     [Symbol.hasInstance](x: unknown): x is E;
     
-    /** The smallest value in this enum. */
+    /** 
+     * Verifies that given argument is a member of this enum and returns it. 
+     */
+    check(x: unknown): E;
+    
+    //////////////
+    // class Eq //
+    //////////////
+    
+    /** 
+     * Checks if 2 enum values are equal. 
+     */
+    readonly equals: EqualityComparer<E>;
+    
+    ///////////////
+    // class Ord //
+    ///////////////
+    
+    /** 
+     * The member of this enum with the smallest ordinal. 
+     */
     readonly minimum: E;
-    /** The largest value in this enum. */
+    
+    /** 
+     * The member of this enum with the largest ordinal. 
+     */
     readonly maximum: E;
     
-    /** The length of the longest value in this enum. 
+    /** 
+     * Returns the smaller of two enum values. 
+     */
+    min(a: E, b: E): E;
+    
+    /** 
+     * Returns the larger of two enum values. 
+     */
+    max(a: E, b: E): E;
+    
+    /** 
+     * Compares two enum values by their ordinal. 
+     */
+    readonly compare: Comparer<E>;
+    
+    ////////////////
+    // class Enum //
+    ////////////////
+    
+    /** 
+     * Returns the ordinal of any member of this enum. 
+     */
+    getOrdinal(x: E): number;
+    
+    /** 
+     * Returns the member of this enum with the given ordinal, if it exists. 
+     */
+    fromOrdinal(ord: number): E | undefined;
+    
+    ////////////////
+    // Formatting //
+    ////////////////
+    
+    /** 
+     * The length of the longest value in this enum. 
      * 
      * Useful for formatting.
      */
     readonly maxLength: number;
     
-    /** Checks if 2 enum values are equal. */
-    readonly equals: EqualityComparer<E>;
-    /** Compares two enum values by their ordinal. */
-    readonly compare: Comparer<E>;
-    /** Returns the larger of two enum values. */
-    max(a: E, b: E): E;
-    /** Returns the smaller of two enum values. */
-    min(a: E, b: E): E;
-    
-    getOrdinal(x: E): number;
-    fromOrdinal(ord: number): E | undefined;
+    /**
+     * Returns a string with the name and an overview of members of this enum.
+     */
+    toString(): string;
 }
 
-//////////////////////////
-// Creating StringEnums //
-//////////////////////////
-
-// How to name this...
-// algebraic thing where you convert it, do a thing, then convert it back
-// functor? homomorphism? idk
-function oneway_thingy<EA extends readonly string[], T>(
-    values: EA,
-    func: (a: number, b: number) => T
-): (a: ArrayMember<EA>, b: ArrayMember<EA>) => T {
-    
-    return (a, b) => {
-        const ind_a = values.indexOf(a);
-        const ind_b = values.indexOf(b);
-        
-        ensures(ind_a !== Array_IndexNotFound);
-        ensures(ind_a !== Array_IndexNotFound);
-        
-        return func(ind_a, ind_b);
-    };
-}
-
-function andbackagain_thingy<EA extends readonly string[]>(
-    values: EA,
-    func: (a: number, b: number) => number
-): (a: ArrayMember<EA>, b: ArrayMember<EA>) => ArrayMember<EA> {
-    const oneway = oneway_thingy(values, func);
-    return (a, b): ArrayMember<EA> => {
-        const result = values[oneway(a, b)];
-        ensures(result !== undefined, () => `Function '${func.name}' return out of range.`);
-        return result;
-    };
-}
-
-export type  StringEnum_Placeholder = true;
-/* Alright placeholder options:
-
-true        -> simple
-undefined   -> long, buggy
-null        -> ewww
-0           -> number, breaks code
-"auto"      -> comphrehensive, long
-"iota"      -> is what it is supposed to resemble
-"++"        -> too fiddly
-_           -> short, requires global symbol definition
-__          -> different from ignored parameter, but overlaps with super-secret identifiers
-
-*/
-
-export type StringEnum_Initializer<E extends string> =
-    | readonly E[]
-    | { readonly [P in E]: unknown }
-;
+////////////////
+// OrdinalMap //
+////////////////
 
 type OrdinalMap<E extends string> = ReadonlyMap<E, number>;
 
-function OrdinalMap_fromInitializer<E extends string>(
-    values: StringEnum_Initializer<E>,
+function OrdinalMap<E extends string>(
+    values: StringEnumInitializer<E>,
 ): OrdinalMap<E> {
     const result       = new Map<E, number>;
     const usedNames    = new Set<E>;
     const usedOrdinals = new Set<number>;
     
     function addMember(name: E, ordinal: number): void {
-        requires(!usedNames.has(name),       
+        requires(!usedNames.has(name), 
             () => `Duplicate name '${name}'.`);
         requires(!usedOrdinals.has(ordinal), 
             () => `Duplicate ordinal '${ordinal}'.`);
@@ -158,26 +176,37 @@ function OrdinalMap_fromInitializer<E extends string>(
         }
     } else {
         for (const name in values) {
-            const value   = Number(values[name]);
-            const ordinal = isFinite(value) ? value : iota;
-            addMember(name, ordinal);
-            iota = ordinal + 1;
+            const value = values[name];
+            
+            let ordinal: number;
+            if (typeof value === "number") {
+                ordinal = value;
+            } else if (StringEnumPlaceholder_hasInstance(value)) { 
+                ordinal = iota;
+            } else {
+                panic(`'${value}' is not a valid ordinal initializer.`);
+            }
+            
+            // Using `requires` here gives causes TS7022 (circular type inference) for some reason 🥴
+            if (isSafeInteger(ordinal)) {
+                addMember(name, ordinal);
+                iota = ordinal + 1;
+            } else {
+                panic(`Failed to convert '${value}' into a valid ordinal.`);
+            }
         }
     }
     
     return result;
 }
 
-function stringifyStringEnum<E extends string>(values: OrdinalMap<E>): string {
+function OrdinalMap_toString<E extends string>(values: OrdinalMap<E>): string {
     const result = new StringBuilder();
     
     result.append("StringEnum { ");
     for (const [value, ordinal] of values) {
-        result.append('"');
-        result.append(value); // I would use util.inspect, but that requires node
-        // TODO: Is there a universal util.inspect equivalent?
-        // TODO: Write a util.inspect equivalent.
-        result.append('" => ');
+        result.append(inspectValue(value));
+        result.append(": ");
         result.append(ordinal.toString());
         result.append("; ");
     }
@@ -186,11 +215,54 @@ function stringifyStringEnum<E extends string>(values: OrdinalMap<E>): string {
     return result.toString();
 }
 
-function createStringEnumWithOrdinals<E extends string>(ordinalByName: OrdinalMap<E>): StringEnum<E> {
-    requires(ordinalByName.size > 0, `StringEnum must not be empty.`);
+/**
+ * Turns a function `(number, number) -> number` 
+ * and lifts it to `(E, E) -> E`.
+ * Throws if any ordinal is not a member.
+ */
+function liftIndexFunction<EA extends readonly string[]>(
+    values: EA,
+    innerFunc: (a: number, b: number) => number
+): (a: ArrayMember<EA>, b: ArrayMember<EA>) => ArrayMember<EA> {
+    return (a, b): ArrayMember<EA> => {
+        const indexA = values.indexOf(a);
+        const indexB = values.indexOf(b);
+        
+        requires(indexA !== Array_IndexNotFound);
+        requires(indexA !== Array_IndexNotFound);
+        
+        const result = values[innerFunc(indexA, indexB)];
+        
+        ensures(result !== undefined, () => 
+            `Function '${innerFunc.name}' return out of range.`);
+        return result;
+    };
+}
+
+function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>): StringEnum<E> {
+    requires(ordinalByName.size > 0, 
+        `StringEnum must not be empty.`);
     
     const memberByOrdinal = Map_reverse(ordinalByName);
     const leastOrdinal    = Math.min(...ordinalByName.values());
+    
+    //////////////////////////
+    // Collection of values //
+    //////////////////////////
+    
+    const values = Array.from(ordinalByName.keys()).sort((a, b) =>
+        System_compare(ordinalByName.get(a)!, ordinalByName.get(b)!)
+    );
+    
+    const setOfValues = new Set(values);
+    
+    function iterator(): IterableIterator<E> {
+        return values[Symbol.iterator]();
+    }
+    
+    //////////////
+    // Defaults //
+    //////////////
     
     const defaultValue = (
         memberByOrdinal.get(0) ??
@@ -198,37 +270,75 @@ function createStringEnumWithOrdinals<E extends string>(ordinalByName: OrdinalMa
         panic("Ordinal was empty?")
     );
     
-    // FIXME: Should sort on ordinal
-    const values = Array.from(ordinalByName.keys()).sort((a, b) => {
-        const ordinalA = ordinalByName.get(a)!;
-        const ordinalB = ordinalByName.get(b)!;
-        return ordinalA - ordinalB;
-    });
+    function withDefault(this: StringEnum<E>, newDefault: E): StringEnum<E> {
+        // TODO: check performance of splatting vs Object.create in this situation
+        return { ...this, default: newDefault };
+    };
     
-    const setOfValues = new Set(values);
+    ////////////////
+    // Membership //
+    ////////////////
     
-    swear(setOfValues.size === values.length, "All members must be unique.");
+    function hasInstance(x: unknown): x is E {
+        return Set_hasAny(setOfValues, x);
+    }
     
-    const hasInstance = (x: unknown): x is E => Set_hasAny(setOfValues, x);
-    const check       = (x: unknown): E      => hasInstance(x) ? x : panic(`'${x}' is not a member.`);
+    function check(x: unknown): E {
+        return hasInstance(x) ? x : panic(`'${x}' is not a member.`);
+    }
     
-    // | TODO: Wut? Why not `(a, b) => hasInstance(a) && a === b`?
-    const equals  = oneway_thingy(values, System_equals);
-    const compare = oneway_thingy(values, System_compare);
-    const min     = andbackagain_thingy(values, Math.min);
-    const max     = andbackagain_thingy(values, Math.max);
+    //////////////
+    // class Eq //
+    //////////////
+    
+    function equals(a: E, b: E) {
+        return hasInstance(a) && a === b;
+    }
+    
+    ///////////////
+    // class Ord //
+    ///////////////
     
     const minimum = Array_firstElement<E>(values) ?? panic();
     const maximum = Array_lastElement <E>(values) ?? panic();
     
+    const min     = liftIndexFunction(values, Math.min);
+    const max     = liftIndexFunction(values, Math.max);
+    
+    function compare(a: E, b: E): Ordering {
+        return System_compare(
+            values.indexOf(a), 
+            values.indexOf(b)
+        );
+    }
+    
+    ////////////////
+    // class Enum //
+    ////////////////
+    
+    function getOrdinal(x: E): number {
+        return ordinalByName.get(x) ?? panic(`Unknown member '${x}'.`);
+    }
+    
+    function fromOrdinal(ord: number): E | undefined {
+        return memberByOrdinal.get(ord);
+    }
+    
+    ////////////////
+    // Formatting //
+    ////////////////
+    
     const maxLength = Math.max(...values.map(value => value.length));
     
-    const getOrdinal = (x: E): number => ordinalByName.get(x) ?? panic(`Unknown member '${x}'.`);
-    const fromOrdinal = (ord: number): E | undefined => memberByOrdinal.get(ord);
+    function toString() {
+        return OrdinalMap_toString(ordinalByName);
+    }
     
-    const toString = () => stringifyStringEnum(ordinalByName);
+    ////////////
+    // Result //
+    ////////////
     
-    const result: StringEnum<E> = {
+    return {
         values,
         toString,
         equals,
@@ -245,23 +355,23 @@ function createStringEnumWithOrdinals<E extends string>(ordinalByName: OrdinalMa
         default: defaultValue,
         getOrdinal,
         fromOrdinal,
-        [Symbol.iterator]() {
-            return values[Symbol.iterator]();
-        },
-        withDefault(newDefault) {
-            return Object.freeze({ ...this, default: newDefault });
-        },
-    };
-    
-    return Object.freeze(result);
+        [Symbol.iterator]: iterator,
+        withDefault,
+    } satisfies StringEnum<E>;
 }
+
+////////////////
+// StringEnum //
+////////////////
 
 /**
  * Creates an enum from a set of string values.
  * Being a runtime value, it can be used for iteration, validation or having a default.
  */
-export function StringEnum<const E extends string>(values: StringEnum_Initializer<E>): StringEnum<E> {
-    return createStringEnumWithOrdinals(OrdinalMap_fromInitializer(values));
+export function StringEnum<const E extends string>(
+    values: StringEnumInitializer<E>,
+): StringEnum<E> {
+    return OrdinalMap_toStringEnum(OrdinalMap(values));
 }
 
 /**
