@@ -17,12 +17,24 @@ const { isNaN } = Number;
  *     compare(this.day  , other.day  ) 
  * );
  */
-export type     Ordering = Newtype<number, "Ordering">;
+export type Ordering = Newtype<(-1 | 0 | 1), "Ordering">;
+
 export function Ordering(number: number): Ordering {
     // Any value is actually allowed, only the sign matters
     return Math.sign(isNaN(number) ? 0 : number) as Ordering;
 }
 
-export const Ordering_Less    = Ordering(-1);
-export const Ordering_Equal   = Ordering( 0);
-export const Ordering_Greater = Ordering(+1);
+
+export namespace Ordering {
+    export const Less    = Ordering(-1);
+    export const Equal   = Ordering( 0);
+    export const Greater = Ordering(+1);
+    
+    export function invert(self: Ordering): Ordering {
+        return Ordering(-self);
+    }
+}
+
+export const Ordering_Less    = Ordering.Less;
+export const Ordering_Equal   = Ordering.Equal;
+export const Ordering_Greater = Ordering.Greater;

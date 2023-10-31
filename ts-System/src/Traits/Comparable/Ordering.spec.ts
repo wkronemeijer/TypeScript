@@ -1,13 +1,25 @@
 import { Ordering, Ordering_Equal, Ordering_Greater, Ordering_Less } from "./Ordering";
 import { check } from "../../Errors/Check";
 
+const { Less, Equal, Greater } = Ordering;
+
 describe("Ordering", () => {
-    it("constants are invariant", () => {
-        check.equals(Ordering(Ordering_Less), Ordering_Less);
-        check.equals(Ordering(Ordering_Equal), Ordering_Equal);
-        check.equals(Ordering(Ordering_Greater), Ordering_Greater);
+    describe(".create()", () => {
+        it("constants are invariant under create", () => {
+            check.equals(Ordering(Less), Less);
+            check.equals(Ordering(Equal), Equal);
+            check.equals(Ordering(Greater), Greater);
+        });
+        it("NaN is normalized to EQ", () => {
+            check.equals(Ordering(NaN), Equal);
+        });
     });
-    it("NaN is normalized to EQ", () => {
-        check.equals(Ordering(NaN), Ordering_Equal);
+    
+    describe("#invert", () => {
+        it("inverts", () => {
+            check.equals(Ordering.invert(Less), Greater);
+            check.equals(Ordering.invert(Equal), Equal);
+            check.equals(Ordering.invert(Greater), Less);
+        });
     });
 });
