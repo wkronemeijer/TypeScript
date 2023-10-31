@@ -1,7 +1,7 @@
-import { Member, StringEnum_create } from "@wkronemeijer/system";
+import { Member, StringEnum } from "@wkronemeijer/system";
 
 export type  DiagnosticDisplayMode = Member<typeof DiagnosticDisplayMode>;
-export const DiagnosticDisplayMode = StringEnum_create([
+export const DiagnosticDisplayMode = StringEnum([
     "inline",
     "block",
 ] as const).withDefault("inline");

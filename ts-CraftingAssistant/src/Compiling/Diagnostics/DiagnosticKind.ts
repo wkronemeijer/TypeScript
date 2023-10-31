@@ -1,15 +1,15 @@
-import { AnsiColor, Member, Record_toFunction, Record_toTotalFunction, StringEnum_create } from "@wkronemeijer/system";
+import { AnsiColor, Member, PartialRecord_toTotalFunction, Record_toFunction, StringEnum, constant } from "@wkronemeijer/system";
 
 export type  DiagnosticKind = Member<typeof DiagnosticKind>;
-export const DiagnosticKind = StringEnum_create([
+export const DiagnosticKind = StringEnum([
     "info",
     "warning",
     "error",
 ] as const);
 
-export const DiagnosticKind_isFatal = Record_toTotalFunction<DiagnosticKind, boolean>({
+export const DiagnosticKind_isFatal = PartialRecord_toTotalFunction<DiagnosticKind, boolean>({
     error: true,
-}, false); 
+}, constant(false)); 
 
 export const DiagnosticKind_getColor = Record_toFunction<DiagnosticKind, AnsiColor>({
     info: "white",

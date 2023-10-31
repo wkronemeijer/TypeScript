@@ -1,8 +1,8 @@
-import { Array_shuffle, Member, StringEnum_create } from "@wkronemeijer/system";
+import { Array_shuffle, Member, StringEnum } from "@wkronemeijer/system";
 import { Medium } from "./Medium";
 
 export type  SortMode = Member<typeof SortMode>;
-export const SortMode = StringEnum_create([
+export const SortMode = StringEnum([
     "shuffle"
 ] as const);
 

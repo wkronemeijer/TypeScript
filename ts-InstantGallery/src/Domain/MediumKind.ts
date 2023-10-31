@@ -1,7 +1,8 @@
-import { File, Member, StringEnum_create } from "@wkronemeijer/system";
+import { Member, StringEnum } from "@wkronemeijer/system";
+import { File } from "@wkronemeijer/system-node";
 
 export type  MediumKind = Member<typeof MediumKind>;
-export const MediumKind = StringEnum_create([
+export const MediumKind = StringEnum([
     "img",
     "video",
 ] as const);

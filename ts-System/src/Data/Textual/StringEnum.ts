@@ -373,11 +373,3 @@ export function StringEnum<const E extends string>(
 ): StringEnum<E> {
     return OrdinalMap_toStringEnum(OrdinalMap(values));
 }
-
-/**
- * Creates an enum from a set of string values.
- * Being a runtime value, it can be used for iteration, validation or having a default.
- * 
- * @deprecated Use the plain {@link StringEnum} factory, without the `_create` suffix.
- */
-export const StringEnum_create = StringEnum;
