@@ -1,4 +1,4 @@
-import { fileURLToPath, pathToFileURL } from "url";
+import { pathToFileURL } from "url";
 import { extname } from "path";
 
 import { from, swear, terminal } from "@wkronemeijer/system";
@@ -17,10 +17,9 @@ export function configureServer(RootFolder: string): express.Express {
         try {
             const fileUrl = new URL(rootUrl + req.url);
             swear(fileUrl.href.startsWith(rootUrl.href));
-            const filePath = fileURLToPath(fileUrl);
             
             res.setHeader("Content-Type", "text/html");
-            res.send(await renderJsx(filePath));
+            res.send(await renderJsx(fileUrl));
         } catch (e) {
             res.setHeader("Content-Type", "text/plain");
             res.send(e instanceof Error ? e.stack : String(e));
