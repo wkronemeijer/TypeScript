@@ -1,0 +1,17 @@
+{
+    "name": "@wkronemeijer/titanfall-status",
+    "main": "dist/index.js",
+    "types": "dist_t/index.d.ts",
+    "devDependencies": {
+        "@types/node": "*",
+        "typescript": "*"
+    },
+    "dependencies": {
+        "@wkronemeijer/system": "*",
+        "@wkronemeijer/system-node": "*",
+        "jsdom": "*"
+    },
+    "bin": {
+        "tf1stat": "dist/bin.js"
+    }
+}
