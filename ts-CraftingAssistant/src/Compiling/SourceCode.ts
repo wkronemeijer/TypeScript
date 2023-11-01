@@ -1,4 +1,5 @@
-import { Directory, File, Path_Seperator, Path_join, Path_toUrl, Printable, RelativePath_toString, StringBuildable, StringBuilder, Text_getDimensions, neverPanic, requires, stringBuild } from "@wkronemeijer/system";
+import { StringBuildable, StringBuilder, Text_getDimensions, neverPanic, requires, stringBuild } from "@wkronemeijer/system";
+import { Directory, File, RelativePath_toString } from "@wkronemeijer/system-node";
 import { DiagnosticDisplayMode } from "./Diagnostics/DiagnosticDisplayMode";
 
 export class SourceCode implements StringBuildable<[DiagnosticDisplayMode]> {

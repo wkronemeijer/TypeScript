@@ -1,4 +1,5 @@
-import { File, guard, terminal } from "@wkronemeijer/system";
+import { guard, terminal } from "@wkronemeijer/system";
+import { File } from "@wkronemeijer/system-node";
 
 import { CompilerHost } from "./Compiling/Compiler";
 import { SourceCode } from "./Compiling/SourceCode";

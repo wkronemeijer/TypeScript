@@ -1,7 +1,7 @@
-import { StringBuildable, StringBuilder, TextLocation, getTextLocation, getTextPreview, requires, from, stringBuild, Array_firstElement, clamp, Array_lastElement } from "@wkronemeijer/system";
+import { StringBuildable, StringBuilder, TextLocation, getTextLocation, getTextPreview, requires, stringBuild, Array_firstElement, clamp, Array_lastElement } from "@wkronemeijer/system";
 
-import { SourceCode } from "./SourceCode";
 import { DiagnosticDisplayMode } from "./Diagnostics/DiagnosticDisplayMode";
+import { SourceCode } from "./SourceCode";
 
 const { min, max } = Math;
 
@@ -33,8 +33,8 @@ implements StringBuildable<[DiagnosticDisplayMode]> {
         end: number,
     ) {
         const srcLength = sourceCode.text.length;
-        this.start = start = clamp(    0, start, srcLength);
-        this.end   = end   = clamp(start, end  , srcLength);
+        this.start  = start = clamp(    0, start, srcLength);
+        this.end    = end   = clamp(start, end  , srcLength);
         this.length = end - start; // Thanks Dijkstra
     }
     

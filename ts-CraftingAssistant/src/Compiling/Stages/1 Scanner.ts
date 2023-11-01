@@ -1,4 +1,4 @@
-import { Predicate, pluralize, requires, singularize, terminal } from "@wkronemeijer/system";
+import { Predicate, requires, singularize, terminal } from "@wkronemeijer/system";
 
 import { KeywordTokenKind, PunctionationTokenKind, TokenKind } from "../TokenKind";
 import { DiagnosticCollection } from "../Diagnostics/DiagnosticCollection";
@@ -176,7 +176,7 @@ class Scanner {
         } else if (c === "\"") {
             this.scanString();
         } else if (isPunctuationChar(c)) {
-            this.addToken(c);
+            this.addToken(c as PunctionationTokenKind);
         } else if (isDigit(c)) {
             this.scanInteger();
         } else if (isWordChar(c)) {

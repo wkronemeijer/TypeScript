@@ -110,14 +110,14 @@ implements   TokenMatcherNode_Intersection {
         result.append(this.lexeme);
         result.append("\"");
         
-        result.indent();
+        result.increaseIndent();
         for (const [char, sequent] of this.connections) {
             result.appendLine();
             result.append(char)
             result.append(" --> ");
             result.include(sequent);
         }
-        result.dedent();
+        result.decreaseIndent();
     }
     
     toString(): string {
