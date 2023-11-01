@@ -4,13 +4,7 @@ declare global {
     }
 }
 
-interface requireInline_Options {
-    readonly filePath: string;
-    readonly sourceCode: string;
-}
-
-export function requireInline(options: requireInline_Options): any {
-    const { filePath, sourceCode } = options;
+export function requireInline(filePath: string, sourceCode: string): any {
     // from https://stackoverflow.com/a/47002752
     const mod: NodeModule = new (module.constructor as any)();
     mod.paths = module.paths;

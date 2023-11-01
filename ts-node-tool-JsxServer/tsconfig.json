@@ -20,6 +20,7 @@
         ////////////////
         
         "target": "ES2022",
+        "jsx": "react-jsx",
         "lib":   [
             "es2022",
             "ESNext.Intl"
