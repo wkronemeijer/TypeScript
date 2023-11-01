@@ -4,9 +4,10 @@ import { getLocalIp } from "@wkronemeijer/system-node";
 import { terminal } from "@wkronemeijer/system";
 
 import { configureServer } from "./Domain/ConfigureServer";
+import { resolve } from "path";
 
 const PORT = 8080;
-const ROOT = ".";
+const ROOT = resolve(".");
 
 export async function main(): Promise<void> {
     configureServer(ROOT).listen(PORT);
