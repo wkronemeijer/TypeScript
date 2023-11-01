@@ -2,12 +2,15 @@
     "name": "@wkronemeijer/compiler-toolkit",
     "main": "dist/index.js",
     "types": "dist_t/index.d.ts",
+    "scripts": {
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "test": "ts-mocha src/**/*.spec.ts"
+    },
     "devDependencies": {
-        "@types/node": "*",
         "typescript": "*"
     },
     "dependencies": {
-        "@wkronemeijer/system": "*",
-        "@wkronemeijer/system-node": "*"
+        "@wkronemeijer/system": "*"
     }
 }
