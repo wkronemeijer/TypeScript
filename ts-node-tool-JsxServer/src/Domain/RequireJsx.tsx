@@ -1,4 +1,4 @@
-import { swear, Dictionary, notImplemented } from "@wkronemeijer/system";
+import { swear, Dictionary } from "@wkronemeijer/system";
 
 import * as esbuild from "esbuild";
 import { isValidElement } from "react";
@@ -8,10 +8,6 @@ import { requireInline } from "./RequireInline";
 import { HtmlDocument } from "./HtmlDocument";
 
 export const ReactPagePattern = /\.page\.[jt]sx$/;
-
-// Overlap, so always check server first.
-export const ReactServerPagePattern = /\.(ssr|page)\.[jt]sx$/;
-export const ReactClientPagePattern = /\.[jt]sx$/;
 
 export function isReactPage(filePath: string) {
     return ReactPagePattern.test(filePath);
@@ -58,11 +54,39 @@ export async function renderServerSideJsx(fileUrl: URL): Promise<HtmlDocument> {
                     {e.stack}
                 </div>
             </body>
-        </html>;
+        </html>
     }
     return HtmlDocument(result);
 }
 
+/////////////////
+// Client side //
+/////////////////
+
+export const ClientSideCodePattern = /\.[jt]sx?$/; 
+
+export function isClientSideCode(filePath: string) {
+    return ClientSideCodePattern.test(filePath);
+}
+
 export async function renderClientSideJsx(fileUrl: URL): Promise<string> {
-    notImplemented();
+    let result: string;
+    try {
+        const filePath = fileURLToPath(fileUrl);
+        swear(isClientSideCode(filePath), "filePath does not lead to a script file.");
+        const buildResult = await esbuild.build({
+            entryPoints: [filePath],
+            bundle: true,
+            write: false,
+            format: "iife",
+            sourcemap: "inline",
+            jsx: "automatic",
+            charset: "utf8", 
+        });
+        result = buildResult.outputFiles?.[0]?.text ?? "";
+    } catch (e) {
+        swear(e instanceof Error, "Non-Error thrown.");
+        result = `document.body.append(String.raw\`${e.stack}\`);`;
+    }
+    return result;
 }

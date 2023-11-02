@@ -6,7 +6,7 @@ import { AbsolutePath, Directory } from "@wkronemeijer/system-node";
 
 import * as express from "express";
 
-import { ReactPagePattern, isReactPage, renderServerSideJsx } from "./RequireJsx";
+import { ClientSideCodePattern, ReactPagePattern, isReactPage, renderClientSideJsx, renderServerSideJsx } from "./RequireJsx";
 import { HtmlDocument } from "./HtmlDocument";
 import { Link } from "./Link";
 
@@ -32,7 +32,7 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
         res.once("close", () => {
             const end = performance.now();
             if (isTextResponse(res)) {
-                terminal.perf(`${req.url} in ${(end - start).toFixed(2)}ms`);
+                terminal.perf(`GET ${req.url} in ${(end - start).toFixed(2)}ms`);
             }
         });
         next();
@@ -45,6 +45,19 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
             
             res.setHeader(ContentType, "text/html");
             res.send(await renderServerSideJsx(fileUrl));
+        } catch (e) {
+            res.setHeader(ContentType, "text/plain");
+            res.send(e instanceof Error ? e.stack : String(e));
+        }
+    });
+    
+    router.get(ClientSideCodePattern, async (req, res) => {
+        try {
+            const fileUrl = new URL(rootUrl + req.url);
+            swear(fileUrl.href.startsWith(rootUrl.href));
+            
+            res.setHeader(ContentType, "text/javascript");
+            res.send(await renderClientSideJsx(fileUrl));
         } catch (e) {
             res.setHeader(ContentType, "text/plain");
             res.send(e instanceof Error ? e.stack : String(e));
@@ -66,6 +79,7 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
                 <title>{title}</title>
             </head>
             <body>
+                <h1>{title}</h1>
                 <ul className="__ServerIndex">
                     {pages.map(page => 
                     <li key={page}><Link href={getRelativeUrl(page)}/></li>)}
