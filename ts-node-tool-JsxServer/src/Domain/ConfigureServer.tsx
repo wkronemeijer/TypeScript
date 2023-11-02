@@ -8,13 +8,7 @@ import * as express from "express";
 
 import { ReactPagePattern, isReactPage, renderServerSideJsx } from "./RequireJsx";
 import { HtmlDocument } from "./HtmlDocument";
-
-function Link(props: {
-    readonly href: string;
-}): JSX.Element {
-    const { href } = props;
-    return <a href={href}>{decodeURIComponent(href).replace(ReactPagePattern, "")}</a>;
-}
+import { Link } from "./Link";
 
 const ContentType = "Content-Type";
 
