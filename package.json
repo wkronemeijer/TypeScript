@@ -1,11 +1,12 @@
 {
     "name": "@wkronemeijer/typescript-monorepo",
+    "version": "0.0.1",
     "private": true,
     "bin": {
         "devtool": "devtool.cjs"
     },
     "dependencies": {
-        "@wkronemeijer/compiler-toolkit": "file:ts-CompilerToolkit",
+        "@wkronemeijer/compiler-toolkit": "file:ts-common-lib-CompilerToolkit",
         "@wkronemeijer/react-terminal": "file:ts-ReactTerminal",
         "@wkronemeijer/system": "file:ts-System",
         "@wkronemeijer/system-node": "file:ts-System_Node",

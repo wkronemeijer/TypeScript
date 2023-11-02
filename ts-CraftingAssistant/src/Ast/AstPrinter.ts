@@ -27,12 +27,12 @@ const isHiddenKey = (x: unknown) => Set_hasAny(hiddenKeys, x);
 function appendArray(self: StringBuilder, array: readonly unknown[]): void {
     if (array.length > 0) {
         self.appendLine('[');
-        self.indent();
+        self.increaseIndent();
         for (const item of array) {
             appendValue(self, item);
             self.appendLine();
         }
-        self.dedent();
+        self.decreaseIndent();
         self.append(']');
     } else {
         self.append("[]");
@@ -48,7 +48,7 @@ function appendNodeHeader(self: StringBuilder, node: AstNode): void {
 function appendNode(self: StringBuilder, node: AstNode): void {
     appendNodeHeader(self, node);
     self.appendLine(" {")
-    self.indent();
+    self.increaseIndent();
     for (const [key, value] of Object_entries(node)) {
         if (!isHiddenKey(key)) {
             self.append(key);
@@ -57,7 +57,7 @@ function appendNode(self: StringBuilder, node: AstNode): void {
             self.appendLine();
         }
     }
-    self.dedent();
+    self.decreaseIndent();
     self.append("}")
 }
 

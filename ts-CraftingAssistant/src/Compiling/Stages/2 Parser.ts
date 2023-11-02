@@ -1,13 +1,8 @@
+import { CompileResult, Diagnostic, DiagnosticCollection, DiagnosticKind, HasLocation, SourceCode, SourceTextRange } from "@wkronemeijer/compiler-toolkit";
 import { Array_firstElement, Array_lastElement, ExpandType, panic, requires, singularize, terminal } from "@wkronemeijer/system";
 
 import { AstNodeKind, AstNodeMap, Decl, ImportStmt, QuantifiedItemExpr, QuantityExpr, QuantityRangeExpr, ReagentDecl, SourceNode, Stmt } from "../../Ast/AstNode";
-import { HasLocation, SourceTextRange } from "../SourceTextRange";
-import { DiagnosticCollection } from "../Diagnostics/DiagnosticCollection";
-import { DiagnosticKind } from "../Diagnostics/DiagnosticKind";
-import { CompileResult } from "../CompileResult";
-import { Diagnostic } from "../Diagnostics/Diagnostic";
 import { Identifier } from "../../Domain/Identifier";
-import { SourceCode } from "../SourceCode";
 import { TokenKind } from "../TokenKind";
 import { Quantity } from "../../Domain/Quantity";
 import { Token } from "../Token";

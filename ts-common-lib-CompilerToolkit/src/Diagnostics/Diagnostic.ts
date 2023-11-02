@@ -2,7 +2,7 @@ import { AnsiColor, AnsiTextStyle_use, StringBuildable, StringBuilder, stringBui
 
 import { DiagnosticKind, DiagnosticKind_getColor, DiagnosticKind_isFatal } from "./DiagnosticKind";
 import { DiagnosticDisplayMode } from "./DiagnosticDisplayMode";
-import { SourceTextRange } from "../SourceTextRange";
+import { SourceTextRange } from "../Input/SourceTextRange";
 
 export class Diagnostic 
 implements StringBuildable<[mode: DiagnosticDisplayMode]> {

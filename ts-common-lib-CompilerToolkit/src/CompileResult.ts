@@ -2,10 +2,6 @@ import { Selector, identity } from "@wkronemeijer/system";
 
 import { DiagnosticCollection, ReadonlyDiagnosticCollection } from "./Diagnostics/DiagnosticCollection";
 
-/* 
-Short note: merger of WriterT and MaybeT (where Nothing is derived from the diagnostics...)
-*/
-
 interface CompileResultBase<T> {
     readonly diagnostics: ReadonlyDiagnosticCollection;
     then<U>(selector: Selector<T, CompileResult<U>>): CompileResult<U>

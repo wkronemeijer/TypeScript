@@ -1,6 +1,9 @@
 import { StringBuildable, StringBuilder, Text_getDimensions, neverPanic, requires, stringBuild } from "@wkronemeijer/system";
-import { Directory, File, RelativePath_toString } from "@wkronemeijer/system-node";
-import { DiagnosticDisplayMode } from "./Diagnostics/DiagnosticDisplayMode";
+import { DiagnosticDisplayMode } from "../Diagnostics/DiagnosticDisplayMode";
+
+import { Directory, File, RelativePath_toString } from "@wkronemeijer/system-node"; 
+// FIXME: Rework to not depend on Node
+// Might require VFS however...
 
 export class SourceCode implements StringBuildable<[DiagnosticDisplayMode]> {
     readonly maxLocationSize: number;

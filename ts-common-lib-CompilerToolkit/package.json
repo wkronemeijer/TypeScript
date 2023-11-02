@@ -1,5 +1,6 @@
 {
     "name": "@wkronemeijer/compiler-toolkit",
+    "version": "0.0.1",
     "main": "dist/index.js",
     "types": "dist_t/index.d.ts",
     "scripts": {

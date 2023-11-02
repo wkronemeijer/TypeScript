@@ -1,15 +1,9 @@
+import { CompileResult, Diagnostic, DiagnosticCollection, DiagnosticKind, SourceCode, SourceTextRange, TokenMatcherNode } from "@wkronemeijer/compiler-toolkit";
 import { Predicate, requires, singularize, terminal } from "@wkronemeijer/system";
 
 import { KeywordTokenKind, PunctionationTokenKind, TokenKind } from "../TokenKind";
-import { DiagnosticCollection } from "../Diagnostics/DiagnosticCollection";
 import { Identifier_wordRegex } from "../../Domain/Identifier";
-import { SourceTextRange } from "../SourceTextRange";
-import { DiagnosticKind } from "../Diagnostics/DiagnosticKind";
-import { CompileResult } from "../CompileResult";
-import { Diagnostic } from "../Diagnostics/Diagnostic";
-import { SourceCode } from "../SourceCode";
 import { Token } from "../Token";
-import { TokenMatcherNode } from "../TokenMatcher";
 
 const rootMatcher = TokenMatcherNode.from(PunctionationTokenKind);
 

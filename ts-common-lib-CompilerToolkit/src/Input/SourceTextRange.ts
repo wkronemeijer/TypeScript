@@ -1,6 +1,6 @@
 import { StringBuildable, StringBuilder, TextLocation, getTextLocation, getTextPreview, requires, stringBuild, Array_firstElement, clamp, Array_lastElement } from "@wkronemeijer/system";
 
-import { DiagnosticDisplayMode } from "./Diagnostics/DiagnosticDisplayMode";
+import { DiagnosticDisplayMode } from "../Diagnostics/DiagnosticDisplayMode";
 import { SourceCode } from "./SourceCode";
 
 const { min, max } = Math;

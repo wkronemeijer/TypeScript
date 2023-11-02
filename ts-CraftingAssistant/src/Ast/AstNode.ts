@@ -1,6 +1,6 @@
-import { ExpandType, collect } from "@wkronemeijer/system";
+import { HasLocation, SourceTextRange } from "@wkronemeijer/compiler-toolkit";
+import { ExpandType} from "@wkronemeijer/system";
 
-import { HasLocation, SourceTextRange } from "../Compiling/SourceTextRange";
 import { Identifier } from "../Domain/Identifier";
 import { Quantity } from "../Domain/Quantity";
 
@@ -65,7 +65,7 @@ export type RecipeDecl = NewAstNode<"RecipeDecl", {
 
 export type InventoryDecl = NewAstNode<"InventoryDecl", {
     readonly title: string;
-    readonly contents: readonly QuantifiedQualifiedItemExpr[];
+    readonly contents: readonly QuantifiedItemExpr[];
 }>;
 
 export type NamespaceDecl = NewAstNode<"NamespaceDecl", {

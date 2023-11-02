@@ -1,8 +1,9 @@
 import { guard, terminal } from "@wkronemeijer/system";
 import { File } from "@wkronemeijer/system-node";
 
+import { SourceCode } from "@wkronemeijer/compiler-toolkit";
+
 import { CompilerHost } from "./Compiling/Compiler";
-import { SourceCode } from "./Compiling/SourceCode";
 
 export function main(args: string[]): void {
     const filePath = args[0];

@@ -1,7 +1,7 @@
 import { StringBuildable, StringBuilder, stringBuild } from "@wkronemeijer/system";
+import { HasLocation, SourceTextRange } from "@wkronemeijer/compiler-toolkit";
 
 import { TokenKind, TokenKind_canSynchronizeAfter, TokenKind_canSynchronizeBefore } from "./TokenKind";
-import { HasLocation, SourceTextRange } from "./SourceTextRange";
 
 export class Token implements HasLocation, StringBuildable {
     constructor(
