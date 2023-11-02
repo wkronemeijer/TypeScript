@@ -16,17 +16,17 @@ function Link(props: {
     return <a href={href}>{decodeURIComponent(href).replace(ReactPagePattern, "")}</a>;
 }
 
-export function configureServer(RootFolder: AbsolutePath): express.Express {
-    const server  = express();
-    const rootUrl = pathToFileURL(RootFolder);
+function configureRouter(rootFolder: AbsolutePath): express.Router {
+    const router  = express.Router();
+    const rootUrl = pathToFileURL(rootFolder);
     
     const getRelativeUrl = (filePath: string) => {
-        const parentUrl = pathToFileURL(RootFolder).href;
+        const parentUrl = pathToFileURL(rootFolder).href;
         const childUrl  = pathToFileURL(filePath).href;
         return childUrl.slice(parentUrl.length + 1); // +1 for the '/'
     }; 
     
-    server.use((req, res, next) => {
+    router.use((req, res, next) => {
         const start = performance.now();
         res.once("close", () => {
             const end = performance.now();
@@ -35,7 +35,7 @@ export function configureServer(RootFolder: AbsolutePath): express.Express {
         next();
     });
     
-    server.get(ReactPagePattern, async (req, res) => {
+    router.get(ReactPagePattern, async (req, res) => {
         try {
             const fileUrl = new URL(rootUrl + req.url);
             swear(fileUrl.href.startsWith(rootUrl.href));
@@ -48,10 +48,10 @@ export function configureServer(RootFolder: AbsolutePath): express.Express {
         }
     });
     
-    server.get("/", async (req, res) => {
-        const title = `Index of ${basename(RootFolder)}`;
+    router.get("/", async (req, res) => {
+        const title = `Index of ${basename(rootFolder)}`;
         const pages = (
-            from(new Directory(RootFolder).recursiveGetAllFiles())
+            from(new Directory(rootFolder).recursiveGetAllFiles())
             .select(file => file.path)
             .where(isReactPage)
             .toArray()
@@ -71,7 +71,7 @@ export function configureServer(RootFolder: AbsolutePath): express.Express {
         </html>)); 
     });
     
-    server.use(express.static(RootFolder, {
+    router.use(express.static(rootFolder, {
         setHeaders(res, path) {
             if (extname(path) === ".dd") {
                 res.setHeader("Content-Type", "text/plain");
@@ -80,5 +80,11 @@ export function configureServer(RootFolder: AbsolutePath): express.Express {
         fallthrough: false,
     }));
     
+    return router;
+}
+
+export function configureServer(RootFolder: AbsolutePath): express.Express {
+    const server = express();
+    server.use(configureRouter(RootFolder));
     return server;
 }
