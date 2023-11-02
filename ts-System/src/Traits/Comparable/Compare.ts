@@ -1,9 +1,9 @@
-import { Ordering, Ordering_Greater, Ordering_Less, Ordering_Equal } from "./Ordering";
 import { Comparable, ComparableObject_hasInstance } from "./Comparable";
 import { typeofWithNull } from "../../Types/TypeOfExtended";
+import { Ordering } from "./Ordering";
 import { Comparer } from "./Comparer";
 
-const { isNaN } = Number;
+const { Less, Equal, Greater } = Ordering;
 
 ////////////////////////
 // Compare primitives //
@@ -11,19 +11,18 @@ const { isNaN } = Number;
 
 function nativeCompare(lhs: any, rhs: any): Ordering {
     switch(true) {
-        case lhs > rhs: return Ordering_Greater;
-        case lhs < rhs: return Ordering_Less;
-        default       : return Ordering_Equal;
+        case lhs > rhs: return Greater;
+        case lhs < rhs: return Less;
+        default       : return Equal;
     }
 }
 
 function numberCompare(lhs: number, rhs: number): Ordering {
-    const difference = lhs - rhs;
-    return isNaN(difference) ? Ordering_Equal : Ordering(difference);
+    return Ordering(lhs - rhs);
 }
 
 function constantEqual(lhs: unknown, rhs: unknown): Ordering {
-    return Ordering_Equal;
+    return Equal;
 }
 
 const compareUndefined: Comparer<undefined> = constantEqual;
