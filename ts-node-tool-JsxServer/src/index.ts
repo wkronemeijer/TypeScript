@@ -1,13 +1,12 @@
 import { pathToFileURL } from "url";
 
-import { getLocalIp } from "@wkronemeijer/system-node";
+import { Path_resolve, getLocalIp } from "@wkronemeijer/system-node";
 import { terminal } from "@wkronemeijer/system";
 
 import { configureServer } from "./Domain/ConfigureServer";
-import { resolve } from "path";
 
 const PORT = 8080;
-const ROOT = resolve(".");
+const ROOT = Path_resolve(".");
 
 export async function main(): Promise<void> {
     configureServer(ROOT).listen(PORT);

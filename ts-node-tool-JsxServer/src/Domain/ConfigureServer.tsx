@@ -2,12 +2,12 @@ import { basename, extname } from "path";
 import { pathToFileURL } from "url";
 
 import { from, swear, terminal } from "@wkronemeijer/system";
-import { Directory } from "@wkronemeijer/system-node";
+import { AbsolutePath, Directory } from "@wkronemeijer/system-node";
 
 import * as express from "express";
 
-import { ReactPagePattern, isReactPage, renderJsx } from "./RequireJsx";
-import { HtmlDocument } from "./RenderAndPrefix";
+import { ReactPagePattern, isReactPage, renderServerSideJsx } from "./RequireJsx";
+import { HtmlDocument } from "./HtmlDocument";
 
 function Link(props: {
     readonly href: string;
@@ -16,7 +16,7 @@ function Link(props: {
     return <a href={href}>{decodeURIComponent(href).replace(ReactPagePattern, "")}</a>;
 }
 
-export function configureServer(RootFolder: string): express.Express {
+export function configureServer(RootFolder: AbsolutePath): express.Express {
     const server  = express();
     const rootUrl = pathToFileURL(RootFolder);
     
@@ -26,21 +26,26 @@ export function configureServer(RootFolder: string): express.Express {
         return childUrl.slice(parentUrl.length + 1); // +1 for the '/'
     }; 
     
-    server.get(ReactPagePattern, async (req, res) => {
+    server.use((req, res, next) => {
         const start = performance.now();
+        res.once("close", () => {
+            const end = performance.now();
+            terminal.perf(`${req.url} in ${(end - start).toFixed(2)}ms`);
+        });
+        next();
+    });
+    
+    server.get(ReactPagePattern, async (req, res) => {
         try {
             const fileUrl = new URL(rootUrl + req.url);
             swear(fileUrl.href.startsWith(rootUrl.href));
             
             res.setHeader("Content-Type", "text/html");
-            res.send(await renderJsx(fileUrl));
+            res.send(await renderServerSideJsx(fileUrl));
         } catch (e) {
             res.setHeader("Content-Type", "text/plain");
             res.send(e instanceof Error ? e.stack : String(e));
         }
-        const end = performance.now();
-        
-        terminal.perf(`${req.url} in ${(end - start).toFixed(4)}ms`);
     });
     
     server.get("/", async (req, res) => {

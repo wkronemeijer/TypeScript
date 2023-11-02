@@ -1,13 +1,17 @@
-import { swear, Dictionary } from "@wkronemeijer/system";
+import { swear, Dictionary, notImplemented } from "@wkronemeijer/system";
 
 import * as esbuild from "esbuild";
 import { isValidElement } from "react";
 import { fileURLToPath } from "url";
 
 import { requireInline } from "./RequireInline";
-import { HtmlDocument } from "./RenderAndPrefix";
+import { HtmlDocument } from "./HtmlDocument";
 
 export const ReactPagePattern = /\.page\.[jt]sx$/;
+
+// Overlap, so always check server first.
+export const ReactServerPagePattern = /\.(ssr|page)\.[jt]sx$/;
+export const ReactClientPagePattern = /\.[jt]sx$/;
 
 export function isReactPage(filePath: string) {
     return ReactPagePattern.test(filePath);
@@ -15,7 +19,7 @@ export function isReactPage(filePath: string) {
 
 const SearchParameterReplacement = "URL_PARAMS";
 
-export async function renderJsx(fileUrl: URL): Promise<HtmlDocument> {
+export async function renderServerSideJsx(fileUrl: URL): Promise<HtmlDocument> {
     let result: JSX.Element;
     try {
         const filePath = fileURLToPath(fileUrl);
@@ -57,4 +61,8 @@ export async function renderJsx(fileUrl: URL): Promise<HtmlDocument> {
         </html>;
     }
     return HtmlDocument(result);
+}
+
+export async function renderClientSideJsx(fileUrl: URL): Promise<string> {
+    notImplemented();
 }
