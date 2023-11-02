@@ -16,6 +16,13 @@ function Link(props: {
     return <a href={href}>{decodeURIComponent(href).replace(ReactPagePattern, "")}</a>;
 }
 
+const ContentType = "Content-Type";
+
+function isTextResponse(res: express.Response): boolean {
+    const header = res.getHeader(ContentType);
+    return (typeof header === "string") && header.startsWith("text/");
+}
+
 function configureRouter(rootFolder: AbsolutePath): express.Router {
     const router  = express.Router();
     const rootUrl = pathToFileURL(rootFolder);
@@ -30,7 +37,9 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
         const start = performance.now();
         res.once("close", () => {
             const end = performance.now();
-            terminal.perf(`${req.url} in ${(end - start).toFixed(2)}ms`);
+            if (isTextResponse(res)) {
+                terminal.perf(`${req.url} in ${(end - start).toFixed(2)}ms`);
+            }
         });
         next();
     });
@@ -40,10 +49,10 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
             const fileUrl = new URL(rootUrl + req.url);
             swear(fileUrl.href.startsWith(rootUrl.href));
             
-            res.setHeader("Content-Type", "text/html");
+            res.setHeader(ContentType, "text/html");
             res.send(await renderServerSideJsx(fileUrl));
         } catch (e) {
-            res.setHeader("Content-Type", "text/plain");
+            res.setHeader(ContentType, "text/plain");
             res.send(e instanceof Error ? e.stack : String(e));
         }
     });
@@ -57,7 +66,7 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
             .toArray()
         );
         
-        res.setHeader("Content-Type", "text/html");
+        res.setHeader(ContentType, "text/html");
         res.send(HtmlDocument(<html>
             <head>
                 <title>{title}</title>
@@ -74,7 +83,7 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
     router.use(express.static(rootFolder, {
         setHeaders(res, path) {
             if (extname(path) === ".dd") {
-                res.setHeader("Content-Type", "text/plain");
+                res.setHeader(ContentType, "text/plain");
             }
         },
         fallthrough: false,
