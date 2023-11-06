@@ -1,7 +1,7 @@
 import { Dictionary, Dictionary_create, Dictionary_toMap } from "./Dictionary";
 import { MapLike, MutableMapLike } from "./MapLike";
 import { value_t, keyof_t } from "../Types/Primitive";
-import { Selector } from "./Sequence";
+import { Selector } from "../Data/Function/Selector";
 
 /** noot noot */
 export function Map_map<K, V, W>(

@@ -105,14 +105,4 @@ export function Function_memoize<P extends readonly value_t[], R>(
     };
 }
 
-/////////////////////
-// Tuple functions // 
-/////////////////////
-// TODO: Relocate (and relocate Function.ts too)
-
-/** Selects the first element of a tuple. */
-export const fst = <T>(array: readonly [T, ...any[]]): T => array[0];
-/** Selects the second element of a tuple. */
-export const snd = <T>(array: readonly [unknown, T, ...any[]]): T => array[1];
-
 export const flip = <T, U>(array: readonly [T, U]): readonly [U, T] => [array[1], array[0]];

@@ -1,26 +1,153 @@
 import { Dictionary, Dictionary_create } from "./Dictionary";
-import { deprecated, notImplemented } from "../Errors/ErrorFunctions";
+import { FstAny, SndAny, fst, snd } from "../Data/Tuple/Accessors";
 import { compare, compareAny } from "../Traits/Comparable/Compare";
 import { Comparable } from "../Traits/Comparable/Comparable";
+import { Predicate } from "../Data/Function/Predicate";
 import { Comparer } from "../Traits/Comparable/Comparer";
+import { Selector } from "../Data/Function/Selector";
 import { identity } from "../Data/Function";
 import { Truthy } from "../Types/Truthy";
 
-export interface Selector<T, U> {
-    (x: T): U;
+export interface Sequence<T> extends Iterable<T> {
+    /////////////////////////
+    // Expanding sequences //
+    /////////////////////////
+    
+    append(element: T): Sequence<T>;
+    concat<U>(that: Iterable<U>): Sequence<T | U>;
+    zip<U>(other: Iterable<U>): Sequence<[T, U]>;
+    
+    /////////////////////////////
+    // Standard fold functions //
+    /////////////////////////////
+    
+    select<U>(selector: Selector<T, U>): Sequence<U>;
+    selectMany<U>(selector: Selector<T, Iterable<U>>): Sequence<U>;
+    where(filter: Predicate<T>): Sequence<T>;
+    selectWhere<U>(selectorPredicate: Selector<T, U>): Sequence<Truthy<U>>;
+    distinct(): Sequence<T>;
+    reverse(): Sequence<T>;
+    
+    groupBy<G>(representativeSelector: Selector<T, G>): Sequence<[G, T[]]>;
+    
+    ///////////
+    // Pairs // 
+    ///////////
+    
+    associate<K, V>(
+        keySelector: Selector<T, K>, 
+        valueSelector: Selector<T, V>,
+    ): Sequence<[K, V]>;
+    
+    associateBy<K>(keySelector: Selector<T, K>): Sequence<[K, T]>;
+    associateWith<V>(valueSelector: Selector<T, V>): Sequence<[T, V]>;
+    
+    ///////////
+    // Sorts //
+    ///////////
+    
+    orderBy(comparer: Comparer<T>): Sequence<T> ;
+    
+    orderOn<U extends Comparable>(
+        selector: Selector<T, U>,
+        comparer?: Comparer<U>,
+    ): Sequence<T>;
+    
+    ordered(): Sequence<T>;
+    
+    //////////////////////
+    // Modify sequences //
+    //////////////////////
+    
+    take(n: number): Sequence<T>;
+    
+    skip(n: number): Sequence<T>;
+    
+    skipWhile(predicate: Predicate<T>): Sequence<T>;
+    takeWhile(predicate: Predicate<T>): Sequence<T>;
+    
+    /////////////////////////
+    // To-other-collection //
+    /////////////////////////
+    
+    toArray(): T[];
+    
+    // Thanks to TS 4.X you can provide type hints without actually invoking a function. 
+    // Making this pseudo """higher kinded type higher order function""" possible.
+    to<C extends new (iterable: Iterable<T>) => any>(constructor: C): InstanceType<C>;
+    
+    toSet(): Set<T>;
+    
+    
+    toMap(): Map<FstAny<T>, SndAny<T>>;
+    toMap<K, V>(
+        keySelector: Selector<T, K>, 
+        valueSelector: Selector<T, V>,
+    ): Map<K, V>;
+    
+    toMapBy<K>(
+        keySelector: Selector<T, K>, 
+    ): Map<K, T>;
+    
+    toMapWith<V>(
+        valueSelector: Selector<T, V>,
+    ): Map<T, V>;
+    
+    toDictionary<V>(
+        keySelector: Selector<T, string>, 
+        valueSelector: Selector<T, V>,
+    ): Dictionary<V>;
+    
+    toDictionaryBy(
+        keySelector: Selector<T, string>, 
+    ): Dictionary<T>;
+    
+    toString(seperator?: string): string;
+    
+    ////////////////////////////
+    // Other "finish" methods //
+    ////////////////////////////
+    
+    /** The size of the selected sequence. */
+    count(): number;
+    
+    /** The maximum of the selected sequence. */
+    max(selector: Selector<T, number>): number;
+    
+    /** The minimum of the selected sequence. */
+    min(selector: Selector<T, number>): number;
+    
+    /** The first element of the sequence. Terminal operation. */
+    first(): T | undefined;
+    
+    /** The last element of the sequence. */
+    last(): T | undefined;
 }
 
-export interface Predicate<T> {
-    (x: T): unknown;
+interface SequenceConstructor {
+    empty<T>(this: unknown): Sequence<T>;
+    singleton<T>(this: unknown, element: T): Sequence<T>;
+    from<T>(this: unknown, iter: Iterable<T> | undefined): Sequence<T>;
+    of<T>(this: unknown, ...elements: T[]): Sequence<T>;
+    
+    range(this: unknown, end: number): Sequence<number>;
+    range(this: unknown, start: number, end: number): Sequence<number>;
 }
+
+const EmptyIterable: Iterable<never> = (function* (){}());
 
 /** 
- * Immutable wrapper around an iterable. Made to match the C#'s API. 
+ * Immutable wrapper around an iterable. 
  * 
- * Not directly callable. Try {@link Sequence.empty} or {@link Sequence.from} instead.
+ * Use {@link Sequence.empty} or {@link from} to get an instance.
  */
-export class Sequence<T> implements Iterable<T> {
-    private constructor(private readonly source: Iterable<T>) {}
+export const Sequence
+:            SequenceConstructor 
+= class      SequenceImpl<T> 
+implements   Sequence<T>, Iterable<T> {
+    private constructor(
+        private readonly source: Iterable<T> = EmptyIterable,
+    ) {}
     
     [Symbol.iterator](): Iterator<T> {
         return this.source[Symbol.iterator]();
@@ -30,29 +157,22 @@ export class Sequence<T> implements Iterable<T> {
     // Creating sequences //
     ////////////////////////
     
-    /** @bound */
     static empty<T>(): Sequence<T> {
-        return Sequence.from([]);
+        return new SequenceImpl(EmptyIterable);
     }
     
-    /** @bound */
+    static readonly default: Sequence<never> = new SequenceImpl(EmptyIterable);
+    
     static singleton<T>(element: T): Sequence<T> {
-        return Sequence.from([element]);
+        return SequenceImpl.from([element]);
     }
     
-    /** 
-     * Starts a iterable sequence. 
-     * Made to look like LINQ. 
-     * 
-     * @bound
-     */
-    static from<T>(iter: Iterable<T>): Sequence<T> {
-        return new Sequence(iter);
+    static from<T>(iter: Iterable<T> | undefined): Sequence<T> {
+        return new SequenceImpl(iter);
     }
     
-    /** @bound */
     static of<T>(...elements: T[]): Sequence<T> {
-        return Sequence.from(elements);
+        return SequenceImpl.from(elements);
     }
     
     static range(end: number): Sequence<number>;
@@ -65,19 +185,19 @@ export class Sequence<T> implements Iterable<T> {
         let start: number;
         let end  : number;
         
-        if (_end !== undefined) {
-            start = startOrEnd;
-            end   = _end;
-        } else {
+        if (_end === undefined) {
             start = 0;
             end = startOrEnd;
+        } else {
+            start = startOrEnd;
+            end   = _end;
         }
         
         ////////////////////
         // Implementation //
         ////////////////////
         
-        return new Sequence(function*(): Iterable<number> {
+        return new SequenceImpl(function*(): Iterable<number> {
             for (let i = start; i < end ; i++) {
                 yield i;
             }
@@ -90,7 +210,7 @@ export class Sequence<T> implements Iterable<T> {
     
     append(element: T): Sequence<T> {
         const self = this;
-        return new Sequence(function*(): Iterable<T> {
+        return new SequenceImpl(function*(): Iterable<T> {
             yield* self;
             yield element;
         }());
@@ -98,7 +218,7 @@ export class Sequence<T> implements Iterable<T> {
     
     concat<U>(that: Iterable<U>): Sequence<T | U> {
         const self = this;
-        return new Sequence(function*(): Iterable<T | U> {
+        return new SequenceImpl(function*(): Iterable<T | U> {
             yield* self;
             yield* that;
         }());
@@ -106,22 +226,17 @@ export class Sequence<T> implements Iterable<T> {
     
     zip<U>(other: Iterable<U>): Sequence<[T, U]> {
         const self = this;
-        return new Sequence(function*(): Iterable<[T, U]> {
+        return new SequenceImpl(function*(): Iterable<[T, U]> {
             const iterator1 = self[Symbol.iterator]();
             const iterator2 = other[Symbol.iterator]();
             
             let result1: IteratorResult<T>;
             let result2: IteratorResult<U>;
-            
-            while(true) {
-                result1 = iterator1.next();
-                result2 = iterator2.next();
-                
-                if (!result1.done && !result2.done) {
-                    yield [result1.value, result2.value];
-                } else {
-                    return;
-                }
+            while(
+                !(result1 = iterator1.next()).done && 
+                !(result2 = iterator2.next()).done
+            ) {
+                yield [result1.value, result2.value];
             }
         }());
     }
@@ -132,7 +247,7 @@ export class Sequence<T> implements Iterable<T> {
     
     select<U>(selector: Selector<T, U>): Sequence<U> {
         const self = this;
-        return new Sequence(function*(): Iterable<U> {
+        return new SequenceImpl(function*(): Iterable<U> {
             for (const item of self) {
                 yield selector(item);
             }
@@ -141,7 +256,7 @@ export class Sequence<T> implements Iterable<T> {
     
     selectMany<U>(selector: Selector<T, Iterable<U>>): Sequence<U> {
         const self = this;
-        return new Sequence(function* () {
+        return new SequenceImpl(function* () {
             for (const item of self) {
                 yield* selector(item);
             }
@@ -150,7 +265,7 @@ export class Sequence<T> implements Iterable<T> {
     
     where(filter: Predicate<T>): Sequence<T> {
         const self = this;
-        return new Sequence(function*(): Iterable<T> {
+        return new SequenceImpl(function*(): Iterable<T> {
             for (const item of self) {
                 if (filter(item)) {
                     yield item;
@@ -164,7 +279,7 @@ export class Sequence<T> implements Iterable<T> {
      */
     selectWhere<U>(selectorPredicate: Selector<T, U>): Sequence<Truthy<U>> {
         const self = this;
-        return new Sequence(function*(): Iterable<Truthy<U>> {
+        return new SequenceImpl(function*(): Iterable<Truthy<U>> {
             for (const item of self) {
                 const result = selectorPredicate(item);
                 if (result) {
@@ -174,10 +289,10 @@ export class Sequence<T> implements Iterable<T> {
         }());
     }
     
-    /** **Warning** and TODO: only supports primitve equality (i.e. it uses `===`). */
     distinct(): Sequence<T> {
         const self = this;
-        return new Sequence(function*(): Iterable<T> {
+        return new SequenceImpl(function*(): Iterable<T> {
+            // TODO: Use equals
             const visitedSet = new Set<T>();
             for (const item of self) {
                 if (!visitedSet.has(item)) {
@@ -188,15 +303,27 @@ export class Sequence<T> implements Iterable<T> {
         }());
     }
     
-    /** @deprecated Use {@link distinct} instead. */
-    unique(): Sequence<T> {
-        deprecated();
-    }
-    
     reverse(): Sequence<T> {
         const self = this;
-        return new Sequence(function*(): Iterable<T> {
+        return new SequenceImpl(function* (): Iterable<T> {
             yield* self.toArray().reverse();
+        }());
+    }
+    
+    groupBy<G>(representativeSelector: Selector<T, G>): Sequence<[G, T[]]> {
+        const self = this;
+        return new SequenceImpl(function (): Iterable<[G, T[]]> {
+            let list: T[] | undefined;
+            
+            const result = new Map<G, T[]>;
+            for (const item of self) {
+                const group = representativeSelector(item);
+                if (!(list = result.get(group))) {
+                    result.set(group, list = []);
+                }
+                list.push(item);
+            }
+            return result;
         }());
     }
     
@@ -209,7 +336,7 @@ export class Sequence<T> implements Iterable<T> {
         valueSelector: Selector<T, V>,
     ): Sequence<[K, V]> { 
         const self = this;
-        return new Sequence(function*(): Iterable<[K, V]> {
+        return new SequenceImpl(function* (): Iterable<[K, V]> {
             for (const item of self) {
                 yield [keySelector(item), valueSelector(item)];
             }
@@ -217,13 +344,13 @@ export class Sequence<T> implements Iterable<T> {
     }
     
     associateBy<K>(
-        keySelector: Selector<T, K>
+        keySelector: Selector<T, K>,
     ): Sequence<[K, T]> {
         return this.associate(keySelector, identity);
     }
     
     associateWith<V>(
-        valueSelector: Selector<T, V>
+        valueSelector: Selector<T, V>,
     ): Sequence<[T, V]> {
         return this.associate(identity, valueSelector);
     }
@@ -234,7 +361,7 @@ export class Sequence<T> implements Iterable<T> {
     
     orderBy(comparer: Comparer<T>): Sequence<T> {
         const self = this;
-        return new Sequence(function*(): Iterable<T> {
+        return new SequenceImpl(function*(): Iterable<T> {
             yield* self.toArray().sort(comparer);
         }());
     }
@@ -256,7 +383,7 @@ export class Sequence<T> implements Iterable<T> {
     
     take(n: number): Sequence<T> {
         const self = this;
-        return new Sequence(function*(): Iterable<T> {
+        return new SequenceImpl(function*(): Iterable<T> {
             let i = 0;
             for (const item of self) {
                 if (i++ < n) {
@@ -270,7 +397,7 @@ export class Sequence<T> implements Iterable<T> {
     
     skip(n: number): Sequence<T> {
         const self = this;
-        return new Sequence(function*(): Iterable<T> {
+        return new SequenceImpl(function*(): Iterable<T> {
             let i = 0;
             for (const item of self) {
                 if (i++ < n) {
@@ -282,20 +409,37 @@ export class Sequence<T> implements Iterable<T> {
         }());
     }
     
-    // takeWhile(filter: Predicate<T>): Sequence<T> {
-    //     const self = this;
-    //     return new Sequence(function*(): Iterable<T> {
-    //         notImplemented();
-    //         // (Old one was a funny looking filter)
-    //     }());
-    // }
+    // take until false, then drop remaining
+    takeWhile(filter: Predicate<T>): Sequence<T> {
+        const self = this;
+        return new SequenceImpl(function*(): Iterable<T> {
+            for (const item of self) {
+                if (filter(item)) {
+                    yield item;
+                } else {
+                    break;
+                }
+            }
+        }());
+    }
     
-    // skipWhile(filter: Predicate<T>): Sequence<T> {
-    //     const self = this;
-    //     return new Sequence(function*(): Iterable<T> {
-    //         notImplemented();
-    //     }());
-    // }
+    // drop until false, then take remaining
+    skipWhile(filter: Predicate<T>): Sequence<T> {
+        const self = this;
+        let skipping = true;
+        return new SequenceImpl(function*(): Iterable<T> {
+            for (const item of self) {
+                if (skipping) {
+                    if (!filter(item)) {
+                        skipping = false;
+                    }
+                }
+                if (!skipping) {
+                    yield item;
+                }
+            }
+        }());
+    }
     
     /////////////////////////
     // To-other-collection //
@@ -315,9 +459,11 @@ export class Sequence<T> implements Iterable<T> {
         return this.to(Set<T>); 
     }
     
+    toMap(): Map<FstAny<T>, SndAny<T>>;
+    toMap<K, V>(keySelector: Selector<T, K>, valueSelector: Selector<T, V>): Map<K, V>;
     toMap<K, V>(
-        keySelector: Selector<T, K>, 
-        valueSelector: Selector<T, V>,
+        keySelector  : Selector<T, K> = fst as any, 
+        valueSelector: Selector<T, V> = snd as any,
     ): Map<K, V> {
         return this.associate(keySelector, valueSelector).to(Map<K, V>);
     }
@@ -355,60 +501,58 @@ export class Sequence<T> implements Iterable<T> {
         return Array.from(this).join(seperator);
     }
     
-    // Generic to(Collection) is not possible, because HKTs aren't a thing.
-    
     ////////////////////////////
     // Other "finish" methods //
     ////////////////////////////
     
-    /** The size of the selected sequence. */
     count(): number {
-        let count = 0;
-        for (const _ of this) {
-            count++;
+        if (this.source instanceof Array) {
+            // NB: string iterators doesn't break surrogates, so the iterable length != the length of the string.
+            return this.source.length;
+        } else if (this.source instanceof Map || this.source instanceof Set) {
+            return this.source.size;
+        } else {
+            let count = 0;
+            for (const _ of this) {
+                count++;
+            }
+            return count;
         }
-        return count;
     }
     
-    /** The maximum of the selected sequence. */
     max(selector: Selector<T, number>): number {
         return Math.max(...this.select(selector));
     }
     
-    /** The minimum of the selected sequence. */
     min(selector: Selector<T, number>): number {
         return Math.min(...this.select(selector));
     }
     
-    /** The first element of the sequence. Terminal operation. */
     first(): T | undefined {
+        let result: IteratorResult<T>;
+        
         const iterator = this[Symbol.iterator]();
         
-        const result = iterator.next();
-        if (!result.done) {
+        if (!(result = iterator.next()).done) {
             return result.value;
         } else { // iterator was empty
             return undefined;
         }
     }
     
-    /** The last element of the sequence. */
     last(): T | undefined {
-        const iterator = this[Symbol.iterator]();
+        let result: IteratorResult<T>;
         
-        let lastValue: T | undefined;
-        while (true) {
-            const result = iterator.next();
-            if (!result.done) {
-                lastValue = result.value;
-            } else {
-                break;
-            }
+        const iterator = this[Symbol.iterator]();
+        let lastValue: T | undefined = undefined;
+        
+        while (!(result = iterator.next()).done) {
+            lastValue = result.value;
         }
         return lastValue;
     }
 }
 
-/** Short hand for {@link Sequence.from}, made to look like LINQ. */
-export const from = Sequence.from;
+/** Short hand for {@link Sequence.from}. */
+export const from: <T>(iterable: Iterable<T> | undefined) => Sequence<T> = Sequence.from;
 // ^ Don't change, it is used all over the place lol

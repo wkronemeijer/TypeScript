@@ -1,4 +1,4 @@
-import { Predicate } from "../Sequence";
+import { Predicate } from "../../Data/Function/Predicate";
 
 export class PersistentSet<T> implements ReadonlySet<T> {
     readonly size: number;
