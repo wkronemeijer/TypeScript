@@ -13,7 +13,7 @@ export function isReactPage(filePath: string) {
     return ReactPagePattern.test(filePath);
 }
 
-const SearchParameterReplacement = "URL_PARAMS";
+const SearchParameterReplacement = "__URL_PARAMS";
 
 export async function renderServerSideJsx(fileUrl: URL): Promise<HtmlDocument> {
     let result: JSX.Element;
