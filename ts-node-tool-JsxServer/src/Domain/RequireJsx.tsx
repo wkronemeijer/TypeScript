@@ -15,6 +15,8 @@ export function isReactPage(filePath: string) {
 
 const SearchParameterReplacement = "__URL_PARAMS";
 
+const ESTarget = "es2022";
+
 export async function renderServerSideJsx(fileUrl: URL): Promise<HtmlDocument> {
     let result: JSX.Element;
     try {
@@ -26,10 +28,15 @@ export async function renderServerSideJsx(fileUrl: URL): Promise<HtmlDocument> {
             entryPoints: [filePath],
             bundle: true,
             write: false,
-            format: "cjs",
-            sourcemap: "inline",
             jsx: "automatic",
-            charset: "utf8", // not the default? wut
+            
+            platform: "node",
+            format: "cjs",
+            target: [ESTarget],
+            
+            minifyWhitespace: true,
+            sourcemap: "inline",
+            
             define: {
                 [SearchParameterReplacement]: JSON.stringify(paramsObject),
             },
@@ -78,10 +85,14 @@ export async function renderClientSideJsx(fileUrl: URL): Promise<string> {
             entryPoints: [filePath],
             bundle: true,
             write: false,
-            format: "iife",
-            sourcemap: "inline",
             jsx: "automatic",
             charset: "utf8", 
+            
+            target: [ESTarget],
+            platform: "browser",
+            
+            minifyWhitespace: true,
+            sourcemap: "inline",
         });
         result = buildResult.outputFiles?.[0]?.text ?? "";
     } catch (e) {
