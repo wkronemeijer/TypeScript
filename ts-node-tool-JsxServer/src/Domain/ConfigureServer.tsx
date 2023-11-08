@@ -1,13 +1,14 @@
 import { basename, extname } from "path";
 import { pathToFileURL } from "url";
 
-import { from, swear, terminal } from "@wkronemeijer/system";
 import { AbsolutePath, Directory } from "@wkronemeijer/system-node";
+import { from, swear, terminal } from "@wkronemeijer/system";
 
 import * as express from "express";
 
-import { ClientSideCodePattern, ReactPagePattern, isReactPage, renderClientSideJsx, renderServerSideJsx } from "./RequireJsx";
-import { HtmlDocument } from "./HtmlDocument";
+import { ReactPagePattern, isReactPage, renderServerSideJsx } from "./Server/RenderServer";
+import { ClientSideCodePattern, renderClientSideJsx } from "./Client/RenderClient";
+import { HtmlDocument } from "./Server/HtmlDocument";
 import { Link } from "./Link";
 
 const ContentType = "Content-Type";

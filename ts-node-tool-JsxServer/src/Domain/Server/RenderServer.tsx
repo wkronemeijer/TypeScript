@@ -4,7 +4,8 @@ import * as esbuild from "esbuild";
 import { isValidElement } from "react";
 import { fileURLToPath } from "url";
 
-import { requireInline } from "./RequireInline";
+import { BuildResult_getOutput, ESTarget } from "../Shared/ESBuild";
+import { requireInline } from "../RequireInline";
 import { HtmlDocument } from "./HtmlDocument";
 
 export const ReactPagePattern = /\.page\.[jt]sx$/;
@@ -14,8 +15,6 @@ export function isReactPage(filePath: string) {
 }
 
 const SearchParameterReplacement = "__URL_PARAMS";
-
-const ESTarget = "es2022";
 
 export async function renderServerSideJsx(fileUrl: URL): Promise<HtmlDocument> {
     let result: JSX.Element;
@@ -42,9 +41,9 @@ export async function renderServerSideJsx(fileUrl: URL): Promise<HtmlDocument> {
             },
         });
         
-        const sourceCode = buildResult.outputFiles?.[0]?.text ?? "";
-        const module     = requireInline(filePath, sourceCode);
-        const jsx        = module.exports.default;
+        const sourceCode = BuildResult_getOutput(buildResult);
+        const module = requireInline(filePath, sourceCode);
+        const jsx = module.exports.default;
         swear(isValidElement(jsx), "'default' export was not a JSX element.");
         result = jsx;
     } catch (e) {
@@ -61,43 +60,7 @@ export async function renderServerSideJsx(fileUrl: URL): Promise<HtmlDocument> {
                     {e.stack}
                 </div>
             </body>
-        </html>
+        </html>;
     }
     return HtmlDocument(result);
-}
-
-/////////////////
-// Client side //
-/////////////////
-
-export const ClientSideCodePattern = /\.[jt]sx?$/; 
-
-export function isClientSideCode(filePath: string) {
-    return ClientSideCodePattern.test(filePath);
-}
-
-export async function renderClientSideJsx(fileUrl: URL): Promise<string> {
-    let result: string;
-    try {
-        const filePath = fileURLToPath(fileUrl);
-        swear(isClientSideCode(filePath), "filePath does not lead to a script file.");
-        const buildResult = await esbuild.build({
-            entryPoints: [filePath],
-            bundle: true,
-            write: false,
-            jsx: "automatic",
-            charset: "utf8", 
-            
-            target: [ESTarget],
-            platform: "browser",
-            
-            minifyWhitespace: true,
-            sourcemap: "inline",
-        });
-        result = buildResult.outputFiles?.[0]?.text ?? "";
-    } catch (e) {
-        swear(e instanceof Error, "Non-Error thrown.");
-        result = `document.body.append(String.raw\`${e.stack}\`);`;
-    }
-    return result;
 }

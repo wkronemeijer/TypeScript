@@ -1,4 +1,4 @@
-import { ReactPagePattern } from "./RequireJsx";
+import { ReactPagePattern } from "./Server/RenderServer";
 
 export function Link(props: {
     readonly href: string;
