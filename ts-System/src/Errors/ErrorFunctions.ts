@@ -9,11 +9,6 @@ import { Exception } from "../Assert";
 // Throwing in creative ways //
 ///////////////////////////////
 
-/** Marks a function as not (yet) implemented. */
-export function notImplemented(): never {
-    throw new Error("This method is not (yet) implemented.");
-}
-
 /** Marks a function as no longer supported. */
 export function deprecated(): never {
     throw new Error("This method is no longer supported.");
@@ -38,3 +33,20 @@ export function mildPanic(reason?: string): never {
 export function neverPanic(missingCase: never): never {
     throw new Error(`Missing a case for '${missingCase}'.`);
 }
+
+/////////////////////
+// Not implemented //
+/////////////////////
+
+/** Marks a function as not (yet) implemented. */
+function notImplemented(...args: unknown[]): never {
+    throw new Error("This is not (yet) implemented.");
+}
+
+// Global define so you don't miss unused "notImplemented" imports.
+// Also means every instance of notImplemented is easily searched.
+declare global {
+    const __NOT_IMPLEMENTED: typeof notImplemented;
+}
+
+Object.defineProperty(globalThis, "__NOT_IMPLEMENTED", { value: notImplemented });

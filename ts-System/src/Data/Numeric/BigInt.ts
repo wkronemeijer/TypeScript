@@ -1,11 +1,9 @@
-import { notImplemented } from "../../Errors/ErrorFunctions";
-
 const step   = 32n;
 const u32max = 1n << step;
 
 export function BigInt_getInt32s(n: bigint): number[] {
     if (n < 0n) {
-        notImplemented();
+        __NOT_IMPLEMENTED();
     }
     
     const result = new Array<number>;

@@ -157,7 +157,7 @@ export function Path_removeExtension<P extends Path>(self: P): P {
 }
 
 export function Path_addSuffixExtension<P extends Path>(self: P, extension: string): P {
-    notImplemented();
+    __NOT_IMPLEMENTED();
 }
 
 /////////////////////////
