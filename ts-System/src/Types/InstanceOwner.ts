@@ -1,8 +1,3 @@
-export interface HasInstance<T> {
-    [Symbol.hasInstance](x: unknown): x is T;
-}
-
-
 export type InstanceOwner<T> =
     | { [Symbol.hasInstance](x: unknown): x is T; } 
     | {

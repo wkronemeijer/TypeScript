@@ -7,6 +7,7 @@ import { EqualityComparer } from "../../Traits/Equatable/EqualityComparer";
 import { StringBuilder } from "../../Text/StringBuilder";
 import { inspectValue } from "../../Text/Formatting/Inspect";
 import { ArrayMember } from "../Enumeration";
+import { HasInstance } from "../../Types/HasInstance";
 import { Map_reverse } from "../../Collections/Map";
 import { Set_hasAny } from "../../Collections/Set";
 import { Printable } from "../../Traits/Printable";
@@ -14,14 +15,14 @@ import { Ordering } from "../../Traits/Comparable/Ordering";
 import { Comparer } from "../../Traits/Comparable/Comparer";
 import { panic } from "../../Errors/ErrorFunctions";
 
-const { isFinite, isNaN, isInteger, isSafeInteger } = Number;
+const { isSafeInteger } = Number;
 
 /////////////////////
 // StringEnum type //
 /////////////////////
 
 export interface StringEnum<E extends string> 
-extends Iterable<E>, Printable {
+extends Iterable<E>, Printable, HasInstance<E> {
     //////////////////////////
     // Collection of values //
     //////////////////////////
