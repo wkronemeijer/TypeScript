@@ -1,6 +1,6 @@
 // Wraps nodejs's path module, to maintain information about the kind of path.
 
-import { Newtype, notImplemented, requires, satisfiesStrictly, swear } from "@wkronemeijer/system";
+import { Newtype, requires, satisfiesStrictly, swear } from "@wkronemeijer/system";
 
 import { resolve, join, relative, ParsedPath, parse, isAbsolute, sep, normalize } from "path";
 import { pathToFileURL } from "url";

@@ -1,4 +1,4 @@
-import { StringEnum, Thunk, clamp, collect, panic, pass, swear } from "@wkronemeijer/system";
+import { StringEnum, Thunk, clamp, collect, panic, pass, swear, terminal } from "@wkronemeijer/system";
 
 import { Directory, File } from "../../IO/FileSystem/Entity";
 
@@ -103,8 +103,8 @@ export function CliParameter<T>(
     const hasArgument = !options.isNullary;
     const aliases     = getAllAliases(options);
     
-    const getAmbientDefault = options.getAmbientDefault ?? myPanic;
-    const getDefault        = myPanic;
+    const getAmbientDefault = options.getAmbientDefault;
+    const getDefault        = undefined;
     const stringify         = options.stringify ?? String;
     const validate          = options.validate  ?? pass;
     const parse             = options.parse;
@@ -177,6 +177,7 @@ export function CliParameter_useAmbientDefault<T>(
             getDefault = overrideAmbientDefault.getDefault;
         }
     } else {
+        console.log(self.getDefault);
         swear(self.getDefault === undefined, "Default already set.");
         getDefault = self.getAmbientDefault;
     }
