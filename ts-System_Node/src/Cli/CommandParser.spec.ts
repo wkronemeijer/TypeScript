@@ -1,4 +1,4 @@
-import { StringEnum, swear } from "@wkronemeijer/system";
+import { StringEnum, check } from "@wkronemeijer/system";
 import { CliParameterTools } from "./Parameters/ParameterTools";
 import { CliCommandParser } from "./CommandParser";
 
@@ -21,10 +21,6 @@ const {
     AcceptRestArguments, 
 } = CliParameterTools;
 
-///////////
-// Usage //
-///////////
-
 describe("CommandParser", () => {
     const parser = new CliCommandParser({
         default: {
@@ -42,8 +38,6 @@ describe("CommandParser", () => {
             search: string(),
             recurse: optional(flag()),
             force: optional(flag()),
-            // required flags for something like 
-            //    rm mySecretFolder --YesIAmReallySure
             bogus: optional(parameter({
                 parse: String,
             }), {
@@ -62,48 +56,18 @@ describe("CommandParser", () => {
         },
     });
     
-    it("parses simple case", () => {        
-        const mode = parser.parse(["sum", "--force"]);
-        if (mode.kind === "default") {
-            const dir = mode[0];
-            dir;
-        } else if (mode.kind === "install") {
-            mode
-        } else if (mode.kind === "sum") {
-            mode
-        }
+    it.skip("parses simple case", () => {        
+        const mode = parser.parse(["--search", "some string"]);
+        check.same(mode.kind, "default");
+        check.ok(mode.search === "some string");
     });
-
-    it("parses rest arguments", () => {
-        const result = parser.parse(["sum"]);
-        swear(result.kind === "sum");
+    
+    it.skip("parses rest arguments", () => {
+        const mode = parser.parse(["sum", "--force", "foo"]);
+        check.same(mode.kind, "sum");
+        check.ok(mode.force);
+        check.same(mode.rest[0], "foo");
     });
+    
+    it("does not validate defaults");
 });
-// very cool, BUT
-// Problem: doesn't work for 
-// Now technically you never import the tests 
-// but how will you write the tests?
-
-/*
-
-Decision time!
-How do we do tests?
-Do we accept node:test runner?
-
-Some facts:
-- ts-System needs tests the most, but /technically/ can't rely on node being present. 
-- Test classes belong in the same project, so @internal can be used to test internal classes.
-- Store another projects tests?
-- Run another projects tests?
-
-
-- As for a centralized Tests.gen.ts, its not that I like as much as it is universal for both browser and node.
-
-Maybe create a expected/actual split for runTests, which can support 
-Only thing to fix is whether or not it support dynamic modules, and where to find them. 
-
-Worst case, node can dynamically load, web has to toggle a comment.
-Testing web stuff is really annoying...
-
-
- */

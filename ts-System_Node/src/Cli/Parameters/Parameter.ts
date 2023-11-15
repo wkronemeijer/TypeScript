@@ -49,6 +49,8 @@ type CommonCapabilities<T> = BaseCapabilities<T>;
 //     & ArityCapability<T>
 //     & ValidateCapability<T>
 // ;
+// Kinda of like: command-bound parameters, and type-bound parameters
+// as the type is fixed for most tools.* functions
 
 type AllCapabilities<T> = (
     & AliasCapability<T>
@@ -88,14 +90,6 @@ const getAllAliases = collect(function* (
     }
 });
 
-const myPanic = () => panic("No default specified.");
-// Placeholder is cute, but fragile
-// i.e. you'd want a symbol for this
-// or just use undefined lol
-// its not deferred, so safe to use. 
-// besides, you could just restrict T to {}
-// (atleast for the factory)
-
 export function CliParameter<T>(
     options: AllCapabilities<T>,
 ): CliParameter<T> {
@@ -124,7 +118,7 @@ export function CliParameter<T>(
 export function CliParameter_isRequired(
     self: CliParameter<unknown>,
 ): boolean {
-    return self.getDefault === myPanic;
+    return self.getDefault === undefined;
 }
 
 // maybe an extend version?
@@ -177,7 +171,6 @@ export function CliParameter_useAmbientDefault<T>(
             getDefault = overrideAmbientDefault.getDefault;
         }
     } else {
-        console.log(self.getDefault);
         swear(self.getDefault === undefined, "Default already set.");
         getDefault = self.getAmbientDefault;
     }

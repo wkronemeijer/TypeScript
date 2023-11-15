@@ -1,4 +1,4 @@
-import { panic, swear } from "@wkronemeijer/system";
+import {  swear } from "@wkronemeijer/system";
 import { StoredCliParameter } from "./StoredParameter";
 import { CliParameterLabel, CliParameterLabel_tryParseArgument } from "./Parameters/ParameterLabel";
 import { CliParseResult, ExtendedCliParseResult } from "./ParseResult";
@@ -8,9 +8,7 @@ interface OneTimeScanner_Options {
     readonly args: readonly string[];
     readonly useRestArguments: boolean;
     readonly parametersByIndex: ReadonlyArray<StoredCliParameter<any>>;
-    readonly parametersByLabel: ReadonlyMap<
-        CliParameterLabel, StoredCliParameter<any>
-    >;
+    readonly parametersByLabel: ReadonlyMap<CliParameterLabel, StoredCliParameter<any>>;
 }
 
 /** @internal */
@@ -58,7 +56,9 @@ export class CliSubcommand_OneTimeScanner {
     }
     
     private advance(): string | undefined {
-        return this.args[this.currentArgument++];
+        const result = this.args[this.currentArgument++];
+        console.log("advance: ", result);
+        return result;
     }
     
     private pushRestArgument(arg: string): void {
@@ -80,7 +80,7 @@ export class CliSubcommand_OneTimeScanner {
             this.pushRestArgument(word);
         } else if (label = CliParameterLabel_tryParseArgument(word)) {
             const param = this.parametersByLabel.get(label);
-            swear(param !== undefined, () => 
+            swear(param, () => 
                 `Unknown parameter '${label}'.`);
             let arg: string | undefined = "";
             // Nullary parameters receive "", not undefined.

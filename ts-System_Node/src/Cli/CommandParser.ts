@@ -1,9 +1,8 @@
-import { ExpandType, swear } from "@wkronemeijer/system";
+import { ExpandType, Newtype, Newtype_createRegExpChecker, swear } from "@wkronemeijer/system";
 
 import { CliParseResult, CliCommandTree_Translate } from "./ParseResult";
 import { CliSubcommandTree, CliCommandTree } from "./CommandTree";
 import { CliSubcommandParser } from "./SubcommandParser";
-import { CliParameterLabel } from "./Parameters/ParameterLabel";
 
 export interface CliCommandParser<T extends CliCommandTree> {
     /**
@@ -19,20 +18,23 @@ interface CliCommandParserConstructor {
     new<const T extends CliCommandTree>(tree: T): CliCommandParser<T>;
 }
 
+export type  SubcommandParserName = Newtype<string, "SubcommandParserName">;
+export const SubcommandParserName = Newtype_createRegExpChecker<SubcommandParserName>(/[a-z\-]+/);
+
 export const CliCommandParser
 :            CliCommandParserConstructor 
 = class      CliCommandParserImpl<const T extends CliCommandTree>
 implements   CliCommandParser<T> {
-    readonly subparsersByLabel = new Map<CliParameterLabel, CliSubcommandParser>;
+    readonly subparsersByName = new Map<SubcommandParserName, CliSubcommandParser>;
     readonly defaultSubparser: CliSubcommandParser;
     
     private registerSubcommand(
         name: Extract<keyof T, string>, 
         subcommand: CliSubcommandTree,
     ): CliSubcommandParser {
-        const token     = CliParameterLabel(name);
+        const token     = SubcommandParserName(name);
         const subParser = new CliSubcommandParser(name, subcommand);
-        this.subparsersByLabel.set(token, subParser);
+        this.subparsersByName.set(token, subParser);
         return subParser;
     }
     
@@ -58,10 +60,9 @@ implements   CliCommandParser<T> {
         let restArgs   = args;
         
         const discriminator = args[0];
-        if (discriminator) {
-            const discriminatorToken = CliParameterLabel(discriminator);
-            for (const [parserToken, parser] of this.subparsersByLabel) {
-                if (discriminatorToken === parserToken) {
+        if (SubcommandParserName.hasInstance(discriminator)) {
+            for (const [parserToken, parser] of this.subparsersByName) {
+                if (parserToken === discriminator) {
                     restParser = parser;
                 }
             }

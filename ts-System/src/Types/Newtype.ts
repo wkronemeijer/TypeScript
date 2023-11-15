@@ -30,7 +30,7 @@ export type Newtype<
 // Specially runs on newtypes
 // Uses pattern to string -> Newtype
 
-interface RegExpChecker<M extends Newtype<string, any>> 
+export interface RegExpChecker<M extends Newtype<string, any>> 
 extends HasInstance<M> {
     (value: string): M;
 }

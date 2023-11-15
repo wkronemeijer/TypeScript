@@ -24,9 +24,12 @@ export function CliParameterLabel(string: string): CliParameterLabel {
 
 export function CliParameterLabel_tryParseArgument(string: string): CliParameterLabel | undefined {
     if (
-        (string.startsWith('-') ||        string.startsWith('--')) &&
-        string.length > 2
+        (
+            string.startsWith('-') ||        
+            string.startsWith('--')
+        ) && string.length > 2
     ) {
+        console.log(string, "is label");
         return CliParameterLabel(string);
     } else {
         return undefined;

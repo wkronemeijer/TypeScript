@@ -1,10 +1,7 @@
 import { Thunk, panic } from "@wkronemeijer/system";
-import { CliParameter } from "./Parameters/Parameter";
-import { CliParameterLabel } from "./Parameters/ParameterLabel";
 
-////////////////////
-// Implementation //
-////////////////////
+import { CliParameterLabel } from "./Parameters/ParameterLabel";
+import { CliParameter } from "./Parameters/Parameter";
 
 export interface StoredCliParameter<T> {
     readonly name: string;
@@ -55,8 +52,8 @@ implements   StoredCliParameter<T> {
         
         this.getDefault = param.getDefault;
         this.innerParse = param.parse;
-        this.validate = param.validate;
-
+        this.validate   = param.validate;
+        
         this.isRequired = this.getDefault !== undefined;
     }
     
@@ -67,7 +64,7 @@ implements   StoredCliParameter<T> {
         } else if (this.getDefault !== undefined) {
             value = this.getDefault();
         } else {
-            panic(`No default for paramater '${this.name}'.`);
+            panic(`No value provided for parameter '${this.name}' (which lacks a default).`);
         }
         this.validate(value);
         return value;
