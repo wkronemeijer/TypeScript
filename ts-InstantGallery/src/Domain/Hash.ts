@@ -1,6 +1,7 @@
 import { createHash } from "crypto";
 
-import { AbsolutePath, File, Function_memoize, Newtype, requires } from "@wkronemeijer/system";
+import { Newtype, requires } from "@wkronemeijer/system";
+import { AbsolutePath, File } from "@wkronemeijer/system-node";
 
 const hexHashPattern = /[0-9A-Fa-f]+/;
 
@@ -10,7 +11,6 @@ export function Hash(string: string): Hash {
         () => `'${string}' should be a valid hash.`);
     return string as Hash;
 }
-
 
 const hashByFileName = new Map<AbsolutePath, Hash>;
 

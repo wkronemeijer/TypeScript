@@ -1,15 +1,16 @@
-import * as Express from "express"
-import { StrictMode } from "react";
+import { guard, terminal } from "@wkronemeijer/system";
+import { requireFile } from "@wkronemeijer/system-node";
+
 import { renderToStaticMarkup } from "react-dom/server"
+import { StrictMode } from "react";
+import * as Express from "express"
 
-import { guard, requireFile, terminal } from "@wkronemeijer/system";
-
+import { Medium_processThumbs, createThumbnailRouter } from "./Domain/Thumbnail";
 import { Medium_discoverFiles, Thumb_urlPattern } from "./Domain/Medium";
 import { SortMode_applySort } from "./Domain/SortMode";
 import { ProgramOptions } from "./Domain/ProgramOptions";
 import { HtmlRoot } from "./Display/HtmlRoot";
 import { CApp } from "./Display/App";
-import { Medium_processThumbs, createThumbnailRouter } from "./Domain/Thumbnail";
 
 function guardIsOk<T>(options: T | Error): asserts options is T {
     guard(!(options instanceof Error), () => String(options));

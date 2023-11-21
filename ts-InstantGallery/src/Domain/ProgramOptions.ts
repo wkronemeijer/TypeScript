@@ -1,6 +1,8 @@
-import { Directory } from "@wkronemeijer/system";
-import { SortMode } from "./SortMode";
+import { Directory } from "@wkronemeijer/system-node";
+
 import { CSSProperties } from "react";
+
+import { SortMode } from "./SortMode";
 
 export type ObjectFit = NonNullable<CSSProperties["objectFit"]>;
 

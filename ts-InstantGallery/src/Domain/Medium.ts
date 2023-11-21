@@ -1,6 +1,8 @@
 // Medium...now that takes me back.
 
-import { Directory, File, RelativePath_toUrl, from } from "@wkronemeijer/system";
+import { Directory, File, RelativePath_toUrl } from "@wkronemeijer/system-node";
+import { from } from "@wkronemeijer/system";
+
 import { MediumKind, MediumKind_fromFile } from "./MediumKind";
 import { Hash, Hash_fromFileName } from "./Hash";
 

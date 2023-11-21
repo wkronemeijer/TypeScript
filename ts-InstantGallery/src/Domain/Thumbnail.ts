@@ -1,8 +1,10 @@
-import { lstat } from "fs/promises";
+import { lstat } from "node:fs/promises";
+
+import { Directory, File, Path_AppData } from "@wkronemeijer/system-node";
+import { terminal } from "@wkronemeijer/system";
+
 import { Router } from "express";
 import * as sharp from "sharp";
-
-import { Directory, File, Path_AppData, devTerminal, terminal } from "@wkronemeijer/system";
 
 import { Medium } from "./Medium";
 import { Hash } from "./Hash";
