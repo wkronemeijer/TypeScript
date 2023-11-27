@@ -223,6 +223,16 @@ check.matches = function matchesRegExp(
     actual: string,
     expectedPattern: RegExp,
 ): void {
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test
+    // > JavaScript RegExp objects are stateful when they have the **global** or **sticky** flags set
+    if (expectedPattern.global) {
+        throw new Error(`Pattern must be non-global.`);
+    }
+    
+    if (expectedPattern.sticky) {
+        throw new Error(`Pattern must be non-sticky.`);
+    }
+    
     if (!expectedPattern.test(actual)) {
         throw new Error(`Expected '${actual}' to match ${expectedPattern}.`);
     }

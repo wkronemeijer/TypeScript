@@ -130,6 +130,11 @@ describe("check()", () => {
             check.matches("foo", /foo/);
             check.matches("abbbc", /ab+c/);
         });
+        
+        it("rejects global and sticky patterns", () => {
+            check.throws(() => check.matches("foo", /foo/g));
+            check.throws(() => check.matches("foo", /foo/y));
+        });
     });
     
     describe(".throws", () => {
