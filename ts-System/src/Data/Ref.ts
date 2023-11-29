@@ -7,11 +7,11 @@ import { check } from "../Errors/Check";
  * Mutable by default as readonly is the default for arguments.
  */
 export interface Ref<T> {
-    value: T;
+    current: T;
 }
 
 export function Ref<T>(value: T): Ref<T> {
-    return { value };
+    return { current: value };
 }
 
 /** 
@@ -40,12 +40,12 @@ implements Ref<T> {
         (this.actualValue as any) = null;
     }
     
-    get value(): T {
+    get current(): T {
         check.same(this.state, "initialized");
         return this.actualValue;
     }
     
-    set value(newValue: T) {
+    set current(newValue: T) {
         check.same(this.state, "uninitialized");
         this.actualValue = newValue;
         this.state = "initialized";
