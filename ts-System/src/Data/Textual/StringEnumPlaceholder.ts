@@ -1,7 +1,7 @@
 // Placeholder for auto-incrementing ordinals.
 // Why a seperate file? Might expand it, might remove `true` at some point.
 
-import { Array_includesAny } from "../../Collections/Array";
+import { Array_includesAny } from "../../Collections/BuiltIns/Array";
 
 const placeholders = [
     true,

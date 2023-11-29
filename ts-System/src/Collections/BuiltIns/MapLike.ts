@@ -5,6 +5,6 @@ export interface MapLike<K, V> {
 }
 
 export interface MutableMapLike<K, V>
-    extends MapLike<K, V> {
+extends MapLike<K, V> {
     set(key: K, value: V): void;
 }

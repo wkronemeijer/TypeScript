@@ -1,4 +1,4 @@
-import { Array_firstElement, Array_IndexNotFound, Array_lastElement } from "../../Collections/Array";
+import { Array_firstElement, Array_IndexNotFound, Array_lastElement } from "../../Collections/BuiltIns/Array";
 import { StringEnumPlaceholder_hasInstance } from "./StringEnumPlaceholder";
 import { compare as System_compare } from "../../Traits/Comparable/Compare";
 import { StringEnumInitializer } from "./StringEnumInitializer";
@@ -8,8 +8,8 @@ import { StringBuilder } from "../../Text/StringBuilder";
 import { inspectValue } from "../../Text/Formatting/Inspect";
 import { ArrayMember } from "../Enumeration";
 import { HasInstance } from "../../Types/HasInstance";
-import { Map_reverse } from "../../Collections/Map";
-import { Set_hasAny } from "../../Collections/Set";
+import { Map_reverse } from "../../Collections/BuiltIns/Map";
+import { Set_hasAny } from "../../Collections/BuiltIns/Set";
 import { Printable } from "../../Traits/Printable";
 import { Ordering } from "../../Traits/Comparable/Ordering";
 import { Comparer } from "../../Traits/Comparable/Comparer";

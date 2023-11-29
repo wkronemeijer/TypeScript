@@ -1,5 +1,5 @@
-import { panic } from "../Errors/ErrorFunctions";
-import { value_t } from "../Types/Primitive";
+import { value_t } from "../../Types/Primitive";
+import { panic } from "../../Errors/ErrorFunctions";
 
 ////////////////
 // Cached set //
@@ -22,15 +22,16 @@ export function Set_getCachedSet<T>(array: readonly T[]): ReadonlySet<T> {
 // Determiner (???) //
 //////////////////////
 
-// TODO: WTF does this do?
-// Not used anywhere either (?!?!?!)
-/** @deprecated Purpose unknown and not used. */
-export function Set_createDeterminer<T, K extends string>(
-    record: Record<K, Iterable<T>>,
-): (x: T) => K | undefined {
-    const map = new Map<T, K>();
+/** 
+ * Given a dictionary that contains a list of values for each determinant, provides the reverse operation.
+ * @deprecated Feels like it needs more support to do what it does. 
+ */
+export function Set_createDeterminer<V, K extends string>(
+    record: Record<K, Iterable<V>>,
+): (x: V) => K | undefined {
+    const map = new Map<V, K>();
     
-    for (const [group, instances] of Object.entries<Iterable<T>>(record)) {
+    for (const [group, instances] of Object.entries<Iterable<V>>(record)) {
         for (const instance of instances) {
             if (map.has(instance)) {
                 panic(`Duplicate detected: '${instance}'.`);
@@ -70,16 +71,16 @@ export function Set_isNotEmpty(set: ReadonlySet<unknown>): boolean {
  * Returns undefined if the set is empty.
  */
 export function Set_dequeue<T>(self: Set<T>): T | undefined {
-    const first = self[Symbol.iterator]().next();
-    if (!first.done) {
-        const result = first.value;
-        self.delete(result);
-        return result;
+    const firstResult = self[Symbol.iterator]().next();
+    if (!firstResult.done) {
+        const firstValue = firstResult.value;
+        self.delete(firstValue);
+        return firstValue;
     }
 }
-
 
 export function Set_toTypeGuard<T extends value_t>(self: ReadonlySet<T>): (item: unknown) => item is T {
     return (item: unknown): item is T => Set_hasAny(self, item);
 }
+
 export const Set_toFunction: <T extends value_t>(self: ReadonlySet<T>) => (item: T) => boolean = Set_toTypeGuard;

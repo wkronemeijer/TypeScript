@@ -1,7 +1,7 @@
-import { Dictionary, Dictionary_create, Dictionary_toMap } from "./Dictionary";
+import { Dictionary, Dictionary_create, Dictionary_toMap } from "../Dictionary";
 import { MapLike, MutableMapLike } from "./MapLike";
-import { value_t, keyof_t } from "../Types/Primitive";
-import { Selector } from "../Data/Function/Selector";
+import { Selector } from "../../Data/Function/Selector";
+import { value_t } from "../../Types/Primitive";
 
 /** noot noot */
 export function Map_map<K, V, W>(
@@ -11,44 +11,6 @@ export function Map_map<K, V, W>(
     const result = new Map<K, W>();
     for (const [k, v] of map) {
         result.set(k, func(v, k));
-    }
-    return result;
-}
-
-/** 
- * Converts a partial dictionary into a map. 
- * @deprecated Move to Record_*
- */
-export function Map_fromPartialDictionary<K extends keyof_t, V>(
-    dictionary: Partial<Record<K, V>>,
-): Map<K, V | undefined> {
-    const result = new Map<K, V | undefined>();
-    for (const key in dictionary) {
-        const value = dictionary[key];
-        result.set(key, value);
-    }
-    return result;
-}
-
-/** Converts a tuple into a map, using the provided default value. Useful for toggles for each enum value, for instance. */
-export function Map_associateWith<K extends value_t, V>(
-    array: readonly K[], 
-    valueSelector: (member: K) => V,
-): Map<K, V> {
-    const result = new Map<K, V>();
-    for (const key of array) {
-        result.set(key, valueSelector(key));
-    }
-    return result;
-}
-
-export function Map_associateBy<K extends value_t, V>(
-    array: readonly V[], 
-    keySelector: (member: V) => K,
-): Map<K, V> {
-    const result = new Map<K, V>();
-    for (const value of array) {
-        result.set(keySelector(value), value);
     }
     return result;
 }
