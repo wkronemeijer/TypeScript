@@ -18,32 +18,6 @@ export function Set_getCachedSet<T>(array: readonly T[]): ReadonlySet<T> {
     return setCache.get(array) ?? panic();
 }
 
-//////////////////////
-// Determiner (???) //
-//////////////////////
-
-/** 
- * Given a dictionary that contains a list of values for each determinant, provides the reverse operation.
- * @deprecated Feels like it needs more support to do what it does. 
- */
-export function Set_createDeterminer<V, K extends string>(
-    record: Record<K, Iterable<V>>,
-): (x: V) => K | undefined {
-    const map = new Map<V, K>();
-    
-    for (const [group, instances] of Object.entries<Iterable<V>>(record)) {
-        for (const instance of instances) {
-            if (map.has(instance)) {
-                panic(`Duplicate detected: '${instance}'.`);
-            }
-            
-            map.set(instance, group as K);
-        }
-    }
-    
-    return x => map.get(x);
-}
-
 export function Set_hasAny<T extends value_t>(set: ReadonlySet<T>, value: unknown): value is T {
     return set.has(value as any);
 }

@@ -1,4 +1,5 @@
 import { constant } from "../Data/Function";
+import { panic } from "../Errors/ErrorFunctions";
 import { keyof_t } from "../Types/Primitive";
 
 /////////////////////////
@@ -15,6 +16,29 @@ export function Record_toFunction<K extends keyof_t, V>(
 ): (value: K) => V {
     return x => self[x];
 }
+
+/** 
+ * Given a dictionary that contains a list of values for each determinant, provides the reverse operation.
+*/
+// TODO: Feels like it needs more support to do what it does. 
+export function Record_toDeterminer<V, K extends string>(
+    record: Record<K, Iterable<V>>,
+): (x: V) => K | undefined {
+    const map = new Map<V, K>();
+    
+    for (const [group, instances] of Object.entries<Iterable<V>>(record)) {
+        for (const instance of instances) {
+            if (map.has(instance)) {
+                panic(`Duplicate detected: '${instance}'.`);
+            }
+            
+            map.set(instance, group as K);
+        }
+    }
+    
+    return x => map.get(x);
+}
+
 
 /** 
  * Turns a partial record into a partial function. 
