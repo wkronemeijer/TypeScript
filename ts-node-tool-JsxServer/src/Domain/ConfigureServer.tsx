@@ -13,9 +13,12 @@ import { Link } from "./Link";
 
 const ContentType = "Content-Type";
 
-function isTextResponse(res: express.Response): boolean {
+function shouldLogResonse(res: express.Response): boolean {
     const header = res.getHeader(ContentType);
-    return (typeof header === "string") && header.startsWith("text/");
+    return (
+        200 <= res.statusCode && res.statusCode < 300 &&
+        (typeof header === "string") && header.startsWith("text/")
+    );
 }
 
 function configureRouter(rootFolder: AbsolutePath): express.Router {
@@ -25,19 +28,27 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
     const getRelativeUrl = (filePath: string) => {
         const parentUrl = pathToFileURL(rootFolder).href;
         const childUrl  = pathToFileURL(filePath).href;
-        return childUrl.slice(parentUrl.length + 1); // +1 for the '/'
+        return childUrl.slice(parentUrl.length + 1); // +1 to also slice off the leading '/'
     }; 
+    
+    ///////////////////////////////////////
+    // Logging non-media completion time //
+    ///////////////////////////////////////
     
     router.use((req, res, next) => {
         const start = performance.now();
         res.once("close", () => {
             const end = performance.now();
-            if (isTextResponse(res)) {
+            if (shouldLogResonse(res)) {
                 terminal.perf(`GET ${req.url} in ${(end - start).toFixed(2)}ms`);
             }
         });
         next();
-    });
+    }); 
+    
+    /////////////////
+    // Server page //
+    /////////////////
     
     router.get(ReactPagePattern, async (req, res) => {
         try {
@@ -52,6 +63,10 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
         }
     });
     
+    /////////////////
+    // Client page //
+    /////////////////
+    
     router.get(ClientSideCodePattern, async (req, res) => {
         try {
             const fileUrl = new URL(rootUrl + req.url);
@@ -64,6 +79,10 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
             res.send(e instanceof Error ? e.stack : String(e));
         }
     });
+    
+    ////////////////
+    // Root index //
+    ////////////////
     
     router.get("/", async (req, res) => {
         const title = `Index of ${basename(rootFolder)}`;
@@ -95,8 +114,23 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
                 res.setHeader(ContentType, "text/plain");
             }
         },
-        fallthrough: false,
+        fallthrough: true,
     }));
+    
+    ///////////////////
+    // Error handler //
+    ///////////////////
+    
+    router.use(((err: unknown, req, res, next) => {
+        if (err instanceof Error) {
+            terminal.error(err.stack);
+        } else {
+            terminal.error(String(err));
+        }
+        
+        res.setHeader(ContentType, "text/plain");
+        res.status(500).send("<internal error>");
+    }) satisfies express.ErrorRequestHandler);
     
     return router;
 }
