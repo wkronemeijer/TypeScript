@@ -24,8 +24,14 @@ export type UnionToIntersection<U> = (
  */
 export type ExpandType<T> = {} & { [P in keyof T]: T[P] };
 
+/** Placeholder for unknown strings. Can be used in a union without disabling autocomplete. */
+export type UnknownString = (string & {});
+
 // From https://github.com/microsoft/TypeScript/issues/29729#issuecomment-554669605
 /**
  * Adds autocomplete hints to a string variable.
  */
-export type HintedString<THint extends string> = THint | (string & {});
+export type HintedString<THint extends string> = (
+    | THint 
+    | UnknownString
+);
