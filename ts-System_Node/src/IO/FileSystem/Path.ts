@@ -1,12 +1,16 @@
 // Wraps nodejs's path module, to maintain information about the kind of path.
 
-import { Newtype, requires, satisfiesStrictly, swear } from "@wkronemeijer/system";
+import * as path from "node:path";
 
-import { resolve, join, relative, ParsedPath, parse, isAbsolute, sep, normalize } from "path";
+import { Newtype, UnknownString, satisfiesStrictly, swear } from "@wkronemeijer/system";
+
+import { resolve, join, relative, ParsedPath, parse, isAbsolute, sep, normalize, extname } from "path";
 import { pathToFileURL } from "url";
 
+import { FileExtension } from "./Extension";
+
 /** Underlying path representation (a string). */
-export type RawPath = string;
+export type RawPath = UnknownString;
 
 /** 
  * An absolute path. 
@@ -126,19 +130,23 @@ export function Path_isRoot(path: AbsolutePath): boolean {
 // Domain: Extensions //
 ////////////////////////
 
-function assert_isExtension(ext: string): void {
-    requires(ext.startsWith('.'), `Extension must start with leading '.'.`);
+export function Path_getExtension(self: Path): FileExtension | "" {
+    const extension = extname(self);
+    if (extension !== "") {
+        return FileExtension(extension);
+    } else {
+        // Sadly, TS doesn't narrow string to "" in false branches
+        return extension;
+    }
 }
 
-export function Path_setExtension<P extends Path>(self: P, newExtension: string): P {
-    assert_isExtension(newExtension);
+export function Path_setExtension<P extends Path>(self: P, newExtension: FileExtension): P {
     const { dir, name } = Path_getDetails(self);
     return Path_join(dir, name + newExtension) as P;
 }
 
 /** Modifies the file extension. If no extension is present, does not add one either. */
-export function Path_changeExtension<P extends Path>(self: P, newExtension: string): P {
-    assert_isExtension(newExtension);
+export function Path_changeExtension<P extends Path>(self: P, newExtension: FileExtension | ""): P {
     const { dir, name, ext } = Path_getDetails(self);
     if (ext.length > 0) {
         return Path_join(dir, name + newExtension) as P;
@@ -156,8 +164,9 @@ export function Path_removeExtension<P extends Path>(self: P): P {
     }
 }
 
-export function Path_addSuffixExtension<P extends Path>(self: P, extension: string): P {
-    __NOT_IMPLEMENTED();
+export function Path_addSuffixExtension<P extends Path>(self: P, suffix: FileExtension): P {
+    const { dir, name, ext } = Path_getDetails(self);
+    return Path_join(dir, name + suffix + ext) as P;
 }
 
 /////////////////////////

@@ -35,3 +35,10 @@ export type HintedString<THint extends string> = (
     | THint 
     | UnknownString
 );
+
+export type Promisify<F> = F extends (...args: infer P) => infer R ? (...args: P) => Promise<R> : never;
+
+export type SyncAndAsync<T> = ExpandType<(
+    & { readonly [P in keyof T]: T[P] }
+    & { readonly [P in keyof T as T[P] extends Function ? `${string & P}_async` : never]: Promisify<T[P]> }
+)>;

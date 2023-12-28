@@ -1,34 +1,86 @@
 // Handle the file system like a set of objects using FileSystemObject
 // then use the type narrowing functions to perform specific functionality.
 
-import { Printable, Queue, panic } from "@wkronemeijer/system";
+import { ExpandType, Printable, SyncAndAsync, from } from "@wkronemeijer/system";
 
-import { Stats, readFileSync, writeFileSync, lstatSync, readdirSync, openSync, closeSync, mkdirSync } from "fs";
+import { AbsolutePath, Path_resolve, Path_getDetails, Path_join, Path_changeExtension, RelativePath, Path_getParent, AnyPath, Path_relative, Path_hasDescendant, Path_isRoot, Path_CurrentDirectory, Path_addSuffixExtension, Path_getExtension } from "./Path";
+import { FileEntityKind } from "./EntityKind";
+import { FileExtension } from "./Extension";
+import { FileEntityStats } from "./FileEntityStats";
+import { GetFileSystem } from "./GetFileSystem";
 
-import { AbsolutePath, Path_resolve, Path_getDetails, Path_join, Path_changeExtension, RelativePath, Path_getParent, AnyPath, Path_relative, Path_hasDescendant, Path_isRoot, Path_CurrentDirectory, Path_addSuffixExtension } from "./Path";
+interface PathObjectLike {
+    readonly path: AbsolutePath;
+}
 
-const encoding: BufferEncoding = "utf-8"; 
+interface PathObject 
+extends PathObjectLike, Printable {
+    readonly dirname: AbsolutePath;
+    readonly root: string;
+    readonly name: string;
+    readonly basename: string;
+    readonly extname: FileExtension | "";
+    
+    readonly fullName: string;
+    readonly extension: FileExtension | "";
+    
+    readonly parent: FileObject;
+    readonly isRoot: boolean;
+    
+    join(...segments: readonly AnyPath[]): FileObject;
+    to(other: PathObjectLike): RelativePath;
+    
+    addExtension(ext: FileExtension): FileObject;
+    changeExtension(ext: FileExtension): FileObject ;
+    removeExtension(): FileObject;
+    addSuffix(extension: FileExtension): FileObject;
+}
 
-/** Partial enumeration of the kinds of file entities. */
-export type FileSystemEntity_Kind = 
-    | "file"
-    | "directory"
-;
+interface FileObjectMethods {
+    getStats(): FileEntityStats | undefined;
+    exists(): boolean;
+    getKind(): FileEntityKind;
+    isFile(): boolean;
+    isDirectory(): boolean;
+    
+    readText(): string;
+    
+    // TODO: Should a non-existant directory return [], or propagate the error?
+    getChildren(): FileObject[];
+    getDescendants(): FileObject[];
+    
+    touchFile(): void;
+    touchDirectory(): void;
+    
+    writeText(value: string): void;
+}
+
+type FileObject = ExpandType<(
+    & PathObject 
+    & SyncAndAsync<FileObjectMethods>
+)>;
+
+interface FileObjectConstructor {
+    new(...segments: AnyPath[]): FileObject;
+    cwd(): FileObject;
+}
 
 /////////////////
 // File entity //
 /////////////////
-// File | Directory would be cool; but the typing of it would be a pain
-// fun project someday tho
-// bonus point for including relative paths
 
-/** Models an entity in the file system. All operations are synchronous. */
-export class FileSystemEntity implements Printable {
-     /** The path to this entity. */
+const FileObject
+: FileObjectConstructor 
+= class Self 
+implements PathObject, FileObjectMethods {
     readonly path: AbsolutePath;
     
-    constructor(...pathSegments: AnyPath[]) {
-        this.path = Path_resolve(...pathSegments);
+    constructor(...segments: AnyPath[]) {
+        this.path = Path_resolve(...segments);
+    }
+    
+    static cwd(): FileObject {
+        return new Self(Path_CurrentDirectory);
     }
     
     /** The name of this entity, without any extension. */
@@ -42,13 +94,13 @@ export class FileSystemEntity implements Printable {
     }
     
     /** The extension of this file. **Includes a leading `.`**. */
-    get extension(): string {
-        return Path_getDetails(this.path).ext;
+    get extension(): FileExtension | "" {
+        return Path_getExtension(this.path);
     }
     
     /** Parent entity to this entity. */
-    get parent(): Directory {
-        return new FileSystemEntity(Path_getParent(this.path));
+    get parent(): FileObject {
+        return new Self(Path_getParent(this.path));
     }
     
     /** Whether this entity is the root (of the drive). */
@@ -56,13 +108,11 @@ export class FileSystemEntity implements Printable {
         return Path_isRoot(this.path);
     }
     
-    static cwd(this: unknown): Directory {
-        return new Directory(Path_CurrentDirectory);
-    }
+    
     
     /** Joins the path to this entity's path, and returns an entity pointing to the result. */
-    join(...pathSegments: AnyPath[]): FileSystemEntity {
-        return new FileSystemEntity(Path_join(this.path, ...pathSegments));
+    join(...pathSegments: AnyPath[]): FileObject {
+        return new Self(Path_join(this.path, ...pathSegments));
     }
     
     /** Returns the relative path to get from this entity to the target entity.
@@ -71,23 +121,24 @@ export class FileSystemEntity implements Printable {
      * `parent = /one/two` and `child = /one/two/three`, the following holds:  
      * > `parent.to(child) == child.from(parent) == "three"`
      */
-    to(target: FileSystemEntity): RelativePath {
+    to(target: Self): RelativePath {
         return Path_relative(this.path, target.path);
     }
     
     /** Changes the extension of this entity's path, and returns an entity pointing to the result. `newExtension` should include a '`.`'. */
-    changeExtension(ext: string): FileSystemEntity {
-        return new FileSystemEntity(Path_changeExtension(this.path, ext));
+    changeExtension(ext: FileExtension): FileObject {
+        return new Self(Path_changeExtension(this.path, ext));
     }
     
-    addSuffix(extension: string): FileSystemEntity {
-        return new FileSystemEntity(Path_addSuffixExtension(this.path, extension));
+    addSuffix(extension: FileExtension): FileObject {
+        return new Self(Path_addSuffixExtension(this.path, extension));
     }
+    
     
     /** Returns detailed statistics about this entity. */
-    getStats(): Stats | undefined {
+    getStats(): FileEntityStats | undefined {
         try {
-            return lstatSync(this.path);
+            return GetFileSystem().getStats(this);
         } catch (e) {
             return undefined;
         }
@@ -99,7 +150,7 @@ export class FileSystemEntity implements Printable {
     }
     
     /**Returns the type if this entity exists, `undefined` otherwise. */
-    getKind(): FileSystemEntity_Kind | undefined {
+    getKind(): FileEntityKind | undefined {
         const stats = this.getStats();
         switch (true) {
             case stats?.isFile()     : return "file";
@@ -124,32 +175,24 @@ export class FileSystemEntity implements Printable {
     
     /** Reads the entire contents of this file as a UTF-8 encoded string. */
     readText(): string {
-        return readFileSync(this.path, { encoding });
+        return GetFileSystem().readFile(this.path);
     }
     
     /** Writes a UTF-8 encoded string to this file. */
     writeText(s: string): void {
-        writeFileSync(this.path, s, { encoding });
+        GetFileSystem().writeFile(this.path, s);
     }
-    
     
     ////////////////////
     // Touching 👉👈 //
     ////////////////////
     
     touchFile(): void {
-        let fd;
-        try {
-            fd = openSync(this.path, "a");
-        } finally {
-            if (fd) {
-                closeSync(fd);
-            }
-        }
+        GetFileSystem().createFile(this.path);
     }
     
     touchDirectory(): void {
-        mkdirSync(this.path, { recursive: true });
+        GetFileSystem().createDirectory(this.path);
     }
     
     //////////////////////////
@@ -164,8 +207,22 @@ export class FileSystemEntity implements Printable {
         return this.path === file.parent.path;
     }
     
+    private readDirectory(recursive: boolean | undefined): Self[] {
+        return (
+            from(GetFileSystem().readDirectory({
+                path: this.path, 
+                recursive,
+            }))
+            .selectWhere(entity => 
+                entity.kind === "file" && 
+                new Self(this.path, entity.location)
+            )
+            .toArray()
+        );
+    }
+    
     /** Reads this directory, and returns an entity list of its contents. */
-    *readContents(): Iterable<FileSystemEntity> {
+    getChildren(): Self[] {
         try {
             for (const filename of readdirSync(this.path)) {
                 yield this.join(filename);
@@ -176,20 +233,18 @@ export class FileSystemEntity implements Printable {
     }
     
     /** Iterates recursively through all files in this directory and its subdirectories. */
-    *recursiveGetAllFiles(): Iterable<File> {
-        const dirQueue: Queue<File> = [this];
-        
-        while (dirQueue.length !== 0) {
-            const dir = dirQueue.shift() ?? panic();
-            for (const entity of dir.readContents()) {
-                const type = entity.getKind();
-                if (type === "directory") {
-                    dirQueue.push(entity);
-                } else if (type === "file") {
-                    yield entity;
-                }
-            }
-        }
+    getDescendants(): Self[] {
+        return (
+            from(GetFileSystem().readDirectory({
+                path: this.path, 
+                recursive: true
+            }))
+            .selectWhere(entity => 
+                entity.kind === "file" && 
+                new Self(this.path, entity.location)
+            )
+            .toArray()
+        );
     }
     
     ////////////////
@@ -205,14 +260,14 @@ export class FileSystemEntity implements Printable {
 //////////////
 // Goal: Communicate intent with these aliases 
 
-/** Models a file in the file system. All operations are synchronous. */
-export const File = FileSystemEntity;
-export type  File = FileSystemEntity;
+/** Models a file in the file system. */
+export const File = FileObject;
+export type  File = FileObject;
 
-/** Models a directory in the file system. All operations are synchronous. */
-export const Directory = FileSystemEntity;
-export type  Directory = FileSystemEntity;
+/** Models a directory in the file system. */
+export const Directory = FileObject;
+export type  Directory = FileObject;
 
-/** Models a file or a directory in the file system. All operations are synchronous. */
-export const FileOrDirectory = FileSystemEntity;
-export type  FileOrDirectory = FileSystemEntity;
+/** Models a file or a directory in the file system. */
+export const FileOrDirectory = FileObject;
+export type  FileOrDirectory = FileObject;
