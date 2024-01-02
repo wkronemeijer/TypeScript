@@ -5,7 +5,7 @@
 import { panic, requires } from "@wkronemeijer/system";
 
 import { AnyPath, Path_Separator, RelativePath } from "./Path";
-import { Directory, File } from "./Entity";
+import { Directory, File } from "./FileObject";
 import { getCallerFile } from "../../Reflection/Caller";
 
 interface PathTranslator_Options {

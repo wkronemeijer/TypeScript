@@ -4,10 +4,10 @@ import * as path from "node:path";
 
 import { Newtype, UnknownString, satisfiesStrictly, swear } from "@wkronemeijer/system";
 
-import { resolve, join, relative, ParsedPath, parse, isAbsolute, sep, normalize, extname } from "path";
+import { resolve, join, relative, parse, isAbsolute, sep, normalize, extname } from "path";
 import { pathToFileURL } from "url";
 
-import { FileExtension } from "./Extension";
+import { FileExtension, OptionalFileExtension } from "./Extension";
 
 /** Underlying path representation (a string). */
 export type RawPath = UnknownString;
@@ -30,6 +30,8 @@ export type RelativePath = Newtype<RawPath, "RelativePath">;
 
 /** Either an absolute or a relative path. */
 export type Path    = AbsolutePath | RelativePath;
+
+// TODO: Include a type for file URLs
 export type AnyPath = Path | RawPath;
 
 /** Returns whether a path is absolute. */
@@ -101,10 +103,27 @@ export function Path_relative(from: AbsolutePath, to: AbsolutePath): RelativePat
 // Inspection //
 ////////////////
 
-/** Parses a path and returns an object with details. **Note that the `ext` field includes a leading `.`**. */
-export function Path_getDetails(self: AnyPath): ParsedPath {
-    // Not replaced with readonly, because that scrubs the doc comments.
-    return parse(self);
+export interface PathDetails<P extends Path> {
+    readonly root: P;
+    readonly directory: P;
+    /** Base name, including the extension. */
+    readonly base: RelativePath;
+    /** The extension, like ".txt" or "". */
+    readonly extension: OptionalFileExtension;
+    /** The name of the file, without extension. */
+    readonly name: string;
+}
+
+/** Parses a path and returns an object with details. */
+export function Path_getDetails<P extends Path>(self: P): PathDetails<P> {
+    const { root, dir, base, ext, name } = parse(self);
+    return {
+        root: root as P,
+        directory: dir as P,
+        base: base as RelativePath,
+        extension: OptionalFileExtension(ext),
+        name,
+    };
 }
 
 export function Path_getParent<P extends Path>(self: P): P {
@@ -140,33 +159,19 @@ export function Path_getExtension(self: Path): FileExtension | "" {
     }
 }
 
-export function Path_setExtension<P extends Path>(self: P, newExtension: FileExtension): P {
-    const { dir, name } = Path_getDetails(self);
-    return Path_join(dir, name + newExtension) as P;
-}
-
 /** Modifies the file extension. If no extension is present, does not add one either. */
-export function Path_changeExtension<P extends Path>(self: P, newExtension: FileExtension | ""): P {
-    const { dir, name, ext } = Path_getDetails(self);
-    if (ext.length > 0) {
-        return Path_join(dir, name + newExtension) as P;
-    } else {
-        return self;
-    }
-}
-
-export function Path_removeExtension<P extends Path>(self: P): P {
-    const { dir, name, ext } = Path_getDetails(self);
-    if (ext.length > 0) {
-        return Path_join(dir, name) as P;
+export function Path_changeExtension<P extends Path>(self: P, newExtension: OptionalFileExtension): P {
+    const { directory, name, extension } = Path_getDetails(self);
+    if (extension.length > 0) {
+        return Path_join(directory, name + newExtension) as P;
     } else {
         return self;
     }
 }
 
 export function Path_addSuffixExtension<P extends Path>(self: P, suffix: FileExtension): P {
-    const { dir, name, ext } = Path_getDetails(self);
-    return Path_join(dir, name + suffix + ext) as P;
+    const { directory, name, extension } = Path_getDetails(self);
+    return Path_join(directory, name + suffix + extension) as P;
 }
 
 /////////////////////////

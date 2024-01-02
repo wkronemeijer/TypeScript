@@ -1,6 +1,6 @@
 import { StringEnum, Thunk, clamp, collect, panic, pass, swear, terminal } from "@wkronemeijer/system";
 
-import { Directory, File } from "../../IO/FileSystem/Entity";
+import { Directory, File } from "../../IO/FileSystem/FileObject";
 
 //////////////////
 // Capabilities //

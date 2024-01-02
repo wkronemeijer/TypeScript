@@ -6,5 +6,5 @@ export const FileEntityKind = StringEnum([
     "file",
     "directory",
     "symlink",
-    "unknown",
+    "other",
 ]);

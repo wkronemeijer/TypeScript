@@ -3,7 +3,7 @@
 import { panic } from "@wkronemeijer/system";
 
 import { AbsolutePath } from "../IO/FileSystem/Path";
-import { File } from "../IO/FileSystem/Entity";
+import { File } from "../IO/FileSystem/FileObject";
 
 type CallStackFormatter = NonNullable<typeof Error.prepareStackTrace>;
 type CallStack          = Parameters<CallStackFormatter>[1];

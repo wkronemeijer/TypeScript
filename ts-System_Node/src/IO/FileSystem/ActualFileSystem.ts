@@ -1,7 +1,7 @@
 import * as fs  from "node:fs";
 import * as fs_async from "node:fs/promises";
 
-import { FileEntityStats } from "./FileEntityStats";
+import { FileEntityStats } from "./EntityStats";
 import { FileEntityKind } from "./EntityKind";
 import { RelativePath } from "./Path";
 import { FileSystem } from "./FileSystem";
@@ -15,7 +15,7 @@ function FileEntityKind_infer(stats: fs.Stats | fs.Dirent): FileEntityKind {
         case stats.isFile()        : return "file";
         case stats.isDirectory()   : return "directory";
         case stats.isSymbolicLink(): return "symlink";
-        default                    : return "unknown";
+        default                    : return "other";
     }
 }
 
@@ -27,13 +27,21 @@ function FileEntityStats_fromStats(stats: fs.Stats): FileEntityStats {
 }
 
 export const ActualFileSystem: FileSystem = {
-    name: "ActualFileSystem",
+    description: "node:fs",
     
     getStats({ path }) {
-        return FileEntityStats_fromStats(fs.lstatSync(path));
+        return FileEntityStats_fromStats(fs.statSync(path));
     },
     
     async getStats_async({ path }) {
+        return FileEntityStats_fromStats(await fs_async.stat(path));
+    },
+    
+    getLinkStats({ path }) {
+        return FileEntityStats_fromStats(fs.lstatSync(path));
+    },
+    
+    async getLinkStats_async({ path }) {
         return FileEntityStats_fromStats(await fs_async.lstat(path));
     },
     
@@ -42,10 +50,10 @@ export const ActualFileSystem: FileSystem = {
     },
     
     async readFile_async({ path }) {
-        return fs_async.readFile(path, encodingOptions);
+        return await fs_async.readFile(path, encodingOptions);
     },
     
-    createFile({ path }) {
+    touchFile({ path }) {
         let fd;
         try {
             fd = fs.openSync(path, "a");
@@ -56,7 +64,7 @@ export const ActualFileSystem: FileSystem = {
         }
     },
     
-    async createFile_async({ path }) {
+    async touchFile_async({ path }) {
         let handle;
         try {
             handle = await fs_async.open(path, "a");
@@ -95,11 +103,11 @@ export const ActualFileSystem: FileSystem = {
         }));
     },
     
-    createDirectory({ path }) {
+    touchDirectory({ path }) {
         fs.mkdirSync(path, { recursive: true });
     },
     
-    async createDirectory_async({ path }) {
+    async touchDirectory_async({ path }) {
         await fs_async.mkdir(path, { recursive: true });
     }
 };
