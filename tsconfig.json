@@ -4,7 +4,6 @@
         //////////
         // Emit //
         //////////
-        
         "module": "commonjs",
         "declaration": true,
         "alwaysStrict": true,
@@ -22,6 +21,7 @@
         ],
         "resolveJsonModule": true,
         "forceConsistentCasingInFileNames": true,
+        "noErrorTruncation": true,
         
         ////////////////
         // Strictness //
