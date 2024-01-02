@@ -5,6 +5,12 @@ import { Newtype, Newtype_createRegExpChecker } from "@wkronemeijer/system";
  * Defined by the non-empty returns of `extname`. */
 export type  FileExtension = Newtype<string, "FileExtension">;
 export const FileExtension = Newtype_createRegExpChecker<FileExtension>(
-    /^\.\S*$/
-    // extname("foo.") == "."
+    /^\.\S*$/ // Excluding ""
+    // /^(|\.\S*)$/ // Including ""
 );
+// NB: extname("foo.") == "."
+
+export type     OptionalFileExtension = FileExtension | ""
+export function OptionalFileExtension(string: string): OptionalFileExtension {
+    return (string === "") ? string : FileExtension(string);
+}
