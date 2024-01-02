@@ -43,7 +43,7 @@ export async function renderServerSideJsx(fileUrl: URL): Promise<HtmlDocument> {
         
         const sourceCode = BuildResult_getOutput(buildResult);
         const module = requireInline(filePath, sourceCode);
-        const jsx = module.exports.default;
+        const jsx = await module.exports.default;
         swear(isValidElement(jsx), "'default' export was not a JSX element.");
         result = jsx;
     } catch (e) {
