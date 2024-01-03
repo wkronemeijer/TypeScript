@@ -16,7 +16,7 @@ export function isReactPage(filePath: string) {
 
 const SearchParameterReplacement = "__URL_PARAMS";
 
-export async function renderServerSideJsx(fileUrl: URL): Promise<HtmlDocument> {
+export async function renderServerSideJsx_async(fileUrl: URL): Promise<HtmlDocument> {
     let result: JSX.Element;
     try {
         const filePath = fileURLToPath(fileUrl);

@@ -8,7 +8,7 @@ import { configureServer } from "./Domain/ConfigureServer";
 const PORT = 8080;
 const ROOT = Path_resolve(".");
 
-export async function main(): Promise<void> {
+export function main(): void {
     configureServer(ROOT).listen(PORT);
     
     terminal.log(`Now hosting ${pathToFileURL(ROOT).href} on ${getLocalIp("IPv4")}:${PORT}`);

@@ -6,8 +6,8 @@ import { from, swear, terminal } from "@wkronemeijer/system";
 
 import * as express from "express";
 
-import { ReactPagePattern, isReactPage, renderServerSideJsx } from "./Server/RenderServer";
-import { ClientSideCodePattern, renderClientSideJsx } from "./Client/RenderClient";
+import { ReactPagePattern, isReactPage, renderServerSideJsx_async } from "./Server/RenderServer";
+import { ClientSideCodePattern, renderClientSideJsx_async } from "./Client/RenderClient";
 import { HtmlDocument } from "./Server/HtmlDocument";
 import { Link } from "./Link";
 
@@ -56,7 +56,7 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
             swear(fileUrl.href.startsWith(rootUrl.href));
             
             res.setHeader(ContentType, "text/html");
-            res.send(await renderServerSideJsx(fileUrl));
+            res.send(await renderServerSideJsx_async(fileUrl));
         } catch (e) {
             res.setHeader(ContentType, "text/plain");
             res.send(e instanceof Error ? e.stack : String(e));
@@ -73,7 +73,7 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
             swear(fileUrl.href.startsWith(rootUrl.href));
             
             res.setHeader(ContentType, "text/javascript");
-            res.send(await renderClientSideJsx(fileUrl));
+            res.send(await renderClientSideJsx_async(fileUrl));
         } catch (e) {
             res.setHeader(ContentType, "text/plain");
             res.send(e instanceof Error ? e.stack : String(e));

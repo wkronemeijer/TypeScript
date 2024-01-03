@@ -12,7 +12,7 @@ export function isClientSideCode(filePath: string) {
     return ClientSideCodePattern.test(filePath);
 }
 
-export async function renderClientSideJsx(fileUrl: URL): Promise<JavaScriptScript> {
+export async function renderClientSideJsx_async(fileUrl: URL): Promise<JavaScriptScript> {
     let result: string;
     try {
         const filePath = fileURLToPath(fileUrl);
