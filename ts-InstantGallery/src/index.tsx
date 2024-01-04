@@ -34,6 +34,8 @@ export async function main(args: string[]): Promise<void> {
     // Discover files //
     ////////////////////
     
+    terminal.meta(`Target = ${targetDirectory}`);
+    
     const media = Medium_discoverFiles(targetDirectory);
     terminal.info(`Discovered ${media.length} media files.`);
     

@@ -52,6 +52,8 @@ export async function Medium_createThumb(self: Medium): Promise<void> {
         return;
     }
     
+    terminal.trace(`Creating thumb for ${self.file}`);
+    
     const inputPath  = self.file.path;
     const outputPath = Medium_getThumbFile(self).path;
     
@@ -71,7 +73,6 @@ export async function Medium_createThumb(self: Medium): Promise<void> {
 export async function Medium_processThumbs(media: Iterable<Medium>): Promise<void> {
     const copy = Array.from(media);
     for (const medium of copy) {
-        terminal.trace(`Creating thumb for ${medium.file}`);
         await Medium_createThumb(medium);
     }
 }
