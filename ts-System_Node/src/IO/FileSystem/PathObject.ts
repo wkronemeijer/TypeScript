@@ -117,6 +117,6 @@ implements   PathObject {
     //////////////////////////
     
     toString(): string {
-        return `PathObject(${this.path})`;
+        return this.url.href;
     }
 }
