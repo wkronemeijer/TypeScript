@@ -1,5 +1,5 @@
+import { Int32_Maximum, Int32_Minimum } from "../../Data/Numeric/Integer";
 import { Random_intRangeInclusive } from "../../Data/Numeric/Random";
-import { Uint32_Maximum } from "../../Data/Numeric/Integer";
 import { Newtype } from "../../Types/Newtype";
 
 /** 
@@ -35,5 +35,5 @@ export function HashCode_combine(...hashes: HashCode[]): HashCode {
  * Not very useful if you don't store it somewhere. 
  */
 export function HashCode_random(): HashCode {
-    return HashCode(Random_intRangeInclusive(0, Uint32_Maximum));
+    return HashCode(Random_intRangeInclusive(Int32_Minimum, Int32_Maximum));
 }
