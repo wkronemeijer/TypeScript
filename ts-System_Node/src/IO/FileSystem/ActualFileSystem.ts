@@ -1,10 +1,10 @@
 import * as fs  from "node:fs";
 import * as fs_async from "node:fs/promises";
 
+import { AbsolutePath, Path_join, Path_relative } from "./Path";
+import { FileSystem, FileSystemDirectoryEntry } from "./FileSystem";
 import { FileEntityStats } from "./EntityStats";
 import { FileEntityKind } from "./EntityKind";
-import { RelativePath } from "./Path";
-import { FileSystem } from "./FileSystem";
 
 const encodingOptions = {
     encoding: "utf-8",
@@ -24,6 +24,27 @@ function FileEntityStats_fromStats(stats: fs.Stats): FileEntityStats {
         kind: FileEntityKind_infer(stats),
         lastModifiedMs: stats.mtimeMs,
     };
+}
+
+function normalizeDirents(parentPath: AbsolutePath, dirents: readonly fs.Dirent[]): FileSystemDirectoryEntry[] {
+    /*
+    Here's the thing:
+    dirent's path depends on the type of path passed to readdir/readdirSync;
+    Using an absolute path (which we always do) returns something as follows:
+        const path = "C:/My/Cool/Path"
+        const dirent = {
+            name: "MyFile.png",
+            path: "C:/My/Cool/Path/Folder/Subfolder",
+        }
+    When the actual file path is "C:/My/Cool/Path/Folder/Subfolder/MyFile.png", 
+    and the relative path we want to return is "Folder/Subfolder/MyFile.png".
+    */
+    return dirents.map(dirent => {
+        const kind = FileEntityKind_infer(dirent);
+        const descendantPath = Path_join(AbsolutePath(dirent.path), dirent.name);
+        const location = Path_relative(parentPath, descendantPath);
+        return { kind, location };
+    });
 }
 
 export const ActualFileSystem: FileSystem = {
@@ -84,22 +105,16 @@ export const ActualFileSystem: FileSystem = {
     },
     
     readDirectory({ path, recursive }) {
-        return fs.readdirSync(path, { 
+        return normalizeDirents(path, fs.readdirSync(path, { 
             recursive, 
             withFileTypes: true,
-        }).map(dirent => ({ 
-            kind: FileEntityKind_infer(dirent),
-            location: RelativePath(dirent.name),
         }));
     },
     
     async readDirectory_async({ path, recursive }) {
-        return (await fs_async.readdir(path, { 
+        return normalizeDirents(path, await fs_async.readdir(path, { 
             recursive, 
             withFileTypes: true,
-        })).map(dirent => ({ 
-            kind: FileEntityKind_infer(dirent),
-            location: RelativePath(dirent.name),
         }));
     },
     
