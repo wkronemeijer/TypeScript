@@ -39,7 +39,7 @@ export function Array_swap<T>(self: T[], i: number, j: number): void {
     [self[i], self[j]] = [self[j]!, self[i]!];
 }
 
-export function Array_shuffle<T>(self: T[]): void {
+export function Array_shuffleInPlace<T>(self: T[]): void {
     // https://stackoverflow.com/a/2450976
     let randomIndex  = 0;
     let currentIndex = self.length;
@@ -52,6 +52,12 @@ export function Array_shuffle<T>(self: T[]): void {
         
         Array_swap(self, currentIndex, randomIndex);
     }
+}
+
+export function Array_shuffle<T>(self: readonly T[]): T[] {
+    const copy = self.slice();
+    Array_shuffleInPlace(copy);
+    return copy;
 }
 
 export function Array_isEmpty(arr: readonly unknown[]): boolean {
