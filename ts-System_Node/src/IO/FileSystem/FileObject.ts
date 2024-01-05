@@ -7,6 +7,11 @@ import { GetFileSystem } from "./GetFileSystem";
 import { PathObject } from "./PathObject";
 
 interface FileObjectSyncMethods {
+    // TODO: decide
+    // here's the thing: checking for exists...and then getting the kind is silly
+    // Cache it then erase with setTimeout?
+    // Causes a lot of these objects to just stick around
+    // WeakRef? finalize? We are just digging the pit deeper...
     getStats(): FileEntityStats | undefined;
     getLinkStats(): FileEntityStats | undefined;
     
@@ -18,11 +23,11 @@ interface FileObjectSyncMethods {
     touchFile(): void;
     touchDirectory(): void;
     
-    readText(): string | undefined;
+    readText(): string;
     writeText(value: string): void;
     
-    readContents(): FileObject[] | undefined;
-    recursiveGetAllFiles(): FileObject[] | undefined;
+    readContents(): FileObject[];
+    recursiveGetAllFiles(): FileObject[];
 }
 
 type FileObjectAsyncMethods = AsyncMethods<FileObjectSyncMethods>;
@@ -172,20 +177,12 @@ implements   FileObject {
     // Read text //
     ///////////////
     
-    readText(): string | undefined {
-        try {
-            return GetFileSystem().readFile(this);
-        } catch {
-            return undefined;
-        }
+    readText(): string {
+        return GetFileSystem().readFile(this);
     }
     
-    async readText_async(): Promise<string | undefined> {
-        try {
-            return await GetFileSystem().readFile_async(this);
-        } catch {
-            return undefined
-        }
+    async readText_async(): Promise<string> {
+        return await GetFileSystem().readFile_async(this);
     }
     
     ////////////////
@@ -215,68 +212,52 @@ implements   FileObject {
     ///////////////////
     
     /** Reads this directory, and returns an entity list of its contents. */
-    readContents(): FileObject[] | undefined {
-        try {
-            return (
-                GetFileSystem()
-                .readDirectory(this)
-                .map(dirent => this.join(dirent.location))
-            );
-        } catch {
-            return undefined;
-        }
+    readContents(): FileObject[] {
+        return (
+            GetFileSystem()
+            .readDirectory(this)
+            .map(dirent => this.join(dirent.location))
+        );
     }
     
-    async readContents_async(): Promise<FileObject[] | undefined> {
-        try {
-            return (
-                (await GetFileSystem()
-                .readDirectory_async(this))
-                .map(dirent => this.join(dirent.location))
-            );
-        } catch {
-            return undefined;
-        }
+    async readContents_async(): Promise<FileObject[]> {
+        return (
+            (await GetFileSystem()
+            .readDirectory_async(this))
+            .map(dirent => this.join(dirent.location))
+        );
     }
     
     /////////////////////////////
     // Recursive get all files //
     /////////////////////////////
     
-    recursiveGetAllFiles(): FileObject[] | undefined {
-        try {
-            return (
-                from(GetFileSystem().readDirectory({
-                    path: this.path, 
-                    recursive: true,
-                }))
-                .selectWhere(dirent => 
-                    dirent.kind === "file" && 
-                    this.join(dirent.location)
-                )
-                .toArray()
-            );
-        } catch {
-            return undefined;
-        }
+    recursiveGetAllFiles(): FileObject[] {
+        return (
+            from(GetFileSystem().readDirectory({
+                path: this.path, 
+                recursive: true,
+            }))
+            .selectWhere(dirent => 
+                dirent.kind === "file" && 
+                this.join(dirent.location)
+            )
+            .toArray()
+        );
     }
     
-    async recursiveGetAllFiles_async(): Promise<FileObject[] | undefined> {
-        try {
-            return (
-                from(await GetFileSystem().readDirectory_async({
-                    path: this.path, 
-                    recursive: true,
-                }))
-                .selectWhere(dirent => 
-                    dirent.kind === "file" && 
-                    this.join(dirent.location)
-                )
-                .toArray()
-            );
-        } catch {
-            return undefined;
-        }
+    async recursiveGetAllFiles_async(): Promise<FileObject[]> {
+        return (
+            from(await GetFileSystem().readDirectory_async({
+                path: this.path, 
+                recursive: true,
+            }))
+            .selectWhere(dirent => 
+                dirent.kind === "file" && 
+                this.join(dirent.location)
+            )
+            .toArray()
+        );
     }
 }
 
