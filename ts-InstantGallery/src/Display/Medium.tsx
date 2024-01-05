@@ -1,10 +1,11 @@
 import { Medium } from "../Domain/Medium";
+import { memo } from "react";
 
 let counter = 1;
 
-export const CMedium = (props: {
+export const CMedium = memo(function (props: {
     readonly medium: Medium;
-}): JSX.Element => {
+}): JSX.Element {
     const { kind, thumbUrl, relativeUrl } = props.medium;
     
     // TODO: Create a useUniqueId hook 
@@ -23,4 +24,4 @@ export const CMedium = (props: {
             </div>
         </label>
     </>
-};
+});
