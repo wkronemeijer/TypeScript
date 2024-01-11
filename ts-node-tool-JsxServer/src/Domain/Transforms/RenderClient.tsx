@@ -3,21 +3,23 @@ import { swear } from "@wkronemeijer/system";
 import * as esbuild from "esbuild";
 import { fileURLToPath } from "url";
 
-import { ESTarget } from "../Shared/ESBuild";
-import { JavaScriptScript } from "./JavaScriptScript";
+import { JavaScriptScript } from "../ResultTypes/JavaScriptScript";
+import { FileTransform } from "../PageTransform";
+import { ESTarget } from "../Extensions/BuildResult";
 
-export const ClientSideCodePattern = /\.[jt]sx?$/; 
+const ClientSideCodePattern = /\.[jt]sx?$/; 
 
-export function isClientSideCode(filePath: string) {
+function isClientSideCode(filePath: string) {
     return ClientSideCodePattern.test(filePath);
 }
 
-export async function renderClientSideJsx_async(fileUrl: URL): Promise<JavaScriptScript> {
+async function renderClientSideJsx_async(fileUrl: URL): Promise<JavaScriptScript> {
     let result: string;
     try {
         const filePath = fileURLToPath(fileUrl);
         swear(isClientSideCode(filePath), () => 
-            `'${filePath}' does not lead to a script file.`);
+            `'${filePath}' does not lead to a script file.`
+        );
         const buildResult = await esbuild.build({
             entryPoints: [filePath],
             bundle: true,
@@ -37,4 +39,9 @@ export async function renderClientSideJsx_async(fileUrl: URL): Promise<JavaScrip
         result = `document.body.append(String.raw\`${e.stack}\`);`;
     }
     return JavaScriptScript(result);
+}
+
+export const ClientJavaScriptRenderer: FileTransform<JavaScriptScript> = {
+    pattern: ClientSideCodePattern,
+    render_async: renderClientSideJsx_async,
 }

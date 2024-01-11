@@ -1,5 +1,5 @@
 import { neverPanic } from "../Errors/ErrorFunctions";
-import { identity } from "../Data/Function";
+import { identity } from "../Data/Function/Function";
 
 // Documentation:
 // https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#uncapitalizestringtype

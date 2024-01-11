@@ -2,7 +2,7 @@ import { Immutable } from "./Immutable";
 
 import { ReadWrite } from "../../Types/Transforms";
 import { check } from "../../Errors/Check";
-import { sqrt } from "../../ReExport/Math";
+import { sqrt } from "../../ReExport/Module/Math";
 
 class Point extends Immutable {
     constructor(

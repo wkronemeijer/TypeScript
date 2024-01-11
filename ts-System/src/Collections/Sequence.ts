@@ -5,7 +5,7 @@ import { Comparable } from "../Traits/Comparable/Comparable";
 import { Predicate } from "../Data/Function/Predicate";
 import { Comparer } from "../Traits/Comparable/Comparer";
 import { Selector } from "../Data/Function/Selector";
-import { identity } from "../Data/Function";
+import { identity } from "../Data/Function/Function";
 import { Truthy } from "../Types/Truthy";
 
 export interface Sequence<T> extends Iterable<T> {

@@ -1,4 +1,4 @@
-import { identity } from "../Function";
+import { identity } from "../Function/Function";
 
 type Split<S extends string, D extends string> =
     string extends S                          ? string[]            :

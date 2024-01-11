@@ -2,7 +2,7 @@
 // Besides file length isn't even >200loc
 
 import { Newtype, Newtype_createRegExpChecker } from "../Types/Newtype";
-import { create, defineProperty, entries } from "../ReExport/Object";
+import { create, defineProperty, entries } from "../ReExport/Module/Object";
 import { Json, parseJson, stringifyJson } from "./Json";
 import { isObject, isString } from "../Types/IsX";
 import { guard, swear } from "../Assert";

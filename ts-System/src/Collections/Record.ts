@@ -1,4 +1,4 @@
-import { constant } from "../Data/Function";
+import { constant } from "../Data/Function/Function";
 import { panic } from "../Errors/ErrorFunctions";
 import { keyof_t } from "../Types/Primitive";
 

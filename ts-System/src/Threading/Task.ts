@@ -16,9 +16,14 @@ export function queueTask(task: Task, delayMs = 0): void {
     setTimeout(task, delayMs);
 }
 
-/** 
- * Resolves after the specified number of milliseconds. 
- */
+/** Resolves after the specified number of milliseconds. */
 export function sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export class TimeoutError extends Error {}
+
+export async function timeout(ms: number): Promise<never> {
+    await sleep(ms);
+    throw new TimeoutError();
 }

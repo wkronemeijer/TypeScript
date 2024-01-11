@@ -2,7 +2,7 @@
 // FEATURE: terminal.indent() and terminal.dedent() support, for making groups easier to make pretty.
 
 import { LogChannel, DeveloperLogChannel, UserLogChannel } from "./LogChannel";
-import { Function_includeProperties } from "../Data/Function";
+import { Function_includeProperties } from "../Data/Function/Function";
 import { TimingReport_toString } from "../Text/TimingReportFormatter";
 import { StringTargetLine } from "../Text/StringTarget";
 import { LoggingFunction } from "./LoggingFunction";

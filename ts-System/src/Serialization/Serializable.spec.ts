@@ -1,6 +1,6 @@
 import { deserialize, serializable, serialize } from "./Serializable";
 import { check } from "../Errors/Check";
-import { sqrt } from "../ReExport/Math";
+import { sqrt } from "../ReExport/Module/Math";
 
 class Point {
     constructor(

@@ -1,12 +1,13 @@
 import { swear, Dictionary } from "@wkronemeijer/system";
 
-import * as esbuild from "esbuild";
 import { isValidElement } from "react";
 import { fileURLToPath } from "url";
+import * as esbuild from "esbuild";
 
-import { BuildResult_getOutput, ESTarget } from "../Shared/ESBuild";
+import { BuildResult_getOutput, ESTarget } from "../Extensions/BuildResult";
 import { requireInline } from "../RequireInline";
-import { HtmlDocument } from "./HtmlDocument";
+import { FileTransform } from "../PageTransform";
+import { HtmlDocument } from "../ResultTypes/HtmlDocument";
 
 export const ReactPagePattern = /\.page\.[jt]sx$/;
 
@@ -63,4 +64,9 @@ export async function renderServerSideJsx_async(fileUrl: URL): Promise<HtmlDocum
         </html>;
     }
     return HtmlDocument(result);
+}
+
+export const ReactPageRenderer: FileTransform<HtmlDocument> = {
+    pattern: ReactPagePattern,
+    render_async: renderServerSideJsx_async,
 }

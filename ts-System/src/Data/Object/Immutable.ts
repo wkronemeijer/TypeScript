@@ -1,4 +1,4 @@
-import { create, defineProperty, entries, freeze } from "../../ReExport/Object";
+import { create, defineProperty, entries, freeze } from "../../ReExport/Module/Object";
 import { Constructor } from "../../Types/Mixins";
 
 // TODO: Immutable can totally be a mixin

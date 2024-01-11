@@ -1,4 +1,4 @@
-import { identity } from "./Function";
+import { identity } from "./Function/Function";
 
 export type  Thunk<T> = () => T;
 export const Thunk: <T>(thunk: () => T) => Thunk<T> = identity;
