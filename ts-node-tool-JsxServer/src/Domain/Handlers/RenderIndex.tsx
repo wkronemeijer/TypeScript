@@ -9,16 +9,15 @@ import { HtmlDocument } from "../ResultTypes/HtmlDocument";
 import { isReactPage } from "../Transforms/ReactPage";
 import { Link } from "../Link";
 
+export function getRelativeUrl(rootFolder: string, filePath: string): string {
+    const parentUrl = pathToFileURL(rootFolder).href;
+    const childUrl = pathToFileURL(filePath).href;
+    return childUrl.slice(parentUrl.length + 1); // +1 to also slice off the leading '/'
+}
+
 export function createIndexRenderer(rootFolder: AbsolutePath): express.RequestHandler {
     const directory = new Directory(rootFolder);
     const title = `Index of ${directory.fullName}`;
-    
-    function getRelativeUrl(filePath: string) {
-        const parentUrl = pathToFileURL(rootFolder).href;
-        const childUrl = pathToFileURL(filePath).href;
-        return childUrl.slice(parentUrl.length + 1); // +1 to also slice off the leading '/'
-    }
-    
     return (async (req, res) => {
         const pages = (
             from(directory.recursiveGetAllFiles())
@@ -36,7 +35,7 @@ export function createIndexRenderer(rootFolder: AbsolutePath): express.RequestHa
                 <ul className="__ServerIndex">
                     {pages.map(page =>
                     <li key={page}>
-                        <Link href={getRelativeUrl(page)}/>
+                        <Link href={getRelativeUrl(rootFolder, page)}/>
                     </li>)}
                 </ul>
             </body>

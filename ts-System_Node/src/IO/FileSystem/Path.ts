@@ -222,11 +222,11 @@ export function AbsolutePath_toUrl(self: AbsolutePath): string {
     return pathToFileURL(self).toString();
 }
 
+const backwardSlash = '\\';
+const forwardSlash = '/';
+
 export function RelativePath_toUrl(self: RelativePath): string {
-    const base     = AbsolutePath_toUrl(Path_resolve("."));
-    const resolved = AbsolutePath_toUrl(Path_resolve(self));
-    
-    return resolved.slice(base.length + 1); // +1 for the directory separator
+    return encodeURI(self.replaceAll(backwardSlash, forwardSlash));
 }
 
 export function Path_toUrl(self: Path): string {
