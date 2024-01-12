@@ -1,9 +1,6 @@
 import { Satisfies } from "../../Types/Satisfies";
 
-// https://tigolebitties:hunter2@some.domain.com:1028/path/to/file?query=fig&res=fog#myAnchor
-// Try that for some fun
-
-// Yeah yeah, URL spelling is ugly
+// Yeah yeah, "URL" instead of "Url" is ugly
 // But expected for conformance with normal JS lib
 
 /**
