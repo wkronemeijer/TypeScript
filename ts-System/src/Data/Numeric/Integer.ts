@@ -8,3 +8,8 @@ export const Int32_Maximum = 0x7FFF_FFFF;
 export function Number_isInt32(x: number): boolean {
     return (x | 0) === x;
 }
+
+/** Unlike `%`, this function's result is never negative. */
+export function modulo(i: number, n: number): number {
+    return (((i % n) + n) % n);
+}
