@@ -3,7 +3,7 @@ import * as express from "express";
 import { ReadonlyURL, swear } from "@wkronemeijer/system";
 
 import { MimeTypedString } from "../MimeType";
-import { FileTransform } from "../PageTransform";
+import { FileTransform } from "../Transforms/PageTransform";
 import { CONTENT_TYPE } from "../HttpHeader";
 
 export function Router_registerFileTransform<T extends MimeTypedString>(

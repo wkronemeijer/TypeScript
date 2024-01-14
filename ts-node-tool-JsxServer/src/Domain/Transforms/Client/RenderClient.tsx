@@ -3,9 +3,9 @@ import { swear } from "@wkronemeijer/system";
 import * as esbuild from "esbuild";
 import { fileURLToPath } from "url";
 
-import { JavaScriptScript } from "../ResultTypes/JavaScriptScript";
+import { JavaScriptScript } from "../../ResultTypes/JavaScriptScript";
 import { FileTransform } from "../PageTransform";
-import { ESTarget } from "../Extensions/BuildResult";
+import { ESTarget } from "../../Extensions/BuildResult";
 
 const ClientSideCodePattern = /\.[jt]sx?$/; 
 

@@ -6,7 +6,7 @@ import { from } from "@wkronemeijer/system";
 
 import { Response_sendTyped } from "../Extensions/Response";
 import { HtmlDocument } from "../ResultTypes/HtmlDocument";
-import { isReactPage } from "../Transforms/ReactPage";
+import { isReactPage } from "../Transforms/Server/ReactPage";
 import { Link } from "../Link";
 
 export function getRelativeUrl(rootFolder: string, filePath: string): string {

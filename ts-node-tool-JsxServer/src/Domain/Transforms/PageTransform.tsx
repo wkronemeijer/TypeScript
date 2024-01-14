@@ -1,7 +1,7 @@
 
 import { ReadonlyURL } from "@wkronemeijer/system";
 
-import { MimeTypedString } from "./MimeType";
+import { MimeTypedString } from "../MimeType";
 
 export interface FileTransform<T extends MimeTypedString> {
     readonly pattern: RegExp;

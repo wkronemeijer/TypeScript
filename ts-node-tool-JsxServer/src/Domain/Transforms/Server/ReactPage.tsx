@@ -4,10 +4,10 @@ import { isValidElement } from "react";
 import { fileURLToPath } from "url";
 import * as esbuild from "esbuild";
 
-import { BuildResult_getOutput, ESTarget } from "../Extensions/BuildResult";
-import { requireInline } from "../RequireInline";
+import { BuildResult_getOutput, ESTarget } from "../../Extensions/BuildResult";
+import { requireInline } from "../../RequireInline";
 import { FileTransform } from "../PageTransform";
-import { HtmlDocument } from "../ResultTypes/HtmlDocument";
+import { HtmlDocument } from "../../ResultTypes/HtmlDocument";
 
 export const ReactPagePattern = /\.page\.[jt]sx$/;
 

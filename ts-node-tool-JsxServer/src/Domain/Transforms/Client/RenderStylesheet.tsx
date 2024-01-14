@@ -5,7 +5,7 @@ import { AbsolutePath, Path_relative, RelativePath_toUrl } from "@wkronemeijer/s
 import { stringifyJson, swear } from "@wkronemeijer/system";
 
 import { FileTransform } from "../PageTransform";
-import { CssStylesheet } from "../ResultTypes/CssStylesheet";
+import { CssStylesheet } from "../../ResultTypes/CssStylesheet";
 
 const encoding: BufferEncoding = "utf-8";
 
