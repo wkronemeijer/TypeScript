@@ -1,11 +1,11 @@
 import { fileURLToPath } from "url";
 import * as scss from "sass-embedded";
 
+import { AbsolutePath, Path_relative, RelativePath_toUrl } from "@wkronemeijer/system-node";
+import { stringifyJson, swear } from "@wkronemeijer/system";
+
 import { FileTransform } from "../PageTransform";
 import { CssStylesheet } from "../ResultTypes/CssStylesheet";
-import { stringifyJson, swear } from "@wkronemeijer/system";
-import { getRelativeUrl } from "../Handlers/RenderIndex";
-import { AbsolutePath, Path_relative, RelativePath, RelativePath_toUrl } from "@wkronemeijer/system-node";
 
 const encoding: BufferEncoding = "utf-8";
 
@@ -21,6 +21,7 @@ export const StylesheetRenderer: FileTransform<CssStylesheet> = {
         const sourceMap = compileResult.sourceMap;
         swear(sourceMap, "missing sourcemap");
         
+        // sass includes absolute URLs by default, we want relative
         sourceMap.sources = sourceMap.sources.map(fileUrl => {
             const source        = AbsolutePath(path);
             const target        = AbsolutePath(fileURLToPath(fileUrl));
