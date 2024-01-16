@@ -1,16 +1,12 @@
 import { terminal } from "@wkronemeijer/system";
 import { Directory } from "@wkronemeijer/system-node";
 
-import { Notebook_compose } from "./NoteBook";
-import { Notebook_analyze } from "./Analyzing";
+import { NoteBook } from "./Composing/NoteBook";
+import { NoteBookInsights } from "./Analyzing/NoteBookInsights";
 
-export function printDiaryStatistics(sourceDir: Directory): void {
-    const notes = terminal.measureTime("Compose notebook", () => {
-        return Notebook_compose(sourceDir);
-    });
-    const insights = terminal.measureTime("Analyze notebook", () => {
-        return Notebook_analyze(notes);
-    });
+export async function printDiaryStatistics_async(sourceDir: Directory): Promise<void> {
+    const book     = await terminal.measureTime_async("compose()", () => NoteBook.new_async(sourceDir));
+    const insights = await terminal.measureTime_async("analyze()", () => NoteBookInsights.new_async(book));
     
-    terminal.dumpLocals(insights as any);
+    console.log(insights);
 }

@@ -1,5 +1,6 @@
-import { Member, StringEnum, capitalize, panic } from "@wkronemeijer/system";
 import { DateTime } from "luxon";
+
+import { Member, StringEnum, capitalize, panic } from "@wkronemeijer/system";
 
 export type  WeekDay = Member<typeof WeekDay>;
 export const WeekDay = StringEnum({

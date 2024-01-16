@@ -1,8 +1,8 @@
 import { Directory } from "@wkronemeijer/system-node";
 
-import { printDiaryStatistics } from "./Domain/PrintStatistics";
+import { printDiaryStatistics_async } from "./Domain/PrintStatistics";
 
-export function main(args: string[]): void {
+export async function main(args: string[]): Promise<void> {
     const dir = new Directory(args[0] ?? ".");
-    printDiaryStatistics(dir);
+    await printDiaryStatistics_async(dir);
 }
