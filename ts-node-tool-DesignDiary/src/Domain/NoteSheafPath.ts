@@ -1,4 +1,5 @@
-import { RelativePath, swear } from "@wkronemeijer/system";
+import { swear } from "@wkronemeijer/system";
+import { RelativePath } from "@wkronemeijer/system-node";
 
 const { isInteger } = Number;
 

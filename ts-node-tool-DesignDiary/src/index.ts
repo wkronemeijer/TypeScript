@@ -1,4 +1,4 @@
-import { Directory } from "@wkronemeijer/system";
+import { Directory } from "@wkronemeijer/system-node";
 
 import { printDiaryStatistics } from "./Domain/PrintStatistics";
 

@@ -1,4 +1,5 @@
-import { Directory, terminal } from "@wkronemeijer/system";
+import { terminal } from "@wkronemeijer/system";
+import { Directory } from "@wkronemeijer/system-node";
 
 import { Notebook_compose } from "./NoteBook";
 import { Notebook_analyze } from "./Analyzing";

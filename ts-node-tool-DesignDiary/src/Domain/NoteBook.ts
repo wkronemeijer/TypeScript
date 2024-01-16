@@ -1,4 +1,6 @@
-import { Directory, collect } from "@wkronemeijer/system";
+import { Directory } from "@wkronemeijer/system-node";
+import { collect } from "@wkronemeijer/system";
+
 import { NoteSheafPath_hasInstance } from "./NoteSheafPath";
 import { NoteSheaf } from "./NoteSheaf";
 

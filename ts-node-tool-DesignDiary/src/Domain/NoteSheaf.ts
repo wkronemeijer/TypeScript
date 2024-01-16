@@ -1,5 +1,7 @@
-import { Directory, File, StringBuildable, StringBuilder, swear } from "@wkronemeijer/system";
 import { DateTime } from "luxon";
+
+import { StringBuildable, StringBuilder, swear } from "@wkronemeijer/system";
+import { Directory, File } from "@wkronemeijer/system-node";
 
 import { WeekDay, WeekDay_fromDateTime } from "./WeekDay";
 import { NoteSheafPath_tryMatch } from "./NoteSheafPath";
