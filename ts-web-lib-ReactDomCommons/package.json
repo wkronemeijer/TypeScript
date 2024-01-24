@@ -1,0 +1,20 @@
+{
+    "name": "@wkronemeijer/system-react",
+    "main": "dist/index.js",
+    "types": "dist_t/index.d.ts",
+    "scripts": {
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "test": "ts-mocha src/**/*.spec.ts"
+    },
+    "devDependencies": {
+        "typescript": "*"
+    },
+    "dependencies": {
+        "@types/react": "*",
+        "@types/react-dom": "*",
+        "react": "*",
+        "react-dom": "*",
+        "immer": "*"
+    }
+}
