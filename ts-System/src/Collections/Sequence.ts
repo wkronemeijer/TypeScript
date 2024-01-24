@@ -8,6 +8,16 @@ import { Selector } from "../Data/Function/Selector";
 import { identity } from "../Data/Function/Function";
 import { Truthy } from "../Types/Truthy";
 
+// Not sure where to place these and what to call them
+// Left-biased (return the left operand when possible)
+function Comparer_min<T>(comparer: Comparer<T>, left: T, right: T): T {
+    return comparer(right, left) < 0 ? right : left;
+}
+
+function Comparer_max<T>(comparer: Comparer<T>, left: T, right: T): T {
+    return comparer(right, left) > 0 ? right : left;
+}
+
 export interface Sequence<T> extends Iterable<T> {
     /////////////////////////
     // Expanding sequences //
@@ -111,17 +121,37 @@ export interface Sequence<T> extends Iterable<T> {
     /** The size of the selected sequence. */
     count(): number;
     
-    /** The maximum of the selected sequence. */
-    max(selector: Selector<T, number>): number;
-    
     /** The minimum of the selected sequence. */
-    min(selector: Selector<T, number>): number;
+    min<U extends Comparable>(
+        selector: Selector<T, U>,
+        comparer?: Comparer<U>,
+    ): U | undefined;
+    
+    /** The maximum of the selected sequence. */
+    max<U extends Comparable>(
+        selector: Selector<T, U>,
+        comparer?: Comparer<U>,
+    ): U | undefined;
+    
+    /** The element with the smallest projected value of the selected sequence. */
+    minimize<U extends Comparable>(
+        selector: Selector<T, U>,
+        comparer?: Comparer<U>,
+    ): T | undefined;
+    
+    /** The element with the largest projected value of the selected sequence. */
+    maximize<U extends Comparable>(
+        selector: Selector<T, U>,
+        comparer?: Comparer<U>,
+    ): T | undefined;
     
     /** The first element of the sequence. Terminal operation. */
     first(): T | undefined;
     
     /** The last element of the sequence. */
     last(): T | undefined;
+    
+    aggregate<R>(initial: R, foldFunc: (acc: R, value: T) => R): R;
 }
 
 interface SequenceConstructor {
@@ -509,7 +539,10 @@ implements   Sequence<T>, Iterable<T> {
         if (this.source instanceof Array) {
             // NB: string iterators doesn't break surrogates, so the iterable length != the length of the string.
             return this.source.length;
-        } else if (this.source instanceof Map || this.source instanceof Set) {
+        } else if (
+            this.source instanceof Map || 
+            this.source instanceof Set
+        ) {
             return this.source.size;
         } else {
             let count = 0;
@@ -520,12 +553,86 @@ implements   Sequence<T>, Iterable<T> {
         }
     }
     
-    max(selector: Selector<T, number>): number {
-        return Math.max(...this.select(selector));
+    // min, max, minimize, maximize are like this to not choke when someone tries to compare undefined
+    // Alternative would be a sentinel value, that you would have to filter at the end too
+    // Also note that we don't want to call the selector more than once for a given value
+    
+    min<U extends Comparable>(
+        selector: Selector<T, U>,
+        comparer: Comparer<U> = compareAny,
+    ): U | undefined {
+        let minimum: U | undefined;
+        let first = true;
+        for (const value of this) {
+            const actualValue = selector(value);
+            if (first) {
+                minimum = actualValue;
+                first   = false;
+            } else if (comparer(actualValue, minimum!) < 0) {
+                minimum = actualValue;
+            }
+        }
+        return minimum;
     }
     
-    min(selector: Selector<T, number>): number {
-        return Math.min(...this.select(selector));
+    max<U extends Comparable>(
+        selector: Selector<T, U>,
+        comparer: Comparer<U> = compareAny,
+    ): U | undefined {
+        let maximum: U | undefined;
+        let first = true;
+        for (const value of this) {
+            const actualValue = selector(value);
+            if (first) {
+                maximum = actualValue;
+                first   = false;
+            } else if (comparer(actualValue, maximum!) > 0) {
+                maximum = actualValue;
+            }
+        }
+        return maximum;
+    }
+    
+    minimize<U extends Comparable>(
+        selector: Selector<T, U>,
+        comparer: Comparer<U> = compareAny,
+    ): T | undefined {
+        let minimumItem: T | undefined;
+        let minimumValue: U;
+        let first = true;
+        for (const value of this) {
+            const actualValue = selector(value);
+            if (first) {
+                minimumItem  = value;
+                minimumValue = actualValue;
+                first        = false;
+            } else if (comparer(actualValue, minimumValue!) < 0) {
+                minimumItem  = value;
+                minimumValue = actualValue;
+            }
+        }
+        return minimumItem;
+    }
+    
+    maximize<U extends Comparable>(
+        selector: Selector<T, U>,
+        comparer: Comparer<U> = compareAny,
+    ): T | undefined {
+        let maximumItem: T | undefined;
+        let maximumValue: U;
+        let first = true;
+        for (const value of this) {
+            const actualValue = selector(value);
+            if (first) {
+                maximumItem  = value;
+                maximumValue = actualValue;
+                first        = false;
+            } else if (comparer(actualValue, maximumValue!) > 0) {
+                maximumItem  = value;
+                maximumValue = actualValue;
+            }
+        }
+        return maximumItem;
     }
     
     first(): T | undefined {
@@ -550,6 +657,14 @@ implements   Sequence<T>, Iterable<T> {
             lastValue = result.value;
         }
         return lastValue;
+    }
+    
+    aggregate<R>(initial: R, foldFunc: (acc: R, value: T) => R): R {
+        let accumulator = initial;
+        for (const value of this) {
+            accumulator = foldFunc(accumulator, value);
+        }
+        return accumulator;
     }
 }
 
