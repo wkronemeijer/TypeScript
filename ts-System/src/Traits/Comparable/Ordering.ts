@@ -1,6 +1,6 @@
+import { isErrorNumber } from "../../ReExport/Module/Number";
 import { Newtype } from "../../Types/Newtype";
-
-const { isNaN } = Number;
+import { sign } from "../../ReExport/Module/Math";
 
 /**
  * Represents the relative ordering of two items, 
@@ -21,9 +21,8 @@ export type Ordering = Newtype<(-1 | 0 | 1), "Ordering">;
 
 export function Ordering(number: number): Ordering {
     // Any value is actually allowed, only the sign matters
-    return Math.sign(isNaN(number) ? 0 : number) as Ordering;
+    return sign(isErrorNumber(number) ? 0 : number) as Ordering;
 }
-
 
 export namespace Ordering {
     export const Less    = Ordering(-1);
@@ -34,6 +33,10 @@ export namespace Ordering {
         return Ordering(-self);
     }
 }
+
+// Namespace thing is nice, but also fragile;
+// functions allow it, but const members don't (even if the thing in it is mutable)
+// That's why the Namespace_Member thing are still exported.
 
 export const Ordering_Less    = Ordering.Less;
 export const Ordering_Equal   = Ordering.Equal;
