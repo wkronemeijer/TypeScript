@@ -16,7 +16,7 @@ function strlen(x: unknown): number {
 export function Text_getDimensions(self: string): TextDimensions {
     const lines = self.split("\n");
     
-    const maxCol = from(lines).max(line => line.length) + 1;
+    const maxCol = (from(lines).max(line => line.length) ?? 0) + 1;
     const maxLn  = lines.length + 1;
     
     const maxColLength = strlen(maxCol);
