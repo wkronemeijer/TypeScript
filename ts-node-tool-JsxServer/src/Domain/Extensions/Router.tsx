@@ -23,7 +23,9 @@ export function Router_registerFileTransform<T extends MimeTypedString>(
                 res.send(body);
             } catch (e) {
                 res.setHeader(CONTENT_TYPE, "text/plain");
-                res.send(e instanceof Error ? e.stack : String(e));
+                const message = e instanceof Error ? e.stack : String(e);
+                console.log(message);
+                res.send(message);
             }
         });
     }
@@ -31,5 +33,7 @@ export function Router_registerFileTransform<T extends MimeTypedString>(
         __NOT_IMPLEMENTED();
         // Something like:
         // self.post(pattern, async (req, res) => {...});
+        // Mind you, bundling a file, running it for each request is a little very inefficient
+        // Needs caching at that point 😬
     }
 }
