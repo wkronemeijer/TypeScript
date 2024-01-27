@@ -11,8 +11,12 @@ const encoding: BufferEncoding = "utf-8";
 
 export const StylesheetRenderer: FileTransform<CssStylesheet> = {
     pattern: /\.scss$/,
-    async render_async({ url }) {
-        const path = fileURLToPath(url);
+    async render_async({ file }) {
+        swear(await file.exists_async(), () => 
+            `${file} does not exist.`
+        );
+        
+        const path = file.path;
         const compileResult = await scss.compileAsync(path, {
             sourceMap: true,
             sourceMapIncludeSources: true,
@@ -23,7 +27,7 @@ export const StylesheetRenderer: FileTransform<CssStylesheet> = {
         
         // sass includes absolute URLs by default, we want relative
         sourceMap.sources = sourceMap.sources.map(fileUrl => {
-            const source        = AbsolutePath(path);
+            const source        = path;
             const target        = AbsolutePath(fileURLToPath(fileUrl));
             const relativePath  = Path_relative(source, target);
             const relativeUrl   = RelativePath_toUrl(relativePath);
@@ -44,7 +48,7 @@ export const StylesheetRenderer: FileTransform<CssStylesheet> = {
         const message = (
             error.stack
             ?.replaceAll("*/", "*\u200B/")
-            .replaceAll(/\x1B\[\d{1,2}m/g, "")
+            ?.replaceAll(/\x1B\[\d{1,2}m/g, "")
         );
         return CssStylesheet(`\
 /*

@@ -1,11 +1,10 @@
 import { isValidElement } from "react";
-import { fileURLToPath } from "url";
 import * as esbuild from "esbuild";
 
 import { swear, Dictionary } from "@wkronemeijer/system";
 
 import { BuildResult_getOutput, ESTarget } from "../../Extensions/BuildResult";
-import { requireInline } from "../../RequireInline";
+import { requireString } from "../../RequireString";
 import { FileTransform } from "../PageTransform";
 import { HtmlDocument } from "../../ResultTypes/HtmlDocument";
 
@@ -20,10 +19,13 @@ const SearchParameterReplacement = "__URL_PARAMS";
 
 export const ReactPageRenderer: FileTransform<HtmlDocument> = {
     pattern: ReactPagePattern,
-    async render_async({ url }): Promise<HtmlDocument> {
-        const filePath = fileURLToPath(url);
-        swear(isReactPage(filePath), "filePath does not lead to a react file.");
+    async render_async({ url, file }): Promise<HtmlDocument> {
+        swear(await file.exists_async(), () => 
+            `${file} does not exist.`
+        );
+        
         const paramsObject = Dictionary.from(url.searchParams);
+        const filePath = file.path;
         
         const buildResult = await esbuild.build({
             entryPoints: [filePath],
@@ -44,7 +46,7 @@ export const ReactPageRenderer: FileTransform<HtmlDocument> = {
         });
         
         const sourceCode = BuildResult_getOutput(buildResult);
-        const module = requireInline(filePath, sourceCode);
+        const module = requireString(filePath, sourceCode);
         const jsx = await module.exports.default;
         swear(isValidElement(jsx), "'default' export was not a JSX element.");
         return HtmlDocument(jsx);

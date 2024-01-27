@@ -1,4 +1,3 @@
-
 import { ReadonlyURL } from "@wkronemeijer/system";
 
 import { MimeTypedString } from "../MimeType";

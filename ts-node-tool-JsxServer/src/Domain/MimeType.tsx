@@ -1,5 +1,3 @@
-import * as express from "express";
-
 import { HintedString } from "@wkronemeijer/system";
 
 export type CommonMimeType = (
