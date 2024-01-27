@@ -1,6 +1,6 @@
 import * as express from "express";
 
-import { ReadonlyURL, formatThrowable, swear } from "@wkronemeijer/system";
+import { ReadonlyURL, formatThrowable, swear, throwableToError } from "@wkronemeijer/system";
 import { File, Directory, Path_hasDescendant } from "@wkronemeijer/system-node";
 
 import { ErrorDescription } from "../ResultTypes/ErrorDescription";
@@ -48,9 +48,9 @@ export function Router_registerFileTransform<T extends MimeTypedString>(
                     url, file,
                 });
             } catch (render_error) {
-                console.log(formatThrowable(render_error));
+                console.log(render_error);
                 try {
-                    if (render_error instanceof Error && renderError_async) {
+                    if (renderError_async && render_error instanceof Error) {
                         result = await renderError_async({
                             error: render_error,
                             rootUrl, rootDirectory,
@@ -60,8 +60,7 @@ export function Router_registerFileTransform<T extends MimeTypedString>(
                         result = ErrorDescription(render_error);
                     }
                 } catch (renderError_error) {
-                    // Feels like Error#cause should be used somewhere here...
-                    console.log(formatThrowable(renderError_error));
+                    console.log(renderError_error);
                     result = ErrorDescription(renderError_error);
                 }
             }

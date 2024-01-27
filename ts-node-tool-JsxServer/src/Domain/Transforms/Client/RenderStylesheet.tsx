@@ -44,9 +44,9 @@ export const StylesheetRenderer: FileTransform<CssStylesheet> = {
     },
     async renderError_async({ error }) {
         const message = (
-            error.stack
-            ?.replaceAll("*/", "*\u200B/")
-            ?.replaceAll(AnsiEscapeSequence, "")
+            error.stack!
+            .replaceAll("*/", "*\u200B/")
+            .replaceAll(AnsiEscapeSequence, "")
         );
         return CssStylesheet(`/*\n${message}\n*/\nbody { color: red; }\n`);
     },

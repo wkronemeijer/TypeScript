@@ -1,10 +1,11 @@
+import { Throwable, throwableToError } from "@wkronemeijer/system";
 import { MimeTypedString } from "../MimeType";
 
 export type ErrorDescription = MimeTypedString<"text/plain">;
 
-export function ErrorDescription(e: unknown): ErrorDescription {
+export function ErrorDescription(throwable: Throwable): ErrorDescription {
     return {
         type: "text/plain",
-        body: e instanceof Error && e.stack || `Error: ${String(e)}`,
+        body: throwableToError(throwable).stack!,
     }
 }

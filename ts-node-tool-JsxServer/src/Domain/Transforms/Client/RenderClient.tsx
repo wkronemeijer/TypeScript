@@ -25,8 +25,8 @@ export const ClientJavaScriptRenderer: FileTransform<JavaScriptScript> = {
     },
     async renderError_async({ error }) {
         const message = (
-            error.stack
-            ?.replaceAll("`", "\xB4")
+            error.stack!
+            .replaceAll("`", "\xB4")
         );
         return JavaScriptScript(`document.body.append(String.raw\`\n${message}\n\`);`);
     },
