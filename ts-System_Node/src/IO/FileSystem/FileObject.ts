@@ -1,10 +1,11 @@
-import { AsyncMethods, from } from "@wkronemeijer/system";
+import { AsyncMethods, ReadonlyURL, from } from "@wkronemeijer/system";
 
 import { AnyPath, Path_CurrentDirectory } from "./Path";
 import { FileEntityStats } from "./EntityStats";
 import { FileEntityKind } from "./EntityKind";
 import { GetFileSystem } from "./GetFileSystem";
 import { PathObject } from "./PathObject";
+import { fileURLToPath } from "node:url";
 
 interface FileObjectSyncMethods {
     // TODO: decide
@@ -42,6 +43,8 @@ interface FileObjectConstructor {
     new(...segments: AnyPath[]): FileObject;
     /** @deprecated Use `new(".")` instead. */
     cwd(): FileObject;
+    /** Converts a `file:` URL into a FileObject. */
+    fromUrl(url: ReadonlyURL): FileObject;
 }
 
 export const FileObject
@@ -51,6 +54,10 @@ extends      PathObject
 implements   FileObject {
     static cwd(): FileObject {
         return new FileObjectImpl(Path_CurrentDirectory);
+    }
+    
+    static fromUrl(url: ReadonlyURL): FileObject {
+        return new FileObjectImpl(fileURLToPath(url));
     }
     
     ///////////////
