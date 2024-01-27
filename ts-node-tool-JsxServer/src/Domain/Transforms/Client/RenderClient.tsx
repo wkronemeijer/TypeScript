@@ -1,7 +1,7 @@
 import * as esbuild from "esbuild";
 
 import { JavaScriptScript } from "../../ResultTypes/JavaScriptScript";
-import { FileTransform } from "../PageTransform";
+import { FileTransform } from "../FileTransform";
 import { ESTarget } from "../../Extensions/BuildResult";
 
 export const ClientJavaScriptRenderer: FileTransform<JavaScriptScript> = {

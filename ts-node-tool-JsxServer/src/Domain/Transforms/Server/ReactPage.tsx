@@ -5,7 +5,7 @@ import { swear, Dictionary, stringifyJson } from "@wkronemeijer/system";
 
 import { BuildResult_getOutput, ESTarget } from "../../Extensions/BuildResult";
 import { requireString } from "../../RequireString";
-import { FileTransform } from "../PageTransform";
+import { FileTransform } from "../FileTransform";
 import { HtmlDocument } from "../../ResultTypes/HtmlDocument";
 
 export const ReactPagePattern = /\.page\.[jt]sx$/;

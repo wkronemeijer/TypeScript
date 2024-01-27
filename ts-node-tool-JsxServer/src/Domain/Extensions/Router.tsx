@@ -5,7 +5,7 @@ import { File, Directory, Path_hasDescendant } from "@wkronemeijer/system-node";
 
 import { ErrorDescription } from "../ResultTypes/ErrorDescription";
 import { MimeTypedString } from "../MimeType";
-import { FileTransform } from "../Transforms/PageTransform";
+import { FileTransform } from "../Transforms/FileTransform";
 import { Response_send } from "./Response";
 
 export function Router_registerFileTransform<T extends MimeTypedString>(

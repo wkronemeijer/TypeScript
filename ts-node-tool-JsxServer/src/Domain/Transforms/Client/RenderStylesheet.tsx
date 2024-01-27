@@ -5,7 +5,7 @@ import * as scss from "sass-embedded";
 import { AbsolutePath, Path_relative, RelativePath_toUrl } from "@wkronemeijer/system-node";
 import { stringifyJson, swear } from "@wkronemeijer/system";
 
-import { FileTransform } from "../PageTransform";
+import { FileTransform } from "../FileTransform";
 import { CssStylesheet } from "../../ResultTypes/CssStylesheet";
 
 function SourceMap_relativize(self: RawSourceMap, path: AbsolutePath): RawSourceMap {
