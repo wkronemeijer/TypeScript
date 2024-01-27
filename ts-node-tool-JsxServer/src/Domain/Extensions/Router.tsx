@@ -1,7 +1,7 @@
 import * as express from "express";
 
-import { File, Directory } from "@wkronemeijer/system-node";
-import { ReadonlyURL, formatThrowable } from "@wkronemeijer/system";
+import { ReadonlyURL, formatThrowable, swear } from "@wkronemeijer/system";
+import { File, Directory, Path_hasDescendant } from "@wkronemeijer/system-node";
 
 import { ErrorDescription } from "../ResultTypes/ErrorDescription";
 import { MimeTypedString } from "../MimeType";
@@ -13,7 +13,13 @@ export function Router_registerFileTransform<T extends MimeTypedString>(
     rootUrl: ReadonlyURL,
     transform: FileTransform<T>,
 ): void {
-    const { pattern, render_async, query_async, renderError_async } = transform;
+    const { 
+        pattern, 
+        virtual = false, 
+        render_async, 
+        query_async, 
+        renderError_async,
+    } = transform;
     const rootDirectory = Directory.fromUrl(rootUrl);
     
     //////////////////
@@ -24,10 +30,19 @@ export function Router_registerFileTransform<T extends MimeTypedString>(
         self.get(pattern, async (req, res) => {
             const url = new URL(rootUrl + req.url);
             const file = File.fromUrl(url);
-            // FIXME: Ensure the fileUrl doesn't escape the root
             
             let result: MimeTypedString;
             try {
+                // TODO: Can this even trigger?
+                swear(Path_hasDescendant(rootDirectory.path, file.path), () =>
+                    `Requested resource ${file} must be onder the root directory.`
+                );
+                // IK that async checking for exists is bad
+                // alternative is that esbuild or something else downstream creates a more obscure error than this one.
+                swear(virtual || await file.exists_async(), () => 
+                    `Resource ${file} does not exist.`
+                );
+                
                 result = await render_async({
                     rootUrl, rootDirectory,
                     url, file,

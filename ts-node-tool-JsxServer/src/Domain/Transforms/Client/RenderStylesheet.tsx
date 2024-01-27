@@ -12,10 +12,6 @@ const encoding: BufferEncoding = "utf-8";
 export const StylesheetRenderer: FileTransform<CssStylesheet> = {
     pattern: /\.scss$/,
     async render_async({ file }) {
-        swear(await file.exists_async(), () => 
-            `${file} does not exist.`
-        );
-        
         const path = file.path;
         const compileResult = await scss.compileAsync(path, {
             sourceMap: true,

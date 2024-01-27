@@ -4,7 +4,7 @@ declare global {
     }
 }
 
-export function requireString(filePath: string, sourceCode: string): any {
+export function requireString(filePath: string, sourceCode: string): NodeModule {
     // from https://stackoverflow.com/a/47002752
     const mod: NodeModule = new (module.constructor as any)();
     mod.paths = module.paths;

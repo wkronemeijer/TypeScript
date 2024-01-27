@@ -38,6 +38,9 @@ extends FileTransform_MethodOptions {
 
 export interface FileTransform<S extends MimeTypedString> {
     readonly pattern: RegExp;
+    /** Whether the request file doesn't have to actually exist on disk. */
+    readonly virtual?: boolean;
+    
     readonly render_async?: (params: FileTransform_RenderOptions) => Promise<S>;
     readonly query_async?: (params: FileTransform_QueryOptions) => Promise<S>;
     

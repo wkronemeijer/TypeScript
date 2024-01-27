@@ -1,7 +1,5 @@
 import * as esbuild from "esbuild";
 
-import { swear } from "@wkronemeijer/system";
-
 import { JavaScriptScript } from "../../ResultTypes/JavaScriptScript";
 import { FileTransform } from "../PageTransform";
 import { ESTarget } from "../../Extensions/BuildResult";
@@ -9,10 +7,6 @@ import { ESTarget } from "../../Extensions/BuildResult";
 export const ClientJavaScriptRenderer: FileTransform<JavaScriptScript> = {
     pattern: /\.[jt]sx?$/,
     async render_async({ file }): Promise<JavaScriptScript> {
-        swear(await file.exists_async(), () => 
-            `${file} does not exist.`
-        );
-        
         const buildResult = await esbuild.build({
             entryPoints: [file.path],
             bundle: true,
