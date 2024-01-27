@@ -11,7 +11,7 @@ const encoding: BufferEncoding = "utf-8";
 
 export const StylesheetRenderer: FileTransform<CssStylesheet> = {
     pattern: /\.scss$/,
-    async render_async(url) {
+    async render_async({ url }) {
         const path = fileURLToPath(url);
         const compileResult = await scss.compileAsync(path, {
             sourceMap: true,
@@ -39,5 +39,18 @@ export const StylesheetRenderer: FileTransform<CssStylesheet> = {
         
         const css = `${compileResult.css}\n\n${sourceMapComment}`;
         return CssStylesheet(css);
+    },
+    async renderError_async({error}) {
+        const message = (
+            error.stack
+            ?.replaceAll("*/", "*\u200B/")
+            .replaceAll(/\x1B\[\d{1,2}m/g, "")
+        );
+        return CssStylesheet(`\
+/*
+${message} 
+*/
+body { color: red; }
+`       );
     },
 }

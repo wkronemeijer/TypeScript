@@ -4,7 +4,7 @@ import * as express from "express";
 import { AbsolutePath, Directory } from "@wkronemeijer/system-node";
 import { from } from "@wkronemeijer/system";
 
-import { Response_sendTyped } from "../Extensions/Response";
+import { Response_send } from "../Extensions/Response";
 import { HtmlDocument } from "../ResultTypes/HtmlDocument";
 import { isReactPage } from "../Transforms/Server/ReactPage";
 import { Link } from "../Link";
@@ -25,22 +25,20 @@ export function createIndexRenderer(rootFolder: AbsolutePath): express.RequestHa
             .where(isReactPage)
             .toArray()
         );
-            
-        const responseDoc = HtmlDocument(<html>
+        
+        Response_send(res, HtmlDocument(<html>
             <head>
                 <title>{title}</title>
             </head>
-            <body>
+            <body className="__ServerIndex">
                 <h1>{title}</h1>
-                <ul className="__ServerIndex">
-                    {pages.map(page =>
+                <ul>
+                    {pages.map(page => 
                     <li key={page}>
                         <Link href={getRelativeUrl(rootFolder, page)}/>
                     </li>)}
                 </ul>
             </body>
-        </html>);
-        
-        Response_sendTyped(res, responseDoc);
+        </html>));
     }) satisfies express.RequestHandler;
 }

@@ -1,8 +1,8 @@
-import { swear, Dictionary } from "@wkronemeijer/system";
-
 import { isValidElement } from "react";
 import { fileURLToPath } from "url";
 import * as esbuild from "esbuild";
+
+import { swear, Dictionary } from "@wkronemeijer/system";
 
 import { BuildResult_getOutput, ESTarget } from "../../Extensions/BuildResult";
 import { requireInline } from "../../RequireInline";
@@ -11,18 +11,19 @@ import { HtmlDocument } from "../../ResultTypes/HtmlDocument";
 
 export const ReactPagePattern = /\.page\.[jt]sx$/;
 
+// ↓ must be exported so an index can be created.
 export function isReactPage(filePath: string) {
     return ReactPagePattern.test(filePath);
 }
 
 const SearchParameterReplacement = "__URL_PARAMS";
 
-export async function renderServerSideJsx_async(fileUrl: URL): Promise<HtmlDocument> {
-    let result: JSX.Element;
-    try {
-        const filePath = fileURLToPath(fileUrl);
+export const ReactPageRenderer: FileTransform<HtmlDocument> = {
+    pattern: ReactPagePattern,
+    async render_async({ url }): Promise<HtmlDocument> {
+        const filePath = fileURLToPath(url);
         swear(isReactPage(filePath), "filePath does not lead to a react file.");
-        const paramsObject = Dictionary.from(fileUrl.searchParams);
+        const paramsObject = Dictionary.from(url.searchParams);
         
         const buildResult = await esbuild.build({
             entryPoints: [filePath],
@@ -46,27 +47,21 @@ export async function renderServerSideJsx_async(fileUrl: URL): Promise<HtmlDocum
         const module = requireInline(filePath, sourceCode);
         const jsx = await module.exports.default;
         swear(isValidElement(jsx), "'default' export was not a JSX element.");
-        result = jsx;
-    } catch (e) {
-        swear(e instanceof Error, "Non-Error thrown.");
-        result = <html>
+        return HtmlDocument(jsx);
+    },
+    async renderError_async({ error }) {
+        return HtmlDocument(<html>
             <head>
-                <title>{e.name}</title>
+                <title>{`${error.name}`}</title>
             </head>
             <body>
                 <div style={{
                     color: "red",
                     whiteSpace: "pre-wrap",
                 }}>
-                    {e.stack}
+                    {error.stack}
                 </div>
             </body>
-        </html>;
-    }
-    return HtmlDocument(result);
-}
-
-export const ReactPageRenderer: FileTransform<HtmlDocument> = {
-    pattern: ReactPagePattern,
-    render_async: renderServerSideJsx_async,
+        </html>);
+    },
 }

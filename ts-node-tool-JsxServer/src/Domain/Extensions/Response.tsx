@@ -12,7 +12,7 @@ export function Response_shouldLog(self: express.Response): boolean {
     );
 }
 
-export function Response_sendTyped<T extends MimeTypedString>(
+export function Response_send<T extends MimeTypedString>(
     self: express.Response,
     value: T,
 ): void {
