@@ -19,3 +19,6 @@ export function formatThrowable(error: Throwable) {
 export function printThrowable(error: Throwable): void {
     terminal.error(formatThrowable(error));
 }
+
+/** @deprecated Use {@link printThrowable} instead. */
+export const printError = printThrowable;
