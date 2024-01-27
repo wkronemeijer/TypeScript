@@ -10,11 +10,13 @@
     "devDependencies": {
         "typescript": "*"
     },
-    "dependencies": {
-        "@types/react": "*",
-        "@types/react-dom": "*",
+    "peerDependencies": {
         "react": "*",
         "react-dom": "*",
         "immer": "*"
+    },
+    "dependencies": {
+        "@types/react": "*",
+        "@types/react-dom": "*"
     }
 }
