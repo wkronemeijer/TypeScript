@@ -3,6 +3,8 @@ const {
     defineProperty, hasOwn, 
     freeze, 
     assign, entries,
+    getPrototypeOf, setPrototypeOf,
+    getOwnPropertyDescriptor,
 } = Object;
 
 export {
@@ -10,4 +12,6 @@ export {
     defineProperty, hasOwn, 
     freeze, 
     assign, entries,
+    getPrototypeOf, setPrototypeOf,
+    getOwnPropertyDescriptor,
 }
