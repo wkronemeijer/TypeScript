@@ -1,5 +1,5 @@
-import { check } from "../../Modules.generated";
 import { StringEnum } from "./StringEnum";
+import { check } from "../../Errors/Check";
 
 describe("StringEnum", () => {
     describe("create()", () => {

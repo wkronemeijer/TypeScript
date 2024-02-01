@@ -1,4 +1,4 @@
-import { Newtype } from "../Modules.generated";
+import { Newtype } from "../Types/Newtype";
 
 const { stringify, parse } = JSON;
 
