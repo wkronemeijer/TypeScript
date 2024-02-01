@@ -1,3 +1,4 @@
+import { defineProperty, ownKeys } from "../ReExport/Module/Object";
 import { panic } from "../Errors/ErrorFunctions";
 
 /** Same as {@link Object.create}, but preserves type so you can use it for what prototypes were meant to do. */
@@ -95,3 +96,32 @@ export function Object_defineWriteOnceProperty<
 export const Object_entries: (object: {}) => [string, unknown][] = Object.entries;
 /** Wraps {@link Object.values}, but returns `unknown` instead. */
 export const Object_values : (object: {}) => unknown[] = Object.values;
+
+///////////////////////////////
+// Prototype property helper //
+///////////////////////////////
+
+interface PropertyValueMap {
+    readonly [s: string | symbol]: unknown;
+}
+
+/** 
+ * Similar to methods defined in a `class` expression/statement, 
+ * this function defines configurable, non-enumerable, writable properties 
+ * with the name and value based on the given map.
+ * 
+ * Supports both string and symbol-keyed properties.
+ */
+export function definePropertiesOnPrototype(
+    target: object, 
+    valueMap: PropertyValueMap,
+) {
+    for (const key of ownKeys(valueMap)) {
+        defineProperty(target, key, {
+            configurable: true,
+            enumerable: false,
+            writable: true,
+            value: valueMap[key],
+        });
+    }
+}
