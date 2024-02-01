@@ -15,10 +15,12 @@ interface ReplaceableFunctionPrototype<F extends (...args: any[]) => any> {
     readonly overwrite: (newImpl: F) => void;
     // Called overwrite and not "set" to emphasize the original impl is lost.
     
-    /** Runs the body with the given implementation set, then restores the previous value after completion. */
+    /** 
+     * Runs the body with the given implementation set, then restores the previous value after completion. 
+     * 
+     * There is no `_async` because calls can overlap and then behavior becomes very unpredictable.
+     */
     readonly with: <R>(tempImpl: F, body: () => R) => R;
-    /** Runs the body asynchronously with the given implementation set, then restores the previous value after completion. */
-    readonly with_async: <R>(tempImpl: F, body: () => Promise<R>) => Promise<R>;
 }
 
 function overwrite<F extends (...args: any[]) => any>(
@@ -42,20 +44,6 @@ function with_<F extends (...args: any[]) => any, R>(
     }
 }
 
-async function with_async<F extends (...args: any[]) => any, R>(
-    this: ReplaceableFunction<F>, 
-    tempImpl: F, 
-    body: () => Promise<R>,
-): Promise<R> {
-    const oldImpl = this[$currentImpl];
-    try {
-        this[$currentImpl] = tempImpl;
-        return await body();
-    } finally {
-        this[$currentImpl] = oldImpl;
-    }
-}
-
 function ReplaceableFunctionPrototype(): void {
     panic("ReplaceableFunctionPrototype should not be called.");
 }
@@ -66,7 +54,6 @@ definePropertiesOnPrototype(ReplaceableFunctionPrototype, {
     },
     overwrite,
     with: with_,
-    with_async,
 } satisfies ReplaceableFunctionPrototype<(...args: any[]) => any>)
 
 ////////////////////////////////////
