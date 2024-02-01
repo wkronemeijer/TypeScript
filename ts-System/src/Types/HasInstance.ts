@@ -1,3 +1,5 @@
+import { defineProperties } from "../Modules.generated";
+
 export interface HasInstance<T> {
     hasInstance(x: unknown): x is T;
     [Symbol.hasInstance](x: unknown): x is T;
@@ -11,9 +13,12 @@ export function HasInstance_inject<O extends object, T>(
     object: O, 
     instanceCheck: (x: unknown) => x is T,
 ): asserts object is O & HasInstance<T> {
-    Object.defineProperties(object, {
-        "hasInstance"       : { value: instanceCheck },
-        [Symbol.hasInstance]: { value: instanceCheck },
+    const configurable = true;
+    const enumerable = false;
+    const writable = true;
+    defineProperties(object, {
+        "hasInstance"       : { configurable, enumerable, writable, value: instanceCheck },
+        [Symbol.hasInstance]: { configurable, enumerable, writable, value: instanceCheck },
     });
     return object as any;
 }
