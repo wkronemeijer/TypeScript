@@ -1,5 +1,5 @@
 import { createChecker } from "./Satisfies";
-import { Newtype } from "./Newtype";
+import { Newtype } from "../Data/Nominal/Newtype";
 import { check } from "../Errors/Check";
 
 describe("createChecker()", () => {

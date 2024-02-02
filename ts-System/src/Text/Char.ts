@@ -1,7 +1,7 @@
 // Functions ment for strings with 1 codepoint.
 // Same as `Char` in Haskell.
 
-import { Newtype } from "../Types/Newtype";
+import { Newtype } from "../Data/Nominal/Newtype";
 
 const twoUnitThreshold = 0x1_0000;
 

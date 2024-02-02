@@ -1,6 +1,6 @@
 import { Int32_Maximum, Int32_Minimum } from "../../Data/Numeric/Integer";
 import { Random_intRangeInclusive } from "../../Data/Numeric/Random";
-import { Newtype } from "../../Types/Newtype";
+import { Newtype } from "../../Data/Nominal/Newtype";
 
 /** 
  * A 32-bit integer.  

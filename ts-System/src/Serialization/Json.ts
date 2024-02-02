@@ -1,4 +1,4 @@
-import { Newtype } from "../Types/Newtype";
+import { Newtype } from "../Data/Nominal/Newtype";
 
 const { stringify, parse } = JSON;
 

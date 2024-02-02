@@ -1,5 +1,5 @@
 import { isErrorNumber } from "../../ReExport/Module/Number";
-import { Newtype } from "../../Types/Newtype";
+import { Newtype } from "../../Data/Nominal/Newtype";
 import { sign } from "../../ReExport/Module/Math";
 
 /**

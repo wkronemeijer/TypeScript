@@ -1,5 +1,5 @@
 import { requires } from "../../Assert";
-import { Newtype } from "../../Types/Newtype";
+import { Newtype } from "../Nominal/Newtype";
 import { value_t } from "../../Types/Primitive";
 
 /** The identity function. */

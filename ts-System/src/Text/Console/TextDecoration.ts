@@ -4,7 +4,7 @@
 import { DecoratedString } from "./DecoratedString";
 import { StringBuilder } from "../StringBuilder";
 import { StringEnum } from "../../Data/Textual/StringEnum";
-import { Newtype } from "../../Types/Newtype";
+import { Newtype } from "../../Data/Nominal/Newtype";
 import { Member } from "../../Data/Enumeration";
 
 ///////////////

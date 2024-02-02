@@ -1,10 +1,10 @@
 // In one file because the alternative would require tons of @internal 
 // Besides file length isn't even >200loc
 
-import { Newtype, Newtype_createRegExpChecker } from "../Types/Newtype";
 import { create, defineProperty, entries } from "../ReExport/Module/Object";
 import { Json, parseJson, stringifyJson } from "./Json";
 import { isObject, isString } from "../Types/IsX";
+import { RegExpNewtype } from "../Data/Nominal/RegExp";
 import { guard, swear } from "../Assert";
 import { Constructor } from "../Types/Mixins";
 import { implies } from "../Data/Boolean";
@@ -25,8 +25,8 @@ const VALUE = "#value#";
 // SerializableIdentifier //
 ////////////////////////////
 
-type  SerializableIdentifier = Newtype<string, "SerializableIdentifier">;
-const SerializableIdentifier = Newtype_createRegExpChecker<SerializableIdentifier>(
+type  SerializableIdentifier = ReturnType<typeof SerializableIdentifier>;
+const SerializableIdentifier = RegExpNewtype("SerializableIdentifier",
     /[A-Za-z0-9\$\_]+/
 );
 
