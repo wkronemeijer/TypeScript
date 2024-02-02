@@ -1,4 +1,4 @@
-import { defineProperties } from "../Modules.generated";
+import { defineProperties } from "../ReExport/Module/Object";
 
 export interface HasInstance<T> {
     hasInstance(x: unknown): x is T;
