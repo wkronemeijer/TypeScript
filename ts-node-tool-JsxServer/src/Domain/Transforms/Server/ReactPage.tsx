@@ -9,6 +9,15 @@ import { requireString } from "../../RequireString";
 import { FileTransform } from "../FileTransform";
 import { HtmlDocument } from "../../ResultTypes/HtmlDocument";
 
+import { dependencies } from "../../../../package.json";
+
+export const ShareableDependencies: readonly string[] = [
+    "@wkronemeijer/system",
+    "@wkronemeijer/system-node",
+    // Note: @wkronemeijer/react-server-page should never be shared;
+    // it has to included in the page bundle for it to work.
+] satisfies (keyof typeof dependencies)[];
+
 export const ReactPagePattern = /\.page\.[jt]sx$/;
 
 // ↓ must be exported so an index can be created.
@@ -34,6 +43,7 @@ export const ReactPageRenderer: FileTransform<HtmlDocument> = {
             minifyWhitespace: true,
             sourcemap: "inline",
             
+            external: ShareableDependencies.slice(),
             define: prepareRequestInfo({
                 url: url.href,
             }),
