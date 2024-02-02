@@ -7,6 +7,7 @@
     },
     "dependencies": {
         "@wkronemeijer/compiler-toolkit": "file:ts-common-lib-CompilerToolkit",
+        "@wkronemeijer/react-server-page": "file:ts-node-lib-ReactServerPage",
         "@wkronemeijer/react-terminal": "file:ts-ReactTerminal",
         "@wkronemeijer/system": "file:ts-System",
         "@wkronemeijer/system-node": "file:ts-System_Node",

@@ -12,11 +12,12 @@ const ROOT = Path_resolve(".");
 export function main(): void {
     // Not sure where to put this...it should only run once.
     express.static.mime.define({
-        "text/plain": ["dd"]
+        "text/plain": ["dd"],
     });
     
     configureServer(ROOT).listen(PORT);
     
-    terminal.log(`Now hosting ${pathToFileURL(ROOT).href} on ${getLocalIp("IPv4")}:${PORT}`);
+    terminal.log(`Root folder: ${pathToFileURL(ROOT).href}`);
+    terminal.log(`Local address: ${getLocalIp("IPv4")}:${PORT}`);
     terminal.log(`\n>>> Connect to http://localhost:${PORT}/ <<<\n`);
 }

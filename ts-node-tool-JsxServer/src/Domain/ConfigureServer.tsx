@@ -4,12 +4,14 @@ import * as express from "express";
 import { AbsolutePath } from "@wkronemeijer/system-node";
 
 import { Router_registerFileTransform } from "./Extensions/Router";
-import { ClientJavaScriptRenderer } from "./Transforms/Client/RenderClient";
+
 import { createIndexRenderer } from "./Handlers/RenderIndex";
-import { StylesheetRenderer } from "./Transforms/Client/RenderStylesheet";
 import { PerformanceLogger } from "./Handlers/PerformanceLogger";
-import { ReactPageRenderer } from "./Transforms/Server/ReactPage";
 import { ErrorLogger } from "./Handlers/ErrorLogger";
+
+import { ClientJavaScriptRenderer } from "./Transforms/Client/RenderClient";
+import { StylesheetRenderer } from "./Transforms/Client/RenderStylesheet";
+import { ReactPageRenderer } from "./Transforms/Server/ReactPage";
 
 function configureRouter(rootFolder: AbsolutePath): express.Router {
     const router  = express.Router();

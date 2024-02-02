@@ -1,9 +1,10 @@
 import { isValidElement } from "react";
 import * as esbuild from "esbuild";
 
-import { swear, Dictionary, stringifyJson } from "@wkronemeijer/system";
+import { swear } from "@wkronemeijer/system";
 
-import { BuildResult_getOutput, ESTarget } from "../../Extensions/BuildResult";
+import { BuildResult_getOutputFile, ESTarget } from "../../Extensions/BuildResult";
+import { prepareRequestInfo } from "../../Extensions/DefineMap";
 import { requireString } from "../../RequireString";
 import { FileTransform } from "../FileTransform";
 import { HtmlDocument } from "../../ResultTypes/HtmlDocument";
@@ -15,12 +16,9 @@ export function isReactPage(filePath: string) {
     return ReactPagePattern.test(filePath);
 }
 
-const SearchParameterReplacement = "__URL_PARAMS";
-
 export const ReactPageRenderer: FileTransform<HtmlDocument> = {
     pattern: ReactPagePattern,
     async render_async({ url, file }): Promise<HtmlDocument> {
-        const paramsObject = Dictionary.from(url.searchParams);
         const filePath = file.path;
         
         const buildResult = await esbuild.build({
@@ -36,18 +34,18 @@ export const ReactPageRenderer: FileTransform<HtmlDocument> = {
             minifyWhitespace: true,
             sourcemap: "inline",
             
-            define: {
-                [SearchParameterReplacement]: stringifyJson(paramsObject),
-            },
+            define: prepareRequestInfo({
+                url: url.href,
+            }),
         });
         
-        const sourceCode = BuildResult_getOutput(buildResult);
+        const sourceCode = BuildResult_getOutputFile(buildResult);
         const module = requireString(filePath, sourceCode);
         const jsx = await module.exports.default;
         swear(isValidElement(jsx), "'default' export was not a JSX element.");
         return HtmlDocument(jsx);
     },
-    async renderError_async({ error }) {
+    async renderError_async(error) {
         return HtmlDocument(<html>
             <head>
                 <title>{`${error.name}`}</title>

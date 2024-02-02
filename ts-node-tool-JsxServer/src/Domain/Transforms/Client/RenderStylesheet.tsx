@@ -5,8 +5,8 @@ import * as scss from "sass-embedded";
 import { AbsolutePath, Path_relative, RelativePath_toUrl } from "@wkronemeijer/system-node";
 import { stringifyJson, swear } from "@wkronemeijer/system";
 
-import { FileTransform } from "../FileTransform";
 import { CssStylesheet } from "../../ResultTypes/CssStylesheet";
+import { FileTransform } from "../FileTransform";
 
 function SourceMap_relativize(self: RawSourceMap, path: AbsolutePath): RawSourceMap {
     const newSources = self.sources.map(fileUrl => {
@@ -42,7 +42,7 @@ export const StylesheetRenderer: FileTransform<CssStylesheet> = {
         const sourceMapComment  = SourceMap_toCssComment(relativeSourceMap);
         return CssStylesheet(`${compileResult.css}\n\n${sourceMapComment}`);
     },
-    async renderError_async({ error }) {
+    async renderError_async(error) {
         const message = (
             error.stack!
             .replaceAll("*/", "*\u200B/")

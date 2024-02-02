@@ -1,8 +1,8 @@
 import * as esbuild from "esbuild";
 
+import { BuildResult_getOutputFile, ESTarget } from "../../Extensions/BuildResult";
 import { JavaScriptScript } from "../../ResultTypes/JavaScriptScript";
 import { FileTransform } from "../FileTransform";
-import { ESTarget } from "../../Extensions/BuildResult";
 
 export const ClientJavaScriptRenderer: FileTransform<JavaScriptScript> = {
     pattern: /\.[jt]sx?$/,
@@ -20,10 +20,10 @@ export const ClientJavaScriptRenderer: FileTransform<JavaScriptScript> = {
             minifyWhitespace: true,
             sourcemap: "inline",
         });
-        const result = buildResult.outputFiles?.[0]?.text ?? "";
+        const result = BuildResult_getOutputFile(buildResult);
         return JavaScriptScript(result);
     },
-    async renderError_async({ error }) {
+    async renderError_async(error) {
         const message = (
             error.stack!
             .replaceAll("`", "\xB4")
