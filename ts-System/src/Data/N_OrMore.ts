@@ -10,7 +10,7 @@ function isIterableObject(elements: unknown): elements is Iterable<unknown> {
 }
 
 /** 
- * Normalizes undefined, individual values are iterable collections of value to a single array type. 
+ * Normalizes undefined, individual values and iterable collections of value to a single combined array type. 
  * Strings are treated as single values, even though they are technically iterable. 
  */
 export function combine<const T>(elements: ZeroOrMore<T>): T[] {
