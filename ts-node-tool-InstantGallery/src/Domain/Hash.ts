@@ -1,18 +1,10 @@
 import { createHash } from "crypto";
 
-import { Newtype, requires } from "@wkronemeijer/system";
-import { AbsolutePath, File } from "@wkronemeijer/system-node";
+import { RegExpNewtype } from "@wkronemeijer/system";
+import { File } from "@wkronemeijer/system-node";
 
-const hexHashPattern = /[0-9A-Fa-f]+/;
-
-export type     Hash = Newtype<string, "Hash">;
-export function Hash(string: string): Hash {
-    requires(hexHashPattern.test(string), 
-        () => `'${string}' should be a valid hash.`);
-    return string as Hash;
-}
-
-const hashByFileName = new Map<AbsolutePath, Hash>;
+export type  Hash = ReturnType<typeof Hash>;
+export const Hash = RegExpNewtype("Hash", /[0-9A-Fa-f]+/);
 
 export function Hash_fromFileName(file: File): Hash {
     return Hash(
