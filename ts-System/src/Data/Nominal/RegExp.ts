@@ -25,7 +25,7 @@ export function Newtype_createRegExpChecker<T extends Newtype<string, any>>(
     return checker;
 }
 
-export function RegExpNewtype<S extends string | symbol>(
+export function RegExpNewtype<const S extends string | symbol>(
     name: S,
     pattern: RegExp
 ): RegExpChecker<Newtype<string, S>> {
