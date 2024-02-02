@@ -281,6 +281,10 @@ export const File = FileObject;
 export type  Directory = FileObject;
 export const Directory = FileObject;
 
+/** Models a directory in the file system. */
+export type  FolderObject = FileObject;
+export const FolderObject = FileObject;
+
 /** Models a file or a directory in the file system. */
 export type  FileOrDirectory = FileObject;
 export const FileOrDirectory = FileObject;
