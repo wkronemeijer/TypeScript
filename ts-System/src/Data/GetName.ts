@@ -1,4 +1,5 @@
 import { typeofWithNull } from "../Types/TypeOfExtended";
+import { isObject } from "../Types/IsX";
 import { keyof_t } from "../Types/Primitive";
 
 const constructorKey         = "constructor";
@@ -51,6 +52,8 @@ function tryGetConstructorName(object: object): string | undefined {
         if (constructor.name) {
             if (constructor.name !== defaultConstructorName) {
                 return constructor.name;
+            } else {
+                return undefined;
             }
         } else {
             return "(anonymous constructor)";
@@ -66,15 +69,11 @@ export function getDescriptiveName(value: unknown): string {
     let name;
     
     // Let's see how good control-flow typing is
-    if (
-        typeof value === "object" && 
-        value !== null && 
-        (name = 
-            tryGetFunctionName(value) || 
-            tryNameLikeProperties(value) || 
-            tryGetConstructorName(value)
-        )
-    ) {
+    if (isObject(value) && (name = (
+        tryGetFunctionName(value) ||
+        tryNameLikeProperties(value) ||
+        tryGetConstructorName(value)
+    ))) {
         return name;
     }
     

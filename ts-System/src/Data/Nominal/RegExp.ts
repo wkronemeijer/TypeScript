@@ -7,24 +7,6 @@ extends HasInstance<M> {
     (value: string): M;
 }
 
-/** @deprecated Use {@link RegExpNewtype} */
-export function Newtype_createRegExpChecker<T extends Newtype<string, any>>(
-    pattern: RegExp
-): RegExpChecker<T> {
-    const hasInstance = (value: unknown): value is T => (
-        typeof value === "string" &&
-        pattern.test(value)
-    );
-    
-    const checker = (value: string): T => (
-        hasInstance(value) ? value :
-            panic(`'${value}' does not match the pattern for this newtype.`)
-    );
-    
-    HasInstance_inject(checker, hasInstance);
-    return checker;
-}
-
 export function RegExpNewtype<const S extends string | symbol>(
     name: S,
     pattern: RegExp
@@ -41,4 +23,11 @@ export function RegExpNewtype<const S extends string | symbol>(
 
     HasInstance_inject(checker, hasInstance);
     return checker;
+}
+
+/** @deprecated Use {@link RegExpNewtype} */
+export function Newtype_createRegExpChecker<T extends Newtype<string, any>>(
+    pattern: RegExp
+): RegExpChecker<T> {
+    return RegExpNewtype("(anonymous pattern type)", pattern) as any;
 }

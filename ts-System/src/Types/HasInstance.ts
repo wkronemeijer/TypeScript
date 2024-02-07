@@ -7,7 +7,7 @@ export interface HasInstance<T> {
 
 /**
  * Injects the both properties required for hasInstance.
- * Useful because `Function#@@hasInstance` is non-writable by default.
+ * Useful because `[[Set]]` with `@@hasInstance` fails, but `[[DefineOwnProperty]]` doesn't
  */
 export function HasInstance_inject<O extends object, T>(
     object: O, 
