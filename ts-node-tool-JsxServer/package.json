@@ -9,6 +9,7 @@
         "@wkronemeijer/system": "*",
         "@wkronemeijer/system-node": "*",
         "@wkronemeijer/react-server-page": "*",
+        "@wkronemeijer/react-server-page-provider": "*",        
         "esbuild": "*",
         "express": "*"
     },

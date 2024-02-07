@@ -4,19 +4,11 @@ import * as esbuild from "esbuild";
 import { swear } from "@wkronemeijer/system";
 
 import { BuildResult_getOutputFile, ESTarget } from "../../Extensions/BuildResult";
+import { ShareableDependencies } from "./ShareableDependencies";
 import { prepareRequestInfo } from "../../Extensions/DefineMap";
 import { requireString } from "../../RequireString";
 import { FileTransform } from "../FileTransform";
 import { HtmlDocument } from "../../ResultTypes/HtmlDocument";
-
-import { dependencies } from "../../../../package.json";
-
-export const ShareableDependencies: readonly string[] = [
-    "@wkronemeijer/system",
-    "@wkronemeijer/system-node",
-    // Note: @wkronemeijer/react-server-page should never be shared;
-    // it has to included in the page bundle for it to work.
-] satisfies (keyof typeof dependencies)[];
 
 export const ReactPagePattern = /\.page\.[jt]sx$/;
 
@@ -27,7 +19,7 @@ export function isReactPage(filePath: string) {
 
 export const ReactPageRenderer: FileTransform<HtmlDocument> = {
     pattern: ReactPagePattern,
-    async render_async({ url, file }): Promise<HtmlDocument> {
+    async render_async({ id, url, file }): Promise<HtmlDocument> {
         const filePath = file.path;
         
         const buildResult = await esbuild.build({
@@ -45,6 +37,7 @@ export const ReactPageRenderer: FileTransform<HtmlDocument> = {
             
             external: ShareableDependencies.slice(),
             define: prepareRequestInfo({
+                id,
                 url: url.href,
             }),
         });

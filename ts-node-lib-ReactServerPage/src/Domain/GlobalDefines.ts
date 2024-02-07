@@ -1,4 +1,7 @@
+import { RaspRequestId } from "@wkronemeijer/react-server-page-provider";
+
 export interface RaspRequestInfo {
+    readonly id: RaspRequestId;
     readonly url: string;
 }
 

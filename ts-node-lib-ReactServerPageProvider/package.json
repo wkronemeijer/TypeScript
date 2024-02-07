@@ -1,5 +1,5 @@
 {
-    "name": "@wkronemeijer/react-server-page",
+    "name": "@wkronemeijer/react-server-page-provider",
     "version": "0.0.1",
     "main": "dist/index.js",
     "types": "dist_t/index.d.ts",
@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "@wkronemeijer/system": "*",
-        "@wkronemeijer/system-node": "*",
-        "@wkronemeijer/react-server-page-provider": "*"
+        "@wkronemeijer/system-node": "*"
     }
 }

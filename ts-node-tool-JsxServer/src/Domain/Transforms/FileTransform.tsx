@@ -1,9 +1,12 @@
 import { File, Directory } from "@wkronemeijer/system-node";
+import { RaspRequestId } from "@wkronemeijer/react-server-page-provider";
 import { ReadonlyURL } from "@wkronemeijer/system";
 
 import { MimeTypedString } from "../MimeType";
 
 export interface FileTransformRequest {
+    readonly id: RaspRequestId;
+    
     /** `file:` URL which is the root of what is being served. */
     readonly rootUrl: ReadonlyURL;
     /** Directory object being used as the root. */
