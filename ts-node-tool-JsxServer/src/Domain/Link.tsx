@@ -1,4 +1,4 @@
-import { ReactPagePattern } from "./Transforms/Server/ReactPage";
+import { ReactPagePattern } from "./Transforms/Server/Page";
 
 export function Link(props: {
     readonly href: string;

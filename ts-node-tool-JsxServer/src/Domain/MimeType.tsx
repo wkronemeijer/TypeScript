@@ -5,6 +5,7 @@ export type CommonMimeType = (
     | "text/html"
     | "text/javascript"
     | "text/css"
+    | "application/json"
 );
 
 export type MimeType = HintedString<CommonMimeType>;

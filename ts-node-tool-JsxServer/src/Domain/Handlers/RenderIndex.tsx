@@ -1,12 +1,10 @@
-import { pathToFileURL } from "url";
-import * as express from "express";
-
 import { AbsolutePath, Directory } from "@wkronemeijer/system-node";
-import { from } from "@wkronemeijer/system";
-
 import { Response_send } from "../Extensions/Response";
+import { pathToFileURL } from "url";
 import { HtmlDocument } from "../ResultTypes/HtmlDocument";
-import { isReactPage } from "../Transforms/Server/ReactPage";
+import { isReactPage } from "../Transforms/Server/Page";
+import * as express from "express";
+import { from } from "@wkronemeijer/system";
 import { Link } from "../Link";
 
 export function getRelativeUrl(rootFolder: string, filePath: string): string {
