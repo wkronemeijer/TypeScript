@@ -210,25 +210,16 @@ implements   Sequence<T>, Iterable<T> {
     
     static range(end: number): Sequence<number>;
     static range(start: number, end: number): Sequence<number>;
-    static range(startOrEnd: number, _end?: number|undefined): Sequence<number> {
-        ////////////////////
-        // Sort overloads //
-        ////////////////////
-        
+    static range(startOrEnd: number, maybeEnd?: number): Sequence<number> {
         let start: number;
         let end  : number;
-        
-        if (_end === undefined) {
+        if (maybeEnd === undefined) {
             start = 0;
-            end = startOrEnd;
+            end   = startOrEnd;
         } else {
             start = startOrEnd;
-            end   = _end;
+            end   = maybeEnd;
         }
-        
-        ////////////////////
-        // Implementation //
-        ////////////////////
         
         return new SequenceImpl(function*(): Iterable<number> {
             for (let i = start; i < end ; i++) {
