@@ -24,7 +24,7 @@ export function negate<T>(
  * Placeholder function which does nothing. 
  * Useful as a default for functions that return `void`. 
  */
-export function pass(): void {
+export function pass(..._: unknown[]): void {
     // Placeholder function for functions where 
     // the primary purpose is a side effect.
     // (() => {})
