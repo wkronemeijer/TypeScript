@@ -1,7 +1,8 @@
-import { Dictionary, Dictionary_create } from "./Dictionary";
 import { FstAny, SndAny, fst, snd } from "../Data/Tuple/Accessors";
 import { compare, compareAny } from "../Traits/Comparable/Compare";
+import { Array_shuffle } from "./BuiltIns/Array";
 import { Comparable } from "../Traits/Comparable/Comparable";
+import { Dictionary } from "./Dictionary";
 import { Predicate } from "../Data/Function/Predicate";
 import { Comparer } from "../Traits/Comparable/Comparer";
 import { Selector } from "../Data/Function/Selector";
@@ -75,6 +76,8 @@ export interface Sequence<T> extends Iterable<T> {
     
     skipWhile(predicate: Predicate<T>): Sequence<T>;
     takeWhile(predicate: Predicate<T>): Sequence<T>;
+    
+    shuffle(): Sequence<T>;
     
     /////////////////////////
     // To-other-collection //
@@ -471,6 +474,13 @@ implements   Sequence<T>, Iterable<T> {
         }());
     }
     
+    shuffle(): Sequence<T> {
+        const self = this;
+        return new SequenceImpl(function*(): Iterable<T> {
+            yield* Array_shuffle(self.toArray());
+        }());
+    }
+    
     /////////////////////////
     // To-other-collection //
     /////////////////////////
@@ -514,7 +524,7 @@ implements   Sequence<T>, Iterable<T> {
         keySelector: Selector<T, string>, 
         valueSelector: Selector<T, V>,
     ): Dictionary<V> {
-        const dict = Dictionary_create<V>();
+        const dict = Dictionary<V>();
         for (const element of this) {
             dict[keySelector(element)] = valueSelector(element);
         }
