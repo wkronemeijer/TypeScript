@@ -1,10 +1,10 @@
-import { Immutable, Printable } from "@wkronemeijer/system";
-
-import { pathToFileURL } from "url";
-
-import { AbsolutePath, AnyPath, PathDetails, Path_addSuffixExtension, Path_changeExtension, Path_getDetails, Path_getParent, Path_isRoot, Path_join, Path_relative, Path_resolve, RelativePath } from "./Path";
+// Soooooo many items
+// TODO: Reduce the number of exported items somehow
+import { AbsolutePath, AnyPath, PathDetails, Path_addSuffixExtension, Path_changeExtension, Path_super, Path_getDetails, Path_getParent, Path_isRoot, Path_join, Path_relative, Path_resolve, RelativePath } from "./Path";
 import { FileExtension, OptionalFileExtension } from "./Extension";
+import { Immutable, Printable } from "@wkronemeijer/system";
 import { HasAbsolutePath } from "./HasAbsolutePath";
+import { pathToFileURL } from "url";
 
 export interface PathObject 
 extends HasAbsolutePath, Printable {
@@ -21,6 +21,9 @@ extends HasAbsolutePath, Printable {
     
     join(...segments: readonly AnyPath[]): this;
     to(other: HasAbsolutePath): RelativePath;
+    
+    /** Returns true if this is the same as, or a descendant of the given path-like object. */
+    extends(other: HasAbsolutePath): boolean;
     
     addSuffix(extension: FileExtension): this;
     addExtension(extension: FileExtension): this;
@@ -54,6 +57,10 @@ implements   PathObject {
     
     to(other: HasAbsolutePath): RelativePath {
         return Path_relative(this.path, other.path);
+    }
+    
+    extends(other: HasAbsolutePath): boolean {
+        return Path_super(other.path, this.path);
     }
     
     /////////////////////

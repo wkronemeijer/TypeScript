@@ -1,10 +1,9 @@
 import * as express from "express";
 
-import { File, Directory, Path_hasDescendant } from "@wkronemeijer/system-node";
-import { ReadonlyURL, swear } from "@wkronemeijer/system";
-
 import { FileTransform, FileTransformRequest } from "../Transforms/FileTransform";
+import { ReadonlyURL, swear } from "@wkronemeijer/system";
 import { ErrorDescription } from "../ResultTypes/ErrorDescription";
+import { File, Directory } from "@wkronemeijer/system-node";
 import { MimeTypedString } from "../MimeType";
 import { Response_send } from "./Response";
 import { RaspRequestId } from "@wkronemeijer/react-server-page-provider";
@@ -36,17 +35,15 @@ export function Router_registerFileTransform<T extends MimeTypedString>(
         
         let result: MimeTypedString;
         try {
-            // TODO: Can this even trigger?
-            swear(Path_hasDescendant(rootDirectory.path, file.path), () => 
-                `Requested resource ${file} must be onder the root directory.`
+            swear(file.extends(rootDirectory), () => 
+                `requested resource ${file} must be at or under the root`
             );
             // IK that (async) checking for exists is bad
             // alternative is that esbuild or something else downstream creates a more obscure error
             // while we know the exact problem right here.
             swear(virtual || file.exists(), () => 
-                `Resource ${file} does not exist.`
+                `resource ${file} does not exist (and is not virtual)`
             );
-            
             result = await render_async(requestInfo);
         } catch (render_error) {
             console.log(render_error);

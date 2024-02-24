@@ -1,7 +1,5 @@
 // Wraps nodejs's path module, to maintain information about the kind of path.
 
-import * as path from "node:path";
-
 import { Newtype, UnknownString, satisfiesStrictly, swear } from "@wkronemeijer/system";
 
 import { resolve, join, relative, parse, isAbsolute, sep, normalize, extname } from "path";
@@ -140,6 +138,18 @@ export function Path_hasDescendant(self: AbsolutePath, possibleChild: AbsolutePa
     );
 }
 
+/** Returns true if self is equal to, or an ancestor of the given path. */
+export function Path_super(self: AbsolutePath, candidate: AbsolutePath): boolean {
+    const relativePath = relative(self, candidate);
+    if (isAbsolute(relativePath)) {
+        // relative('C:/foo', 'D:/bar') produces an absolute path
+        return false;
+    }
+    const segments = relativePath.split(sep);
+    // if segments is empty, then the paths are the same
+    return !segments.includes(Path_ParentDirectory);
+}
+
 export function Path_isRoot(path: AbsolutePath): boolean {
     // So this is stupid, but it works well
     return Path_join(path, Path_ParentDirectory) === path
@@ -222,11 +232,8 @@ export function AbsolutePath_toUrl(self: AbsolutePath): string {
     return pathToFileURL(self).toString();
 }
 
-const backwardSlash = '\\';
-const forwardSlash = '/';
-
 export function RelativePath_toUrl(self: RelativePath): string {
-    return encodeURI(self.replaceAll(backwardSlash, forwardSlash));
+    return encodeURI(self.replaceAll(sep, '/'));
 }
 
 export function Path_toUrl(self: Path): string {
