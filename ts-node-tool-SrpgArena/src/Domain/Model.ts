@@ -1,4 +1,5 @@
-import { Array_randomElement, Member, Random_intRangeInclusive, Record_toFunction, StringEnum, ceil, clamp, defineProperty, floor, max, random, swear, trunc } from "@wkronemeijer/system";
+import { Array_randomElement, Member, Random_intRangeInclusive, ReadonlyRecord, Record_toFunction, StringEnum, ceil, clamp, defineProperty, floor, max, random, swear } from "@wkronemeijer/system";
+
 import { Table } from "./Table";
 
 export type  UnitResource = Member<typeof UnitResource>;
@@ -81,6 +82,7 @@ interface EquipmentBase {
 
 export interface Weapon extends EquipmentBase {
     readonly kind: "weapon";
+    readonly slot: "hand";
     readonly name: string;
     readonly type: DamageType;
     readonly attributes: Table<WeaponAttribute>;
@@ -88,12 +90,14 @@ export interface Weapon extends EquipmentBase {
 
 export interface Armor extends EquipmentBase {
     readonly kind: "armor";
+    readonly slot: "chest";
     readonly name: string;
     readonly attributes: Table<ArmorAttribute>;
 }
 
 export interface Accessory extends EquipmentBase {
     readonly kind: "accessory";
+    readonly slot: "finger";
     readonly name: string;
     readonly attribues: Table<UnitAttribute>;
 }
@@ -101,7 +105,10 @@ export interface Accessory extends EquipmentBase {
 type Equipment = (
     | Weapon
     | Armor
+    | Accessory
 );
+
+type EquipmentSlot = Equipment["slot"];
 
 interface Aura {
     readonly duration: number;
@@ -142,8 +149,6 @@ function effective(unit: Unit, stat: UnitAttribute): number {
     }
     return result;
 }
-
-
 
 
 
@@ -330,8 +335,17 @@ function Unit_energize(self: Unit): boolean {
     return isReady;
 }
 
+interface DamageSpecificCombatStats {
+    readonly attackMin: number;
+    readonly attackMax: number;
+    readonly penetration: number;
+    readonly defense: number;
+}
+
 interface DerivedCombatStats {
     readonly preferredType: DamageType;
+    
+    readonly for: ReadonlyRecord<DamageType, DamageSpecificCombatStats>;
     
     readonly physicalAttackMin: number;
     readonly physicalAttackMax: number;
@@ -355,6 +369,8 @@ interface DerivedCombatStats {
 
 function Unit_deriveCombatStats(unit: Unit): DerivedCombatStats {
     const { weapon, armor } = unit.equipment;
+    
+    // effective() is missing
     
     const physicalAttackBase = unit.attributes.strength + weapon.attributes.physicalMightBase;
     const physicalAttackMin = physicalAttackBase - weapon.attributes.physicalMightSpread;
@@ -383,6 +399,20 @@ function Unit_deriveCombatStats(unit: Unit): DerivedCombatStats {
     const regeneration = 0;
     
     return {
+        for: {
+            physical: {
+                attackMin: physicalAttackMin,
+                attackMax: physicalAttackMax,
+                defense: protection,
+                penetration: physicalPenetration,
+            },
+            magical: {
+                attackMin: magicalAttackMin,
+                attackMax: magicalAttackMax,
+                defense: resilience,
+                penetration: magicalPenetration,
+            },
+        },
         preferredType,
         physicalAttackMin, physicalAttackMax,
         magicalAttackMin, magicalAttackMax,

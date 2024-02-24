@@ -3,6 +3,7 @@ import "@wkronemeijer/system-node";
 
 import { Weapon, Armor, Unit, Arena_complete, WeaponAttribute, ArmorAttribute, UnitAttribute } from "./Domain/Model";
 import { Table } from "./Domain/Table";
+import { readLine } from "@wkronemeijer/system-node";
 
 const Bow: Weapon = {
     kind: "weapon",
@@ -71,9 +72,12 @@ const Timmy = Unit({
 // Might be interesting to include those body part multipliers, since range and movement are gone
 
 export async function main(args: string[]): Promise<void> {
-    const { victor } = Arena_complete({
-        units: [Johnny, Timmy],
-    });
-    
-    console.log(`The victor is ${victor}`);
+    while (true) {
+        const line = await readLine("> ");
+        const { victor } = Arena_complete({
+            units: [Johnny, Timmy],
+        });
+        
+        console.log(`The victor is ${victor}`);
+    }
 }
