@@ -1,8 +1,9 @@
-import { RaspRequestId } from "@wkronemeijer/react-server-page-provider";
+import { AbsolutePath } from "@wkronemeijer/system-node";
 
 export interface RaspRequestInfo {
-    readonly id: RaspRequestId;
     readonly url: string;
+    /** Similar to `__filename`. */
+    readonly file: AbsolutePath;
 }
 
 // Always sync these two

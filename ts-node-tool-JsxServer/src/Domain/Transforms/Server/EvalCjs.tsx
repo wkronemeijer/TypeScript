@@ -16,13 +16,18 @@ const shareableDependencies: readonly string[] = [
     "@wkronemeijer/react-server-page-provider",
 ] satisfies OwnDependency[];
 
-const badDependency = "@wkronemeijer/react-server-page" satisfies OwnDependency;
+const requiredDependency = "@wkronemeijer/react-server-page-provider" satisfies OwnDependency;
+const badDependency      = "@wkronemeijer/react-server-page"          satisfies OwnDependency;
 
+swear(shareableDependencies.includes(requiredDependency), () => 
+    `${requiredDependency} MUST be shared.`
+);
 swear(!shareableDependencies.includes(badDependency), () => 
-    `${badDependency} must NOT be shared.`
+    `${badDependency} MUST NOT be shared.`
 );
 
-export async function buildAndRunCjs({ file, id, url }: FileTransformRequest): Promise<NodeModule> {
+export async function buildAndRunCjs(req: FileTransformRequest): Promise<NodeModule> {
+    const { file, url } = req;
     const filePath = file.path;
     
     // The part that saves me an unbelievable amount of time
@@ -41,10 +46,7 @@ export async function buildAndRunCjs({ file, id, url }: FileTransformRequest): P
         sourcemap: "inline",
         
         external: shareableDependencies.slice(),
-        define: prepareRequestInfo({
-            id,
-            url: url.href,
-        }),
+        define: prepareRequestInfo(req),
     });
     
     const sourceCode = BuildResult_getOutputFile(buildResult);

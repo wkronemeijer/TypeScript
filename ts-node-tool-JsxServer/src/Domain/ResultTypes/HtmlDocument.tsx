@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from "react";
+import { CSSProperties, ReactElement, ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { MimeTypedString } from "../MimeType";
 import { FileTransform } from "../Transforms/FileTransform";
@@ -21,27 +21,24 @@ export function HtmlDocument(element: ReactElement): HtmlDocument {
     };
 }
 
-/** Wraps the whole thing in html, head, body, title, standard mobile meta viewport. */
-export function SimpleHtmlDocument(title: string, bodyContent: ReactNode): HtmlDocument {
-    return HtmlDocument(<html>
-        <head>
-            <title>{`${title}`}</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        </head>
-        <body>
-            {bodyContent}
-        </body>
-    </html>);
-}
+export const MetaViewport = () => <>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</>;
 
 export const renderHtmlError_async = (async (error: Error): Promise<HtmlDocument> => {
     const { name, stack } = error;
-    return SimpleHtmlDocument(name, <>
-        <div style={{
-            color: "red",
-            whiteSpace: "pre-wrap",
-        }}>
-            {stack}
-        </div>
-    </>);
+    const style = {
+        color: "red",
+        whiteSpace: "pre-wrap",
+    } satisfies CSSProperties;
+    
+    return HtmlDocument(<html>
+        <head>
+            <title>{`${name}`}</title>
+            <MetaViewport/>
+        </head>
+        <body>
+            <div style={style}>{stack}</div>
+        </body>
+    </html>);
 }) satisfies FileTransform["renderError_async"];

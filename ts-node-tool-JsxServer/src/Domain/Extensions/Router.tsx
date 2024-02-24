@@ -6,9 +6,6 @@ import { ErrorDescription } from "../ResultTypes/ErrorDescription";
 import { File, Directory } from "@wkronemeijer/system-node";
 import { MimeTypedString } from "../MimeType";
 import { Response_send } from "./Response";
-import { RaspRequestId } from "@wkronemeijer/react-server-page-provider";
-
-const globalIdGenerator = RaspRequestId.new();
 
 export function Router_registerFileTransform<T extends MimeTypedString>(
     self: express.Router,
@@ -26,9 +23,7 @@ export function Router_registerFileTransform<T extends MimeTypedString>(
     self.get(pattern, async (req, res) => {
         const url = new URL(rootUrl + req.url);
         const file = File.fromUrl(url);
-        const id = globalIdGenerator();
         const requestInfo: FileTransformRequest = {
-            id,
             rootUrl, rootDirectory,
             url, file,
         };
