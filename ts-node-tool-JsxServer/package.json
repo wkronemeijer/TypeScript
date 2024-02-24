@@ -10,8 +10,11 @@
         "@wkronemeijer/system-node": "*",
         "@wkronemeijer/react-server-page": "*",
         "@wkronemeijer/react-server-page-provider": "*",        
+        "react": "*",
+        "react-dom": "*",
         "esbuild": "*",
-        "express": "*"
+        "express": "*",
+        "sass-embedded": "*"
     },
     "bin": {
         "jsx-server": "dist/bin.js"
