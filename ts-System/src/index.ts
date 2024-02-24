@@ -1,3 +1,3 @@
-export const __SYSTEM = {};
+export const __LIB_SYSTEM = {};
 
 export * from "./Modules.generated";

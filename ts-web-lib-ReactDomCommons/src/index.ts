@@ -1,4 +1,4 @@
-export const __SYSTEM_WEB = {};
+export const __LIB_REACT_DOM_COMMONS = {};
 
 declare module 'react' {
     interface CSSProperties {
