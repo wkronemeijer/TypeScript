@@ -1,8 +1,9 @@
+import * as esbuild from "esbuild";
+
 import { BuildResult_getOutputFile, ESTarget } from "../../Extensions/BuildResult";
 import { FileTransformRequest } from "../FileTransform";
 import { prepareRequestInfo } from "../../Extensions/DefineMap";
 import { requireString } from "../../RequireString";
-import * as esbuild from "esbuild";
 import { swear } from "@wkronemeijer/system";
 
 import { dependencies } from "../../../../package.json";

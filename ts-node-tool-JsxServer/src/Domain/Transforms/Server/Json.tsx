@@ -6,7 +6,7 @@ import { JsonResponse } from "../../ResultTypes/JsonResponse";
 // Easier to just create *.json.ts and expose it as text/json
 
 export const JsonPageRenderer: FileTransform<JsonResponse> = {
-    pattern: /\.json\.ts$/,
+    pattern: /\.json\.[jt]s$/,
     async render_async(request) {
         const module = await buildAndRunCjs(request);
         const json = await module.exports.default;

@@ -1,8 +1,7 @@
 import * as express from "express";
 
-import { terminal } from "@wkronemeijer/system";
-
 import { Response_shouldLog } from "../Extensions/Response";
+import { terminal } from "@wkronemeijer/system";
 
 export const PerformanceLogger = ((req, res, next) => {
     const start = performance.now();

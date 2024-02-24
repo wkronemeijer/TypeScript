@@ -1,8 +1,9 @@
 import { File, Directory } from "@wkronemeijer/system-node";
+import { MimeTypedString } from "../MimeType";
 import { RaspRequestId } from "@wkronemeijer/react-server-page-provider";
 import { ReadonlyURL } from "@wkronemeijer/system";
 
-import { MimeTypedString } from "../MimeType";
+type PathDescription = string | RegExp;
 
 export interface FileTransformRequest {
     readonly id: RaspRequestId;
@@ -18,9 +19,9 @@ export interface FileTransformRequest {
     readonly file: File;
 }
 
-export interface FileTransform<S extends MimeTypedString> {
+export interface FileTransform<S extends MimeTypedString = MimeTypedString> {
     /** Successful matches of the path component of the request url trigger this tranform. */
-    readonly pattern: RegExp;
+    readonly pattern: PathDescription;
     
     /** Whether the request file is **not** required to exist. */
     readonly virtual?: boolean;

@@ -4,7 +4,7 @@ import { BuildResult_getOutputFile, ESTarget } from "../../Extensions/BuildResul
 import { JavaScriptScript } from "../../ResultTypes/JavaScriptScript";
 import { FileTransform } from "../FileTransform";
 
-export const ClientJavaScriptRenderer: FileTransform<JavaScriptScript> = {
+export const JavaScriptRenderer: FileTransform<JavaScriptScript> = {
     pattern: /\.[jt]sx?$/,
     async render_async({ file }): Promise<JavaScriptScript> {
         const buildResult = await esbuild.build({

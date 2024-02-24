@@ -1,7 +1,6 @@
 import * as express from "express";
 
 import { formatThrowable, terminal } from "@wkronemeijer/system";
-
 import { ErrorDescription } from "../ResultTypes/ErrorDescription";
 import { Response_send } from "../Extensions/Response";
 
