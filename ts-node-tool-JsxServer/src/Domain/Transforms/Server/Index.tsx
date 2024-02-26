@@ -1,5 +1,5 @@
 import { HtmlDocument, MetaViewport, renderHtmlError_async } from "../../ResultTypes/HtmlDocument";
-import { FileObject, RelativePath_toUrl } from "@wkronemeijer/system-node";
+import { DirectoryObject, FileObject } from "@wkronemeijer/system-node";
 import { collect, from, singularize } from "@wkronemeijer/system";
 import { ReactPagePattern } from "./Page";
 import { FileTransform } from "../FileTransform";
@@ -47,7 +47,7 @@ a:hover {
 }
 `.trim();
 
-function Link(props: {
+function CLink(props: {
     readonly href: string;
 }): JSX.Element {
     const { href } = props;
@@ -57,14 +57,23 @@ function Link(props: {
 }
 
 const sequencePages = collect(function*(
-    rootDirectory: FileObject,
+    root: FileObject,
     pages: FileObject[], 
 ): Generator<ReactNode> {
     for (const page of pages) {
-        const relative = RelativePath_toUrl(rootDirectory.to(page));
-        yield <Link key={page.path} href={relative}/>
+        yield <CLink key={page.path} href={root.urlTo(page)}/>
     }
 });
+
+// TODO: Could be a component
+// But all the `root={root} pages={pages}` didn't seem worth it
+function redirectIfUnambigous(root: DirectoryObject, pages: readonly FileObject[]): ReactNode {
+    let page;
+    return <>
+        {pages.length === 1 && (page = pages[0]) && 
+        <meta httpEquiv="refresh" content={`0;url=${root.urlTo(page)}`}/>} 
+    </>
+}
 
 function isReactPage(object: FileObject) {
     return ReactPagePattern.test(object.path); 
@@ -75,10 +84,10 @@ function isReactPage(object: FileObject) {
 export const IndexRenderer: FileTransform<HtmlDocument> = {
     pattern: "/",
     virtual: true,
-    async render_async({ rootDirectory }) {
-        const title = `Index of ${rootDirectory.name}`;
+    async render_async({ root }) {
+        const title = `Index of ${root.name}`;
         const pages = (
-            from(rootDirectory.recursiveGetAllFiles())
+            from(root.recursiveGetAllFiles())
             .where(isReactPage)
             .toArray()
         );
@@ -86,6 +95,7 @@ export const IndexRenderer: FileTransform<HtmlDocument> = {
             <head>
                 <title>{`${title}`}</title>
                 <MetaViewport/>
+                {redirectIfUnambigous(root, pages)}
                 <style>{IndexStyle}</style>
             </head>
             <body>
@@ -94,7 +104,7 @@ export const IndexRenderer: FileTransform<HtmlDocument> = {
                     <h2>{singularize(pages.length, "pages")}</h2>
                 </header>
                 <main>
-                    {sequencePages(rootDirectory, pages)}
+                    {sequencePages(root, pages)}
                 </main>
             </body>
         </html>);
