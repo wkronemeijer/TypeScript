@@ -85,6 +85,9 @@ export const IndexRenderer: FileTransform<HtmlDocument> = {
     pattern: "/",
     virtual: true,
     async render_async({ root }) {
+        // TODO: Rework this to generate the index of any page?
+        // In a way, its more of a sitemap
+        // Also it is specific to the root
         const title = `Index of ${root.name}`;
         const pages = (
             from(root.recursiveGetAllFiles())
