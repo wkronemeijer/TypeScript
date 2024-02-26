@@ -94,6 +94,7 @@ export function Path_join(...paths: AnyPath[]): Path {
 
 /** Solves the relative path to get from argument 1 to argument 2. */
 export function Path_relative(from: AbsolutePath, to: AbsolutePath): RelativePath {
+    // FIXME: relative can return an absolute path on windows if it is cross-drive
     return relative(from, to) as RelativePath;
 }
 

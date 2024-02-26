@@ -268,23 +268,39 @@ implements   FileObject {
     }
 }
 
-//////////////
-// Synonyms //
-//////////////
-// Goal: Communicate intent with these aliases 
+///////////////////////////
+// Synonyms (deprecated) //
+///////////////////////////
 
-/** Models a file in the file system. */
+/** 
+ * Models a file in the file system. 
+ * @deprecated Use {@link FileObject} to not conflict with the web platform `File` definition
+ */
 export type  File = FileObject;
 export const File = FileObject;
 
-/** Models a directory in the file system. */
+/** 
+ * Models a directory in the file system. 
+ * @deprecated Use {@link DirectoryObject} for consistency with `FileObject`.
+ */
 export type  Directory = FileObject;
 export const Directory = FileObject;
 
-/** Models a directory in the file system. */
-export type  FolderObject = FileObject;
-export const FolderObject = FileObject;
-
-/** Models a file or a directory in the file system. */
+/** 
+ * Models a file or a directory in the file system. 
+ * @deprecated Use {@link FileOrDirectoryObject} for consistency with `FileObject`.
+ */
 export type  FileOrDirectory = FileObject;
 export const FileOrDirectory = FileObject;
+
+///////////////////////
+// Synonyms (active) //
+///////////////////////
+
+/** Models a directory in the file system. */
+export type  DirectoryObject = FileObject;
+export const DirectoryObject = FileObject;
+
+/** Models a file _or_ a directory in the file system. */
+export type  FileOrDirectoryObject = FileObject;
+export const FileOrDirectoryObject = FileObject;
