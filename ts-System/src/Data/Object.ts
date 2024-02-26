@@ -125,3 +125,31 @@ export function definePropertiesOnPrototype(
         });
     }
 }
+
+export function defineLazyProperty<T, K extends keyof T>(target: T, key: K, initializer: () => T[K]) {
+    const configurable = true;
+    const enumerable = true;
+    const writable = true;
+    
+    function set(value: T[K]): void {
+        defineProperty(target, key, {
+            configurable,
+            enumerable,
+            writable,
+            value,
+        });
+    }
+    
+    function get(): T[K] {
+        const value = initializer();
+        set(value);
+        return value;
+    }
+    
+    defineProperty(target, key, {
+        configurable,
+        enumerable,
+        get,
+        set,
+    });
+}
