@@ -6,9 +6,9 @@ Serves all files located in the current directory, and applies the following tra
 
 ### `/` &rarr; `text/html`
 Returns an overview of all react pages.
-### 🚧 `???` &rarr; `application/json`
-Returns an directory listing.
-Supports recursion and wildcard filter parameters.
+### `~manifest.json` &rarr; `application/json`
+
+Returns a recursive directory listing.
 
 ## Files compiled and run on the server
 
