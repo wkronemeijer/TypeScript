@@ -10,7 +10,7 @@ export type CommonMimeType = (
 
 export type MimeType = HintedString<CommonMimeType>;
 
-export interface MimeTypedString<K extends MimeType = string> {
+export interface MimeTypedString<K extends MimeType = MimeType> {
     readonly type: K;
     readonly body: string;
 }

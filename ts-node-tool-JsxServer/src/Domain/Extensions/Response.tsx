@@ -1,7 +1,7 @@
 import * as express from "express";
 
 import { MimeTypedString } from "../MimeType";
-import { CONTENT_TYPE } from "../HttpHeader";
+import { CONTENT_TYPE, HttpStatusCode } from "../HttpHeader";
 
 export function Response_getContentType(self: express.Response): string | number | string[] | undefined {
     return self.getHeader(CONTENT_TYPE);
@@ -19,8 +19,10 @@ export function Response_shouldLog(self: express.Response): boolean {
 export function Response_send<T extends MimeTypedString>(
     self: express.Response,
     value: T,
+    status = HttpStatusCode.default,
 ): void {
-    const { type, body } = value;
-    self.setHeader(CONTENT_TYPE, type);
-    self.send(body);
+    self
+    .status(status)
+    .type(value.type)
+    .send(value.body);
 }
