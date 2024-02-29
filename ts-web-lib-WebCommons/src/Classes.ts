@@ -1,26 +1,11 @@
-import { Falsy, identity } from "@wkronemeijer/system";
-
-/** 
- * Joins strings for the `class` attribute. 
- * 
- * @example 
- * <div className={joinClasses("MyComponent", 
- *     "DarkMode",
- *     isLarge && "isLarge",
- * )}>...</div>
- */
-function join(
-    ...args: (string | Falsy)[]
-): string {
-    return (
-        args
-        .filter(identity) // Reminder: Boolean("") == false
-        .join(' ')
-    );
-}
+import { emanSsalc as join } from "@wkronemeijer/system";
 
 // Can't decide on a name...
+/** @deprecated Use {@link emanSsalc} from @wkronemeijer/system instead */
 export const emanSsalc      = join;
+/** @deprecated Use {@link emanSsalc} */
 export const classNames     = join;
+/** @deprecated Use {@link emanSsalc} */
 export const joinClasses    = join;
+/** @deprecated Use {@link emanSsalc} */
 export const joinClassNames = join;
