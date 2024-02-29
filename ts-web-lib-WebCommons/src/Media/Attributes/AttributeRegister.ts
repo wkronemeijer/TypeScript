@@ -15,14 +15,18 @@ export function MediumFileExtension_addAssociation(
     AttributesByExtension.set(extension, attributes);
 }
 
+interface AttributeWrapper {
+    readonly canBe: MediumAttributeMap;
+}
+
 export function MediumUrl_getAttributes(
     self: MediumUrl,
     base?: string,
-): MediumAttributeMap | undefined {
+): AttributeWrapper | undefined {
     let extension, map;
     if (extension = MediumUrl_getExtension(self, base)) {
         if (map = AttributesByExtension.get(extension)) {
-            return map;
+            return { canBe: map };
         }
     }
 }
