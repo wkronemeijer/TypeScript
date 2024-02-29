@@ -1,0 +1,18 @@
+==> `ts-node-tool-RfcServer`
+
+Purpose: Meant to overlap `dist` and `src` folders;
+Fate: Useless because JsxServer doesn't need a `dist` folder to do its job.;
+
+==> `ts-node-tool-TestingTool`
+
+Purpose: Run code to see effects during development;
+Fate: Replaced by ~~`ts-node`~~ `tsx`;
+Also `tsx` doesn't need a billion files around it.
+
+==> `ts-ReactTerminal`
+
+Purpose: Create advanced terminal box drawing;
+Fate: Deleted;
+Didn't use, need to fix DecoratedString first.
+And it's primary purpose was for creating tables
+...which we can just add a function for.
