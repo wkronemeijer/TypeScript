@@ -1,3 +1,5 @@
+// FIXME: Technically, `number` property accesses are coerced to string first (see Proxy for evidence)
+// What to `string | symbol` then?
 /** A union of all possible `keyof` types. */
 export type keyof_t = keyof any;
 
