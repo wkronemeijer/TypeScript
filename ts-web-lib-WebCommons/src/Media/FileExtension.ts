@@ -6,6 +6,7 @@ export const MediumFileExtension = RegExpNewtype("MediumFileExtension",
     /^\.\w+$/
 );
 
+/** Tries to return the decoded substring of the URI that is the file extension. */
 export function MediumUrl_getExtension(
     self: MediumUrl,
     base?: string,
