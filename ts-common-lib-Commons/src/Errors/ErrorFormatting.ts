@@ -1,5 +1,5 @@
 import { getConstructorName } from "../Data/Constructor";
-import { Exception } from "../Assert";
+import { Exception } from "../1 Core/Assert";
 import { terminal } from "../Logging/Terminal";
 
 // Alright Here's the hard part

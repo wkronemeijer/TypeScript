@@ -2,13 +2,13 @@ import { Function_setName, alwaysTrue, identity } from "../Function/Function";
 import { HasInstance, HasInstance_inject } from "../../Types/HasInstance";
 import { value_t } from "../../Types/Primitive";
 import { Newtype } from "./Newtype";
-import { swear } from "../../Assert";
+import { swear } from "../../1 Core/Assert";
 
 export interface NewtypeChecker<
     T extends value_t, 
-    N extends Newtype<T, any>,
-> extends HasInstance<N> {
-    (value: T): N;
+    S extends string,
+> extends HasInstance<Newtype<T, S>> {
+    (value: T): Newtype<T, S>;
 }
 
 interface NewtypeCheckerOptions<T extends value_t> {
@@ -25,7 +25,7 @@ export function NewtypeChecker<
     name: S,
     options: NewtypeCheckerOptions<T>,
 ): (
-    NewtypeChecker<T, Newtype<T, S>>
+    NewtypeChecker<T, S>
 ) {
     const {
         constrain,

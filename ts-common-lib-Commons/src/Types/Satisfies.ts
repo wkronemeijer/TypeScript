@@ -1,4 +1,4 @@
-import { AssertionFunction, requires } from "../Assert";
+import { AssertionFunction, requires } from "../1 Core/Assert";
 import { identity } from "../Data/Function/Function";
 
 /** 

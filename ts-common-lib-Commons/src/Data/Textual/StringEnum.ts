@@ -2,7 +2,7 @@ import { Array_firstElement, Array_IndexNotFound, Array_lastElement } from "../.
 import { StringEnumPlaceholder_hasInstance } from "./StringEnumPlaceholder";
 import { compare as System_compare } from "../../Traits/Comparable/Compare";
 import { StringEnumInitializer } from "./StringEnumInitializer";
-import { ensures, requires } from "../../Assert";
+import { ensures, requires } from "../../1 Core/Assert";
 import { EqualityComparer } from "../../Traits/Equatable/EqualityComparer";
 import { StringBuilder } from "../../Text/StringBuilder";
 import { inspectValue } from "../../Text/Formatting/Inspect";

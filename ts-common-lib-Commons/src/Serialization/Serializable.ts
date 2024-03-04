@@ -5,7 +5,7 @@ import { create, defineProperty, entries } from "../ReExport/Module/Object";
 import { Json, parseJson, stringifyJson } from "./Json";
 import { isObject, isString } from "../Types/IsX";
 import { RegExpNewtype } from "../Data/Nominal/RegExp";
-import { guard, swear } from "../Assert";
+import { guard, swear } from "../1 Core/Assert";
 import { Constructor } from "../Types/Mixins";
 import { implies } from "../Data/Boolean";
 

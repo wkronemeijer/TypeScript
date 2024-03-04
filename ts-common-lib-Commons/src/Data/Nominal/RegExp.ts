@@ -2,7 +2,7 @@ import { HasInstance, HasInstance_inject } from "../../Types/HasInstance";
 import { giveDeprecationWarning } from "../../Errors/Deprecated";
 import { Function_setName } from "../Function/Function";
 import { Newtype } from "./Newtype";
-import { swear } from "../../Assert";
+import { swear } from "../../1 Core/Assert";
 
 export interface RegExpChecker<M extends Newtype<string, any>>
 extends HasInstance<M> {

@@ -1,4 +1,4 @@
-import { assert, requires } from "../../Assert";
+import { assert, requires } from "../../1 Core/Assert";
 
 
 // yeah CAPITAL_STYLE is ugly, but these are not "normal" constants.

@@ -1,4 +1,4 @@
-import { swear } from "../Assert";
+import { swear } from "../1 Core/Assert";
 import { check } from "../Errors/Check";
 import { uppercase } from "./Casing";
 

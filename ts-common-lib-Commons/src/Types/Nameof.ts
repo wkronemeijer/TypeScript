@@ -1,7 +1,7 @@
 // nameof equivalent
 // derived from https://stackoverflow.com/a/37057212
 
-import { requires } from "../Assert";
+import { requires } from "../1 Core/Assert";
 
 /** Used with an object shorthand to return the name of a variable, analogous to C&sharp;'s `nameof` operator.
  * ```

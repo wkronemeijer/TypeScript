@@ -1,7 +1,7 @@
 // Q: Why don't you split it up into more files?
 // A: Because I don't think it makes the code any clearer. 
 
-import { DecoratedString } from "./DecoratedString";
+import { DecoratedString } from "./Reusable/DecoratedString";
 import { StringBuilder } from "../StringBuilder";
 import { StringEnum } from "../../Data/Textual/StringEnum";
 import { Newtype } from "../../Data/Nominal/Newtype";

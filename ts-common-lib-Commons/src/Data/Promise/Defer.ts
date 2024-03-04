@@ -1,4 +1,4 @@
-import { swear } from "../../Assert";
+import { swear } from "../../1 Core/Assert";
 
 interface defer_Result<T> {
     readonly promise: Promise<T>;

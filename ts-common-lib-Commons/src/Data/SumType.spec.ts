@@ -1,4 +1,4 @@
-import { swear } from "../Assert";
+import { swear } from "../1 Core/Assert";
 import { panic } from "../Errors/ErrorFunctions";
 import { Case, UnionMatcher } from "./SumType";
 

@@ -1,4 +1,4 @@
-import { swear } from "../Assert";
+import { swear } from "../1 Core/Assert";
 import { String_isEmpty, String_isWhitespace } from "./String";
 
 describe("String", () => {

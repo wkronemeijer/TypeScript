@@ -1,4 +1,4 @@
-import { ensures } from "../Assert";
+import { ensures } from "../1 Core/Assert";
 import { StringBuilder } from "./StringBuilder";
 
 // This entire file was lifted from the ts-PineInterpreter codebase

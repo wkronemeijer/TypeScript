@@ -2,7 +2,7 @@
 // i.e. stuff which shouldn't error at all.
 // Now it is a load of functions which `throw new Error` in creative ways.
 
-import { Exception } from "../Assert";
+import { Exception } from "../1 Core/Assert";
 
 /** Marks a function as abstract. */
 export function abstract(): never {
