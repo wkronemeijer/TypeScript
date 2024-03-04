@@ -1,12 +1,11 @@
 import { StringBuildable } from "./StringBuildable";
 import { StringTarget } from "./StringTarget";
 import { Falsy } from "../Types/Truthy";
-
-const { max } = Math;
+import { max } from "../ReExport/Module/Math";
 
 const defaultTabSize = 4;
-const newline        = '\n';
-const space          = ' ';
+const NEWLINE        = '\n';
+const SPACE          = ' ';
 
 /** Accumulates many strings efficiently to form one long string. */
 export interface StringBuilder
@@ -48,7 +47,7 @@ function normalizeIndentation(
 ): string {
     return (
         typeof indentation === "number" ?
-        space.repeat(indentation) :
+        SPACE.repeat(indentation) :
         indentation
     );
 }
@@ -78,7 +77,7 @@ implements   StringBuilder            {
     }
     
     private scanForNewlines(s: string) {
-        if (s.includes(newline)) {
+        if (s.includes(NEWLINE)) {
             this.primedForIndent = true;
         }
     }
@@ -120,7 +119,7 @@ implements   StringBuilder            {
     
     appendLine(string?: string | Falsy): void {
         this.append(string);
-        this.append(newline);
+        this.append(NEWLINE);
     }
     
     include<TArgs extends readonly any[] = []>(

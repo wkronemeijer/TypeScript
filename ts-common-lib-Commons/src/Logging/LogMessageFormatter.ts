@@ -1,6 +1,6 @@
 import { AnsiTextStyle_set, AnsiTextStyle_use, SgrCommand_ResetAll } from "../Text/Console/TextDecoration";
 import { ReplaceableFunction } from "../Multiplatform/ReplaceableFunction";
-import { isRunAsNodeCjs } from "../Multiplatform/PlatformQuery";
+import { stripAnsiSequences } from "../Text/Console/Ansi/Strip";
 import { StringBuilder } from "../Text/StringBuilder";
 import { inspectValue } from "../Text/Formatting/Inspect";
 import { Date_toHHmm } from "../Data/Date";
@@ -105,14 +105,12 @@ export const PowerlineLogMessageFormatter: LogMessageFormatter = message => {
 ////////////////////
 
 const matchArrow = /(.*)\uE0B0/;
-const matchSgr = /\x1B\[[\d,]+m/g; // g needed by replaceAll
 
 export const LogMessageFormatter_Simple: LogMessageFormatter = req => {
-    return (
-        PowerlineLogMessageFormatter(req)
-        .replaceAll(matchSgr, "")
-        .replace(matchArrow, (_, label: string) => `[${label}]`)
-    );
+    const ansiArrowText = PowerlineLogMessageFormatter(req);
+    const arrowText = stripAnsiSequences(ansiArrowText);
+    const text = arrowText.replace(matchArrow, (_, label: string) => `[${label}]`);
+    return text;
 }
 
 export const formatLogMessage = ReplaceableFunction(LogMessageFormatter_PlainText);
