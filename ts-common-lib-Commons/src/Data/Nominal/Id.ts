@@ -10,7 +10,7 @@ export interface IdFactory<N extends Newtype<number, any>> {
     readonly new: () => IdFactory<N>;
 }
 
-export function IdNewtype<const S extends string | symbol>(
+export function IdNewtype<const S extends string>(
     _name: S,
 ): IdFactory<Newtype<number, S>> {
     type N = Newtype<number, S>;

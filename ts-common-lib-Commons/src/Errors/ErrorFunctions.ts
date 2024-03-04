@@ -4,11 +4,6 @@
 
 import { Exception } from "../Assert";
 
-/** Marks a function as no longer supported. */
-export function deprecated(): never {
-    throw new Error("This method is no longer supported.");
-}
-
 /** Marks a function as abstract. */
 export function abstract(): never {
     throw new Error("This method is abstract.");
