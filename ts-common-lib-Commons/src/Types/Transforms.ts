@@ -1,17 +1,5 @@
 import { keyof_t } from "./Primitive";
 
-///////////////////////////
-// Mutability transforms //
-///////////////////////////
-
-// Really ought to be in the standard typescript type library
-// Doc comments modeled after Readonly
-
-/** Makes all properties in T writable. */
-export type ReadWrite<T> = {
-    -readonly [P in keyof T]: T[P];
-}
-
 //////////////////////////////////
 // Null(ish)-related transforms //
 //////////////////////////////////

@@ -1,6 +1,6 @@
 import { Immutable } from "./Immutable";
 
-import { ReadWrite } from "../../Types/Transforms";
+import { ReadWrite } from "../../Types/ReadWrite";
 import { check } from "../../Errors/Check";
 import { sqrt } from "../../ReExport/Module/Math";
 
