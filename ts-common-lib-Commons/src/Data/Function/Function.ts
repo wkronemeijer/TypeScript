@@ -1,4 +1,4 @@
-import { requires } from "../../Assert";
+import { defineProperty } from "../../ReExport/Module/Object";
 import { Newtype } from "../Nominal/Newtype";
 import { value_t } from "../../Types/Primitive";
 
@@ -106,3 +106,13 @@ export function Function_memoize<P extends readonly value_t[], R>(
 }
 
 export const flip = <T, U>(array: readonly [T, U]): readonly [U, T] => [array[1], array[0]];
+
+/** Sets the name of a function using [[DefineOwnProperty]]. */
+export function Function_setName(func: Function, name: string): void {
+    defineProperty(func, "name" satisfies keyof Function, {
+        configurable: true,
+        enumerable: false,
+        writable: false,
+        value: name,
+    });
+}

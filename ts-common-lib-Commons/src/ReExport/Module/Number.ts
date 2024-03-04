@@ -1,5 +1,5 @@
 const {
-    isNaN, isInteger, isSafeInteger, isFinite,
+    isNaN, isFinite,
 } = Number;
 
 // isNaN exists as a global as well
@@ -11,5 +11,5 @@ const {
 export const isErrorNumber = isNaN;
 
 export {
-    isNaN, isInteger, isSafeInteger, isFinite, 
-}
+    isFinite, 
+};
