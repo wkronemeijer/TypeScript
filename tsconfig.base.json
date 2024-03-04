@@ -1,10 +1,8 @@
 {
-    "$schema": "https://schemastore.azurewebsites.net/schemas/json/tsconfig.json",
     "compilerOptions": {
         //////////
         // Emit //
         //////////
-        "module": "commonjs",
         "declaration": true,
         "alwaysStrict": true,
         "stripInternal": true,
@@ -16,9 +14,7 @@
         
         "target": "ES2022",
         "lib": ["ES2022"],
-        "types": [
-            "mocha"
-        ],
+        "types": [],
         "resolveJsonModule": true,
         "forceConsistentCasingInFileNames": true,
         "noErrorTruncation": true,
