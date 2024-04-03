@@ -4,7 +4,7 @@ import { Function_setName } from "../Function/Function";
 import { Newtype } from "./Newtype";
 import { swear } from "../../Errors/Assert";
 
-export interface RegExpChecker<M extends Newtype<string, any>>
+export interface RegExpChecker<M>
 extends HasInstance<M> {
     (value: string): M;
 }
@@ -33,6 +33,6 @@ export function RegExpNewtype<const S extends string>(
 export function Newtype_createRegExpChecker<T extends Newtype<string, any>>(
     pattern: RegExp
 ): RegExpChecker<T> {
-    giveDeprecationWarning(Newtype_createRegExpChecker);
+    giveDeprecationWarning(Newtype_createRegExpChecker, RegExpNewtype);
     return RegExpNewtype("(anonymous pattern type)", pattern) as any;
 }

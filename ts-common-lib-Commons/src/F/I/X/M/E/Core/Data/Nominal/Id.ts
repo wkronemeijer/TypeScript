@@ -1,6 +1,6 @@
 import { Newtype } from "./Newtype";
 
-export interface IdFactory<N extends Newtype<number, any>> {
+export interface IdFactory<N> {
     (): N;
     /** 
      * Starts a new, independent id sequence for the same newtype. 

@@ -16,7 +16,6 @@ interface NewtypeCheckerOptions<T extends value_t> {
     readonly constrain: (value: unknown) => value is T; // isString(value)
     readonly normalize?: (value: T) => T; // value.trim()
     readonly isValid?: (value: T) => boolean;  // pattern.test
-    readonly hasInstance?: (value: unknown) => boolean,
 }
 
 export function NewtypeChecker<
@@ -32,10 +31,6 @@ export function NewtypeChecker<
         constrain,
         normalize = identity,
         isValid = alwaysTrue,
-        hasInstance = value => (
-            constrain(value) && 
-            isValid(normalize(value))
-        )
     } = options;
     type Result = Newtype<T, S>;
     const factory = (value: T): Result => {
@@ -48,9 +43,10 @@ export function NewtypeChecker<
         );
         return Newtype(value, name);
     };
-    const checker = (value: unknown): value is Result => {
-        return hasInstance(value);
-    };
+    const checker = (value: unknown): value is Result => (
+        constrain(value) && 
+        isValid(normalize(value))
+    );
     HasInstance_inject(factory, checker);
     Function_setName(factory, name);
     return factory;

@@ -1,11 +1,15 @@
 import { Newtype } from "./Newtype";
 import { Assert } from "../../Types/Assert";
-export {};
+
+type Celsius = Newtype<number, "Celsius">;
 
 type Assert_cannotAssignNormal = Assert<
-    number extends Newtype<number, "Celsius">
+    number extends Celsius
 ? false : true>;
 
+type Uri       = Newtype<string, "Uri">;
+type MediumUri = Newtype<Uri, "MediaUri">;
+
 type Assert_canNest = Assert<
-    Newtype<Newtype<string, "Uri">, "MediaUri"> extends Newtype<string, "Uri">
+    MediumUri extends Uri
 ? true : false>;
