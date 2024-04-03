@@ -1,6 +1,6 @@
 import { MediumAttributeMap, MediumAttributeMap_from } from "./AttributeMap";
-import { MediumFileExtension, MediumUrl_getExtension } from "../FileExtension";
-import { MediumUrl } from "../Url";
+import { MediumFileExtension, MediumUri_getExtension } from "../FileExtension";
+import { AudioUri, ImageUri, MediumUri } from "../Uri";
 import { swear } from "@wkronemeijer/system";
 
 const AttributesByExtension = new Map<MediumFileExtension, MediumAttributeMap>;
@@ -19,17 +19,20 @@ interface AttributeWrapper {
     readonly canBe: MediumAttributeMap;
 }
 
-export function MediumUrl_getAttributes(
-    self: MediumUrl,
+export function MediumUri_getAttributes(
+    self: MediumUri,
     base?: string,
 ): AttributeWrapper | undefined {
     let extension, map;
-    if (extension = MediumUrl_getExtension(self, base)) {
+    if (extension = MediumUri_getExtension(self, base)) {
         if (map = AttributesByExtension.get(extension)) {
             return { canBe: map };
         }
     }
 }
+
+export const isImageUrl = (file: MediumUri): file is ImageUri => MediumUri_getAttributes(file)?.canBe.image ?? false;
+export const isAudioUrl = (file: MediumUri): file is AudioUri => MediumUri_getAttributes(file)?.canBe.audio ?? false;
 
 //////////////////////
 // Filling database //
