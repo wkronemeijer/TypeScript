@@ -17,6 +17,10 @@ export type Case<
     & P
 >;
 
+export type CaseMap<M extends Record<string, object>> = ExpandType<{
+    readonly [P in keyof M & string]: Case<P, M[P]>
+}[keyof M & string]>;
+
 ////////////////////
 // Matching cases //
 ////////////////////
