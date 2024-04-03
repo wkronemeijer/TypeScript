@@ -1,5 +1,12 @@
 // Arcane type magic
 
+/** Ensures T is treated as contravariant. */
+export interface Contravariant<T> {
+    (accept: T): void;
+}
+// If only we had write-only properties...
+// Or explicit variance annotations
+
 // From https://stackoverflow.com/questions/50374908/transform-union-type-to-intersection-type
 /** 
  * Converts a union of types into a intersection of those types. 

@@ -1,4 +1,6 @@
-import { defineProperty } from "../../Re-export/Object";
+import { defineProperty, getPrototypeOf, setPrototypeOf } from "../../Re-export/Object";
+import { nameof } from "../../Debug/Nameof";
+import { HasInstance_inject } from "../../HasInstance";
 
 /** Inverts a predicate function. */ 
 export function negate<T>(
@@ -25,9 +27,9 @@ export function createFactory<F extends new (...args: any[]) => any>(
  * Make sure to provide fresh/local arguments. 
  */
 export function Function_includeProperties<F extends Function, O extends object>(func: F, prototype: O): F & O {
-    const originalPrototype = Object.getPrototypeOf(func);
-    Object.setPrototypeOf(prototype, originalPrototype);
-    Object.setPrototypeOf(func, prototype);
+    const originalPrototype = getPrototypeOf(func);
+    setPrototypeOf(prototype, originalPrototype);
+    setPrototypeOf(func, prototype);
     return func as F & O;
 }
 
@@ -40,3 +42,24 @@ export function Function_setName(func: Function, name: string): void {
         value: name,
     });
 }
+
+/** 
+ * Sets the name of a function using [[DefineOwnProperty]]. 
+ * Useful if you implement the class using class expression, 
+ * which uses a different name internally. 
+ * This function corrects the name metadata.
+ * 
+ * @example
+ * const MyCoolClass = class FooBarBaz {};
+ * Function_setNameOf({MyCoolClass});
+ * console.log(MyCoolClass.name); // "MyCoolClass"
+*/
+export function Function_setNameOf(table: Record<string, Function>): void {
+    const name  = nameof(table);
+    const value = table[name];
+    if (value) {
+        Function_setName(value, name);
+    }
+}
+
+export const Function_setHasInstance = HasInstance_inject;
