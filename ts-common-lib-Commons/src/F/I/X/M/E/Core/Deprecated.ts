@@ -6,12 +6,16 @@ const warned = new WeakSet;
  * When called, warns that the given functions is deprecated.
  * Repeat calls give no such warning.
  */
-export function giveDeprecationWarning<F extends Function>(func: F): F {
-    if (!warned.has(func)) {
-        console.warn(`Function ${func.name} is no longer supported.`);
+export function giveDeprecationWarning<F extends Function>(oldFunc: F, newFunc?: Function): F {
+    if (!warned.has(oldFunc)) {
+        if (newFunc) {
+            console.warn(`Function ${oldFunc.name} is no longer supported, use ${newFunc.name} instead.`);
+        } else {
+            console.warn(`Function ${oldFunc.name} is no longer supported`);
+        }
     }
-    warned.add(func);
-    return func;
+    warned.add(oldFunc);
+    return oldFunc;
 }
 // TODO: call it giveDeprecationWarning?
 
@@ -19,6 +23,6 @@ export function giveDeprecationWarning<F extends Function>(func: F): F {
  * @deprecated This thing throws an error for some reason, use {@link giveDeprecationWarning} instead.
  * Marks a function as no longer supported and will throw an error. */
 export function deprecated(): never {
-    giveDeprecationWarning(deprecated);
+    giveDeprecationWarning(deprecated, giveDeprecationWarning); // ironic
     panic(`This is no longer supported.`);
 }
