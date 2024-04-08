@@ -1,5 +1,5 @@
 const {
-    create, 
+    create: createObject, 
     defineProperty, defineProperties, hasOwn: hasOwnProperty,
     freeze, 
     assign, entries, fromEntries,
@@ -16,8 +16,13 @@ const {
     deleteProperty,
 } = Reflect;
 
+/**
+ * @deprecated use `createObject` instead, it is less ambiguous
+ */
+const create = createObject;
+
 export {
-    create, 
+    create, createObject,
     getPrototypeOf, setPrototypeOf,
     
     defineProperty, defineProperties, deleteProperty,
