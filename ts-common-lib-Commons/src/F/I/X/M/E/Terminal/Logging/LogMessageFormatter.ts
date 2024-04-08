@@ -88,7 +88,7 @@ export const PowerlineLogMessageFormatter: LogMessageFormatter = message => {
 
         result.append(unsetBg);
     }
-
+    
     result.append(AnsiTextStyle_set({ color }));
     if (showLabel) {
         result.append(PowerlineArrow);
@@ -96,7 +96,7 @@ export const PowerlineLogMessageFormatter: LogMessageFormatter = message => {
     }
     result.append(inspectValue(value) || " "); // reminder: !!"" == false
     result.append(SgrCommand_ResetAll); // don't taint the console
-
+    
     return result.toString();
 };
 

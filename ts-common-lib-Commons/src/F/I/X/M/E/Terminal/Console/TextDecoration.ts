@@ -1,7 +1,6 @@
 // Q: Why don't you split it up into more files?
 // A: Because I don't think it makes the code any clearer. 
 
-import { DecoratedString } from "./Reusable/DecoratedString";
 import { StringBuilder } from "../../Core/Data/Textual/StringBuilder";
 import { StringEnum } from "../../Core/Data/Textual/StringEnum";
 import { Newtype } from "../../Core/Data/Nominal/Newtype";
@@ -106,7 +105,7 @@ const unset = {
 
 type SgrArgument = number;
 
-export type          SgrCommand = Newtype<string, typeof SgrCommand_Brand>;
+export type          SgrCommand = Newtype<string, "SgrCommand">;
 export declare const SgrCommand_Brand: unique symbol;
 
 function SgrCommand(args: SgrArgument[]): SgrCommand {
@@ -172,15 +171,15 @@ export function AnsiTextStyle_use(stl: AnsiTextStyle): AnsiTextStyle_use_Result 
     return { isActive, apply, unset};
 }
 
-/** Paints a string by adding ANSI escape codes. For more fine-grained control, use  */
-export function paintString(string: string, paint: AnsiTextStyle): DecoratedString {
-    const result = new StringBuilder();
+// /** Paints a string by adding ANSI escape codes. For more fine-grained control, use  */
+// export function paintString(string: string, paint: AnsiTextStyle): DecoratedString {
+//     const result = new StringBuilder();
     
-    const { isActive, apply, unset } = AnsiTextStyle_use(paint);
+//     const { isActive, apply, unset } = AnsiTextStyle_use(paint);
     
-    if (isActive) { result.append(apply) }
-    result.append(string);
-    if (isActive) { result.append(unset) }
+//     if (isActive) { result.append(apply) }
+//     result.append(string);
+//     if (isActive) { result.append(unset) }
     
-    return DecoratedString(result.toString());
-}
+//     return DecoratedString(result.toString());
+// }
