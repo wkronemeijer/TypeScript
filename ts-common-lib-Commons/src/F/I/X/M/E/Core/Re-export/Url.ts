@@ -1,4 +1,4 @@
-import { Satisfies } from "../Core/Types/Satisfies";
+import {Assert} from "../Types/Assert";
 
 // NOTE: jsx-server uses this, so would be annoying when removed
 
@@ -98,4 +98,4 @@ export interface ReadonlyURL {
     toJSON(): string;
 }
 
-type t0 = Satisfies<URL, ReadonlyURL>;
+type Assert_ReadonlyIsSubset = Assert<ReadonlyURL extends URL ? true : false>;
