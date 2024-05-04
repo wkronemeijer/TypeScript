@@ -17,6 +17,6 @@ export function HexColorString_toComponents(hex: HexColorString): {
 }
 
 export function HexColorString_toTuple(hex: HexColorString): [red: number, green: number, blue: number] {
-    const {red, green, blue} = HexColorString_toComponents(hex);
+    const  {red, green, blue} = HexColorString_toComponents(hex);
     return [red, green, blue];
 }

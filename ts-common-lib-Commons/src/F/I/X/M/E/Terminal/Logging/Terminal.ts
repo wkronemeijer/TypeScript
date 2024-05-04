@@ -1,15 +1,14 @@
 // console but const and with some extra goodies.
 // FEATURE: terminal.indent() and terminal.dedent() support, for making groups easier to make pretty.
 
-import { LogChannel, DeveloperLogChannel, UserLogChannel } from "./LogChannel";
-import { StringTargetLine, stringBuild } from "../../Core/Data/Textual/StringBuilder";
-import { Function_includeProperties } from "../../Core/Data/Function/Function";
-import { TimingReport_toString } from "../TimingReportFormatter";
-import { LoggingFunction } from "./LoggingFunction";
-import { Dictionary } from "../../Core/Data/Collections/Builtin/Dictionary";
-import { LogMessage } from "./LogMessage";
-import { Member } from "../../Core/Data/Collections/Enumeration";
-import { __log } from "./Logger";
+import {Dictionary} from "../../Core/Data/Collections/Builtin/Dictionary";
+import {Function_includeProperties} from "../../Core/Data/Function/Function";
+import {StringTargetLine, stringBuild} from "../../Core/Data/Textual/StringBuilder";
+import {TimingReport_toString} from "../TimingReportFormatter";
+import {DeveloperLogChannel, LogChannel, UserLogChannel} from "./LogChannel";
+import {LogMessage} from "./LogMessage";
+import {__log} from "./Logger";
+import {LoggingFunction} from "./LoggingFunction";
 
 /////////////////////////
 // Bonus functionality //
@@ -135,9 +134,9 @@ function AugmentedLoggingFunction(channel: LogChannel): AugmentedLoggingFunction
     return Function_includeProperties(customLog, augment);
 }
 
-function createLoggers<SelectedChannels extends readonly LogChannel[]>(
-    channels: SelectedChannels,
-): Record<Member<SelectedChannels>, AugmentedLoggingFunction> {
+function createLoggers<E extends LogChannel>(
+    channels: Iterable<E>,
+): Record<E, AugmentedLoggingFunction> {
     const result: Dictionary<AugmentedLoggingFunction> = {};
     for (const channel of channels) {
         result[channel] = AugmentedLoggingFunction(channel);
@@ -149,8 +148,8 @@ function createLoggers<SelectedChannels extends readonly LogChannel[]>(
 // Creation the terminal objects //
 ///////////////////////////////////
 
-const userLoggers = createLoggers(UserLogChannel     .values);
-const devLoggers  = createLoggers(DeveloperLogChannel.values);
+const userLoggers = createLoggers(UserLogChannel);
+const devLoggers  = createLoggers(DeveloperLogChannel);
 
 const bonus: BonusFunctionality = {
     dumpLocals: devLoggers.trace.dumpLocals,
