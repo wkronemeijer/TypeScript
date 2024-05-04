@@ -13,11 +13,11 @@ export function applyStoredCall_unsafe(
 ): unknown {
     const { name, args } = details;
     swear(name in source, () => 
-        `Target is missing member named '${name}'.`
+        `target is missing member '${name}'`
     );
     const method = (source as any)[name] as unknown;
     swear(typeof method === "function", () => 
-        `Member named '${name}' is not a function.`
+        `member '${name}' is not a function`
     );
     return method.apply(thisArg, args);
 }

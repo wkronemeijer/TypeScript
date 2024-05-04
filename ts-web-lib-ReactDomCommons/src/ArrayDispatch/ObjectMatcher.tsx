@@ -1,7 +1,8 @@
-import { produce, Draft } from "immer";
+import {CallObjectFor, StoredCall, applyStoredCall_unsafe, logStoredCall} from "./StoredCall";
+import {produce, Draft, enableMapSet} from "immer";
 
-import { CallObjectFor, StoredCall, applyStoredCall_unsafe, logStoredCall } from "./StoredCall";
-
+// Apparently TS ships with ThisType
+// TODO: Use ThisType
 export type ReplaceThis<T, N> = {
     readonly [P in keyof T]: T[P] extends (...args: infer A) => infer R ? (
         (this: N, ...args: A) => R
@@ -25,6 +26,7 @@ export function ObjectMatcher_toReducer<
     action: A,
 ) => S {
     const { log: shouldLog } = options ?? {};
+    enableMapSet();
     return produce<S, [A]>((state, action) => {
         if (shouldLog) {
             logStoredCall(action);
