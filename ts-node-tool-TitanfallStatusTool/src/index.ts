@@ -11,9 +11,9 @@ const TitanfallStatusUrl = `http://titanfall.p0358.net/status`;
 const MyRegion: Region = "Europe";
 
 export async function main(args = process.argv.slice(2)): Promise<void> {
-    process.stdout.write("\x1B[30mLoading...");
+    process.stdout.write("Loading...");
     const html     = await fetchHtml(TitanfallStatusUrl);
-    process.stdout.write("done\x1B[0m\n");
+    process.stdout.write("\r");
     const document = new JSDOM(html).window.document;
     const analysis = Document_analyze(document, MyRegion);
     DocumentAnalysis_print(analysis);
