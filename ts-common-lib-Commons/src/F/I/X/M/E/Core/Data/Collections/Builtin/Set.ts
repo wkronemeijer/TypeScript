@@ -58,3 +58,21 @@ export function Set_toTypeGuard<T extends value_t>(self: ReadonlySet<T>): (item:
 }
 
 export const Set_toFunction: <T extends value_t>(self: ReadonlySet<T>) => (item: T) => boolean = Set_toTypeGuard;
+
+/////////////////////
+// Stage 3 methods //
+/////////////////////
+
+export function Set_union<T>(lhs: ReadonlySet<T>, rhs: ReadonlySet<T>): Set<T> {
+    return new Set([...lhs, ...rhs]);
+}
+
+export function Set_intersection<T>(lhs: ReadonlySet<T>, rhs: ReadonlySet<T>): Set<T> {
+    const result = new Set<T>;
+    for (const item of [...lhs, ...rhs]) {
+        if (lhs.has(item) && rhs.has(item)) {
+            result.add(item);
+        }
+    }
+    return result;
+}
