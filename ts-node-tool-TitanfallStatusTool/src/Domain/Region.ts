@@ -1,4 +1,4 @@
-import { Member, StringEnum } from "@wkronemeijer/system";
+import {Member, StringEnum} from "@wkronemeijer/system";
 
 export type  Region = Member<typeof Region>;
 export const Region = StringEnum([

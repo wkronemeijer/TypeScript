@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 
-import { printError } from "@wkronemeijer/system";
-
-import { main } from ".";
+import {printThrowable} from "@wkronemeijer/system";
+import {main} from ".";
 
 try {
     main();
 } catch (err) {
-    printError(err);
+    printThrowable(err);
 }

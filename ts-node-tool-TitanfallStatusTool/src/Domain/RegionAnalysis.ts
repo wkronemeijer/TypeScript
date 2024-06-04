@@ -1,8 +1,16 @@
-import { panic } from "@wkronemeijer/system";
+import {StringBuilder, panic, singularize} from "@wkronemeijer/system";
+import {GameMode} from "./Mode";
+import {Region} from "./Region";
 
-import { GameMode } from "./Mode";
-import { Region } from "./Region";
-import { DocumentAnalysis } from "./DocumentAnalysis";
+export interface RegionAnalysis {
+    readonly region: Region;
+    readonly playerCountByMode: ReadonlyMap<GameMode, number>;
+    readonly regionalPlayerCount: number;
+}
+
+//////////////
+// Analysis //
+//////////////
 
 const isGameMode = GameMode.hasInstance;
 
@@ -36,7 +44,7 @@ Example table:
 const TableId = "stats-table";
 const ModeOffset = 0;
 
-export function Document_analyze(self: Document, region: Region): DocumentAnalysis {
+export function Document_analyzeRegion(self: Document, region: Region): RegionAnalysis {
     const table = self.getElementById(TableId) ?? panic("could not find table");
     
     // yeahhhhhh raw DOM manipulation 🥵
@@ -57,18 +65,61 @@ export function Document_analyze(self: Document, region: Region): DocumentAnalys
         )
     );
     
-    const playerCountByGameMode = new Map<GameMode, number>;
+    const playerCountByMode = new Map<GameMode, number>;
     
     for (const row of recordRows) {
         const mode  = row[ModeOffset];
         const count = Number(row[regionOffset]);
         
         if (isGameMode(mode) && isFinite(count)) {
-            playerCountByGameMode.set(mode, count);
+            playerCountByMode.set(mode, count);
         }
     }
     
-    const totalPlayerCount = playerCountByGameMode.get("All") ?? 0;
+    const regionalPlayerCount = playerCountByMode.get("All") ?? 0;
     
-    return { region, playerCountByGameMode, totalPlayerCount };
+    return {region, playerCountByMode, regionalPlayerCount};
+}
+
+////////////////
+// Formatting //
+////////////////
+
+function formatRegion(f: StringBuilder, region: Region): void {
+    f.append("\x1B[1m");
+    
+    f.append("Titanfall 1 playercount in ");
+    f.append(region);
+    
+    f.append("\x1B[22m");
+}
+
+function formatModeCount(f: StringBuilder, mode: GameMode, count: number): void {
+    f.append("\x1B[");
+    f.append((
+        count === 0 ? 31 : // Red
+        count  <  4 ? 33 : // Yellow
+        32                 // Green
+    ).toString());
+    f.append("m");
+    
+    f.append(mode);
+    f.append(" has ");
+    f.append(singularize(count, "players"));
+    
+    f.append("\x1B[39m");
+}
+
+export function RegionAnalysis_format(self: RegionAnalysis, f: StringBuilder, modes: Iterable<GameMode>): void {
+    const {region, playerCountByMode} = self;
+    
+    formatRegion(f, region);
+    f.appendLine();
+    f.increaseIndent();
+    for (const mode of modes) {
+        const count = playerCountByMode.get(mode) ?? 0;
+        formatModeCount(f, mode, count);
+        f.appendLine();
+    }
+    f.decreaseIndent();
 }

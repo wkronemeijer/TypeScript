@@ -1,4 +1,4 @@
-import { sleep, swear } from "@wkronemeijer/system";
+import {swear} from "@wkronemeijer/system";
 
 const FetchOptions: RequestInit = {
     method: "GET",

@@ -77,9 +77,14 @@ extends StringBuildable, StringTarget {
     
     /** Increases the indent by 1 level. */
     increaseIndent(): void;
+    /** Increases the indent by 1 level. */
+    indent(): void;
+    
     
     /** Decreases the indent by 1 level. */
     decreaseIndent(): void;
+    /** Decreases the indent by 1 level. */
+    dedent(): void;
     
     /** Resets the indent to 0. */
     resetIndent(): void;
@@ -144,9 +149,17 @@ implements   StringBuilder            {
         this.currentLevel = this.currentLevel + 1;
     }
     
+    indent(): void {
+        this.increaseIndent();
+    }
+    
     /** Decreases indentation by 1. */
     decreaseIndent(): void {
         this.currentLevel = max(0, this.currentLevel - 1);
+    }
+    
+    dedent(): void {
+        this.decreaseIndent();
     }
     
     /** Resets to indentation to 0. */

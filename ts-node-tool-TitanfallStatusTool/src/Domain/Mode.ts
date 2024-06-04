@@ -1,4 +1,4 @@
-import { Member, StringEnum } from "@wkronemeijer/system";
+import {Member, StringEnum} from "@wkronemeijer/system";
 
 export type  GameMode = Member<typeof GameMode>;
 export const GameMode = StringEnum([
