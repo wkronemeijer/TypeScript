@@ -1,4 +1,5 @@
 import {swear} from "@wkronemeijer/system";
+import {JSDOM} from "jsdom";
 
 const FetchOptions: RequestInit = {
     method: "GET",
@@ -8,9 +9,13 @@ const FetchOptions: RequestInit = {
     credentials: "omit",
 };
 
-export async function fetchHtml(url: string): Promise<string> {
+async function fetchHtml(url: string): Promise<string> {
     const response = await fetch(url, FetchOptions);
     swear(response.ok, () => 
         `request failed (${response.status} ${response.statusText})`);
     return await response.text();
+}
+
+export async function fetchDocument(url: string): Promise<Document> {
+    return new JSDOM(await fetchHtml(url)).window.document;
 }

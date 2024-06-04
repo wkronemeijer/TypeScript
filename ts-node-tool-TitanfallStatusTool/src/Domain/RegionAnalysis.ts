@@ -1,6 +1,7 @@
-import {StringBuilder, panic, singularize} from "@wkronemeijer/system";
 import {GameMode} from "./Mode";
 import {Region} from "./Region";
+import {panic} from "@wkronemeijer/system";
+const isGameMode = GameMode.hasInstance;
 
 export interface RegionAnalysis {
     readonly region: Region;
@@ -11,8 +12,6 @@ export interface RegionAnalysis {
 //////////////
 // Analysis //
 //////////////
-
-const isGameMode = GameMode.hasInstance;
 
 /*
 Example table:
@@ -79,47 +78,4 @@ export function Document_analyzeRegion(self: Document, region: Region): RegionAn
     const regionalPlayerCount = playerCountByMode.get("All") ?? 0;
     
     return {region, playerCountByMode, regionalPlayerCount};
-}
-
-////////////////
-// Formatting //
-////////////////
-
-function formatRegion(f: StringBuilder, region: Region): void {
-    f.append("\x1B[1m");
-    
-    f.append("Titanfall 1 playercount in ");
-    f.append(region);
-    
-    f.append("\x1B[22m");
-}
-
-function formatModeCount(f: StringBuilder, mode: GameMode, count: number): void {
-    f.append("\x1B[");
-    f.append((
-        count === 0 ? 31 : // Red
-        count  <  4 ? 33 : // Yellow
-        32                 // Green
-    ).toString());
-    f.append("m");
-    
-    f.append(mode);
-    f.append(" has ");
-    f.append(singularize(count, "players"));
-    
-    f.append("\x1B[39m");
-}
-
-export function RegionAnalysis_format(self: RegionAnalysis, f: StringBuilder, modes: Iterable<GameMode>): void {
-    const {region, playerCountByMode} = self;
-    
-    formatRegion(f, region);
-    f.appendLine();
-    f.increaseIndent();
-    for (const mode of modes) {
-        const count = playerCountByMode.get(mode) ?? 0;
-        formatModeCount(f, mode, count);
-        f.appendLine();
-    }
-    f.decreaseIndent();
 }

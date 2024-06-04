@@ -4,28 +4,31 @@ import {formatTable} from "./Table";
 import {GameMode} from "./Mode";
 import {Region} from "./Region";
 
-interface DocumentAnalysis {
-    readonly regions: readonly Region[];
-    readonly analysisByRegion: ReadonlyMap<Region, RegionAnalysis>;
-    
+export interface DocumentAnalysis {
     getPlayerCount(region: Region, mode: GameMode): number;
+    toTable(regions: Iterable<Region>, modes: Iterable<GameMode>): string;
 }
 
 //////////////
 // Analysis //
 //////////////
 
-export function Document_analyze(self: Document): DocumentAnalysis {
-    const regions = [...Region];
+export function Document_analyze(
+    self: Document, 
+): DocumentAnalysis {
     const analysisByRegion = new Map<Region, RegionAnalysis>;
-    for (const region of regions) {
+    for (const region of Region) {
         analysisByRegion.set(region, Document_analyzeRegion(self, region));
     }
+    
     return {
-        regions, 
-        analysisByRegion, 
         getPlayerCount(region: Region, mode: GameMode) {
             return analysisByRegion.get(region)?.playerCountByMode.get(mode) ?? 0;
+        },
+        toTable(regions, modes) {
+            const result = new StringBuilder;
+            DocumentAnalysis_format(this, result, regions, modes);
+            return result.toString();
         },
     };
 }
@@ -39,7 +42,6 @@ function styleRegion(name: string): string {
 }
 
 function styleMode(name: string): string {
-    // return `\x1b[4m${name}\x1b[24m`;
     return name;
 }
 
