@@ -18,6 +18,13 @@ interface NewtypeCheckerOptions<T extends value_t> {
     readonly isValid?: (value: T) => boolean;  // pattern.test
 }
 
+/**
+ * Utility function for quickly creating newtype constructors.
+ * What it does:
+ * * Check `constrain`
+ * * Pass through `normalize`
+ * * Check `isValid`
+ */
 export function NewtypeChecker<
     const S extends string,
     T extends value_t,

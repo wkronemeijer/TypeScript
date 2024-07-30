@@ -7,3 +7,7 @@ export type Falsy =
 ;
 
 export type Truthy<T> = Exclude<T, Falsy>;
+
+export function isTruthy<T>(value: T): value is Exclude<T, Falsy> {
+    return Boolean(value);
+}
