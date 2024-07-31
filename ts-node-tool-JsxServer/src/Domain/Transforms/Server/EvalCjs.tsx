@@ -1,12 +1,10 @@
-import * as esbuild from "esbuild";
-
-import { BuildResult_getOutputFile, ESTarget } from "../../Extensions/BuildResult";
-import { FileTransformRequest } from "../FileTransform";
-import { prepareRequestInfo } from "../../Extensions/DefineMap";
-import { requireString } from "../../RequireString";
-import { swear } from "@wkronemeijer/system";
-
-import { dependencies } from "../../../../package.json";
+import {BuildResult_getOutputFile, ESTarget} from "../../Extensions/BuildResult";
+import {FileTransformRequest} from "../FileTransform";
+import {prepareRequestInfo} from "../../Extensions/DefineMap";
+import {requireString} from "../../RequireString";
+import {dependencies} from "../../../../package.json";
+import {esbuild} from "../../../lib";
+import {swear} from "@wkronemeijer/system";
 
 type OwnDependency = keyof typeof dependencies;
 
@@ -27,7 +25,7 @@ swear(!shareableDependencies.includes(badDependency), () =>
 );
 
 export async function buildAndRunCjs(req: FileTransformRequest): Promise<NodeModule> {
-    const { file, url } = req;
+    const {file} = req;
     const filePath = file.path;
     
     // The part that saves me an unbelievable amount of time

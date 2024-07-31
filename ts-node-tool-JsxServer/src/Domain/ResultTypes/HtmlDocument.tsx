@@ -1,11 +1,10 @@
-import { CSSProperties, ReactElement, ReactNode } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { MimeTypedString } from "../MimeType";
-import { FileTransform } from "../Transforms/FileTransform";
+import {CSSProperties, ReactElement} from "react";
+import {renderToStaticMarkup} from "react-dom/server";
+import {name as packageName} from "../../../package.json";
+import {TypedResponse} from "../MimeType";
+import {FileTransform} from "../Transforms/FileTransform";
 
-import { name as packageName } from "../../../package.json";
-
-export type HtmlDocument = MimeTypedString<"text/html">;
+export type HtmlDocument = TypedResponse<"text/html">;
 
 /** Renders the JSX to static markup, and prepends the doctype. */
 export function HtmlDocument(element: ReactElement): HtmlDocument {

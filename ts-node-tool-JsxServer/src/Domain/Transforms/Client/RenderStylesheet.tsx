@@ -1,12 +1,10 @@
-import { fileURLToPath } from "url";
-import { RawSourceMap } from "source-map-js";
-import * as scss from "sass-embedded";
-
-import { AbsolutePath, Path_relative, RelativePath_toUrl } from "@wkronemeijer/system-node";
-import { stringifyJson, swear } from "@wkronemeijer/system";
-
-import { CssStylesheet } from "../../ResultTypes/CssStylesheet";
-import { FileTransform } from "../FileTransform";
+import {AbsolutePath, Path_relative, RelativePath_toUrl} from "@wkronemeijer/system-node";
+import {stringifyJson, swear} from "@wkronemeijer/system";
+import {CssStylesheet} from "../../ResultTypes/CssStylesheet";
+import {FileTransform} from "../FileTransform";
+import {fileURLToPath} from "url";
+import {RawSourceMap} from "source-map-js";
+import {scss} from "../../../lib";
 
 function SourceMap_relativize(self: RawSourceMap, path: AbsolutePath): RawSourceMap {
     const newSources = self.sources.map(fileUrl => {
@@ -14,7 +12,7 @@ function SourceMap_relativize(self: RawSourceMap, path: AbsolutePath): RawSource
         const target = AbsolutePath(fileURLToPath(fileUrl));
         return RelativePath_toUrl(Path_relative(source, target));
     });
-    return { ...self, sources: newSources };
+    return {...self, sources: newSources};
 }
 
 const encoding: BufferEncoding = "utf-8";

@@ -1,17 +1,16 @@
-import * as express from "express";
-
-import { Router_registerFileTransform } from "./Extensions/Router";
-import { JsonManifestRenderer } from "./Transforms/Server/Manifest";
-import { JavaScriptRenderer } from "./Transforms/Client/RenderClient";
-import { StylesheetRenderer } from "./Transforms/Client/RenderStylesheet";
-import { PerformanceLogger } from "./Handlers/PerformanceLogger";
-import { ReactPageRenderer } from "./Transforms/Server/Page";
-import { JsonPageRenderer } from "./Transforms/Server/Json";
-import { FileTransform } from "./Transforms/FileTransform";
-import { IndexRenderer } from "./Transforms/Server/Index";
-import { pathToFileURL } from "url";
-import { AbsolutePath } from "@wkronemeijer/system-node";
-import { ErrorLogger } from "./Handlers/ErrorLogger";
+import {Router_registerFileTransform} from "./Extensions/Router";
+import {JsonManifestRenderer} from "./Transforms/Server/Manifest";
+import {JavaScriptRenderer} from "./Transforms/Client/RenderClient";
+import {StylesheetRenderer} from "./Transforms/Client/RenderStylesheet";
+import {PerformanceLogger} from "./Handlers/PerformanceLogger";
+import {ReactPageRenderer} from "./Transforms/Server/Page";
+import {JsonPageRenderer} from "./Transforms/Server/Json";
+import {FileTransform} from "./Transforms/FileTransform";
+import {IndexRenderer} from "./Transforms/Server/Index";
+import {pathToFileURL} from "url";
+import {AbsolutePath} from "@wkronemeijer/system-node";
+import {ErrorLogger} from "./Handlers/ErrorLogger";
+import {express} from "../lib";
 
 function configureRouter(rootFolder: AbsolutePath): express.Router {
     const router  = express.Router();

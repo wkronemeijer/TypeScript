@@ -1,6 +1,6 @@
-import { MimeTypedString } from "../MimeType";
+import {TypedResponse} from "../MimeType";
 
-export type CssStylesheet = MimeTypedString<"text/css">;
+export type CssStylesheet = TypedResponse<"text/css">;
 
 /** Renders the JSX to static markup, and preprends the doctype. */
 export function CssStylesheet(content: string): CssStylesheet {

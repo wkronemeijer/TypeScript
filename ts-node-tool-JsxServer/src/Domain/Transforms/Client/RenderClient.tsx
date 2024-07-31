@@ -1,12 +1,11 @@
-import * as esbuild from "esbuild";
-
-import { BuildResult_getOutputFile, ESTarget } from "../../Extensions/BuildResult";
-import { JavaScriptScript } from "../../ResultTypes/JavaScriptScript";
-import { FileTransform } from "../FileTransform";
+import {BuildResult_getOutputFile, ESTarget} from "../../Extensions/BuildResult";
+import {JavaScriptScript} from "../../ResultTypes/JavaScriptScript";
+import {FileTransform} from "../FileTransform";
+import {esbuild} from "../../../lib";
 
 export const JavaScriptRenderer: FileTransform<JavaScriptScript> = {
     pattern: /\.[jt]sx?$/,
-    async render_async({ file }): Promise<JavaScriptScript> {
+    async render_async({file}): Promise<JavaScriptScript> {
         const buildResult = await esbuild.build({
             entryPoints: [file.path],
             bundle: true,

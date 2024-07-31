@@ -1,8 +1,8 @@
-import { HtmlDocument, renderHtmlError_async } from "../../ResultTypes/HtmlDocument";
-import { buildAndRunCjs } from "./EvalCjs";
-import { isValidElement } from "react";
-import { FileTransform } from "../FileTransform";
-import { swear } from "@wkronemeijer/system";
+import {HtmlDocument, renderHtmlError_async} from "../../ResultTypes/HtmlDocument";
+import {buildAndRunCjs} from "./EvalCjs";
+import {isValidElement} from "react";
+import {FileTransform} from "../FileTransform";
+import {swear} from "@wkronemeijer/system";
 
 export const ReactPagePattern = /\.page\.[jt]sx$/;
 

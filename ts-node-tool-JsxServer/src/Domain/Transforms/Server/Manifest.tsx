@@ -1,5 +1,5 @@
-import { JsonResponse, renderJsonError_async } from "../../ResultTypes/JsonResponse";
-import { FileTransform } from "../FileTransform";
+import {JsonResponse, renderJsonError_async} from "../../ResultTypes/JsonResponse";
+import {FileTransform} from "../FileTransform";
 
 export const JsonManifestRenderer: FileTransform<JsonResponse> = {
     pattern: /\~(manifest\.json)$/,

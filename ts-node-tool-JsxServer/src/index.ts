@@ -1,27 +1,21 @@
-import "@wkronemeijer/system";
-import "@wkronemeijer/system-node";
-import "esbuild";
-import "express";
-import "react";
-import "react-dom/server";
-import "sass-embedded";
-
-import { pathToFileURL } from "url";
-import * as express from "express";
-
-import { Path_resolve, getLocalIp } from "@wkronemeijer/system-node";
-import { terminal } from "@wkronemeijer/system";
-
-import { configureServer } from "./Domain/ConfigureServer";
+import {Path_resolve, getLocalIp} from "@wkronemeijer/system-node";
+import {configureServer} from "./Domain/ConfigureServer";
+import {pathToFileURL} from "url";
+import {terminal} from "@wkronemeijer/system";
+import {express} from "./lib";
 
 const PORT = 8080;
 const ROOT = Path_resolve(".");
 
-export function main(): void {
-    // Not sure where to put this...it should only run once.
+// Not sure where to put this...it should only run once.
+function registerCustomFileTypes() {
     express.static.mime.define({
         "text/plain": ["dd"],
     });
+}
+
+export function main(): void {
+    registerCustomFileTypes();
     
     configureServer(ROOT).listen(PORT);
     

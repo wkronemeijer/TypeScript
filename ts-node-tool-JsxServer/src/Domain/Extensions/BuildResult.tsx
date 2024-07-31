@@ -1,6 +1,5 @@
-import * as esbuild from "esbuild";
-
-import { swear } from "@wkronemeijer/system";
+import {esbuild} from "../../lib";
+import {swear} from "@wkronemeijer/system";
 
 export const ESTarget = "es2022";
 // TODO: Find out whether esbuild takes this value from the nearest tsconfig.

@@ -1,6 +1,6 @@
-import { MimeTypedString } from "../MimeType";
+import {TypedResponse} from "../MimeType";
 
-export type JavaScriptScript = MimeTypedString<"text/javascript">;
+export type JavaScriptScript = TypedResponse<"text/javascript">;
 
 /** Renders the JSX to static markup, and preprends the doctype. */
 export function JavaScriptScript(content: string): JavaScriptScript {

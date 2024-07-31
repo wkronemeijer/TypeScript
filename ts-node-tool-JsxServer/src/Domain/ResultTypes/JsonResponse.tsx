@@ -1,8 +1,8 @@
-import { JsonReplacer, stringifyJson } from "@wkronemeijer/system";
-import { MimeTypedString } from "../MimeType";
-import { FileTransform } from "../Transforms/FileTransform";
+import {JsonReplacer, stringifyJson} from "@wkronemeijer/system";
+import {TypedResponse} from "../MimeType";
+import {FileTransform} from "../Transforms/FileTransform";
 
-export type JsonResponse = MimeTypedString<"application/json">;
+export type JsonResponse = TypedResponse<"application/json">;
 
 export function JsonResponse(value: unknown, replacer?: JsonReplacer): JsonResponse {
     return {

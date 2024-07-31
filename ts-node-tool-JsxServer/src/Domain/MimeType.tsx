@@ -1,4 +1,4 @@
-import { HintedString, Member, StringEnum } from "@wkronemeijer/system";
+import {HintedString, Member, StringEnum} from "@wkronemeijer/system";
 
 export type  CommonMimeType = Member<typeof CommonMimeType>;
 export const CommonMimeType = StringEnum([
@@ -9,13 +9,13 @@ export const CommonMimeType = StringEnum([
     "application/json",
 ]);
 
+export type MimeType = HintedString<CommonMimeType>;
+
 export const ShouldLogMimeTypePattern = new RegExp(
     `^(${CommonMimeType.values.join("|")})`
 );
 
-export type MimeType = HintedString<CommonMimeType>;
-
-export interface MimeTypedString<K extends MimeType = MimeType> {
+export interface TypedResponse<K extends MimeType = MimeType> {
     readonly type: K;
     readonly body: string;
 }

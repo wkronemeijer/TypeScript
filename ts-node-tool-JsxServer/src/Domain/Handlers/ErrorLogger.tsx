@@ -1,10 +1,10 @@
-import * as express from "express";
+import {formatThrowable, terminal} from "@wkronemeijer/system";
+import {ErrorDescription} from "../ResultTypes/ErrorDescription";
+import {Response_send} from "../Extensions/Response";
+import {HttpStatus} from "../HttpHeader";
+import {express} from "../../lib";
 
-import { formatThrowable, terminal } from "@wkronemeijer/system";
-import { ErrorDescription } from "../ResultTypes/ErrorDescription";
-import { Response_send } from "../Extensions/Response";
-
-export const ErrorLogger = ((e: unknown, req, res, next) => {
+export const ErrorLogger: express.ErrorRequestHandler = ((e: unknown, req, res, next) => {
     terminal.error(formatThrowable(e));
-    Response_send(res, ErrorDescription("<internal error>"));
-}) satisfies express.ErrorRequestHandler;
+    Response_send(res, ErrorDescription("<internal error>"), HttpStatus.INTERNAL_SERVER_ERROR);
+});

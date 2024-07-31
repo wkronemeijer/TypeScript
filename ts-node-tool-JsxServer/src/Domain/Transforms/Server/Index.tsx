@@ -1,9 +1,9 @@
-import { HtmlDocument, MetaViewport, renderHtmlError_async } from "../../ResultTypes/HtmlDocument";
-import { DirectoryObject, FileObject } from "@wkronemeijer/system-node";
-import { collect, from, singularize } from "@wkronemeijer/system";
-import { ReactPagePattern } from "./Page";
-import { FileTransform } from "../FileTransform";
-import { ReactNode } from "react";
+import {HtmlDocument, MetaViewport, renderHtmlError_async} from "../../ResultTypes/HtmlDocument";
+import {DirectoryObject, FileObject} from "@wkronemeijer/system-node";
+import {collect, from, singularize} from "@wkronemeijer/system";
+import {ReactPagePattern} from "./Page";
+import {FileTransform} from "../FileTransform";
+import {ReactNode} from "react";
 
 const IndexStyle = String.raw`
 body {

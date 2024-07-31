@@ -1,9 +1,8 @@
-import * as express from "express";
+import {Response_shouldLog} from "../Extensions/Response";
+import {terminal} from "@wkronemeijer/system";
+import {express} from "../../lib";
 
-import { Response_shouldLog } from "../Extensions/Response";
-import { terminal } from "@wkronemeijer/system";
-
-export const PerformanceLogger = ((req, res, next) => {
+export const PerformanceLogger: express.RequestHandler = ((req, res, next) => {
     const start = performance.now();
     res.once("finish", () => {
         const end = performance.now();
@@ -12,4 +11,4 @@ export const PerformanceLogger = ((req, res, next) => {
         }
     });
     next();
-}) satisfies express.RequestHandler;
+});

@@ -1,13 +1,13 @@
-import * as express from "express";
+import {FileTransform, FileTransformRequest} from "../Transforms/FileTransform";
+import {FileObject, DirectoryObject} from "@wkronemeijer/system-node";
+import {ReadonlyURL, swear} from "@wkronemeijer/system";
+import {ErrorDescription} from "../ResultTypes/ErrorDescription";
+import {TypedResponse} from "../MimeType";
+import {Response_send} from "./Response";
+import {HttpStatus} from "../HttpHeader";
+import {express} from "../../lib";
 
-import { FileTransform, FileTransformRequest } from "../Transforms/FileTransform";
-import { FileObject, DirectoryObject } from "@wkronemeijer/system-node";
-import { ReadonlyURL, swear } from "@wkronemeijer/system";
-import { ErrorDescription } from "../ResultTypes/ErrorDescription";
-import { MimeTypedString } from "../MimeType";
-import { Response_send } from "./Response";
-
-export function Router_registerFileTransform<T extends MimeTypedString>(
+export function Router_registerFileTransform<T extends TypedResponse>(
     self: express.Router,
     rootUrl: ReadonlyURL,
     transform: FileTransform<T>,
@@ -27,7 +27,8 @@ export function Router_registerFileTransform<T extends MimeTypedString>(
             rootUrl, root, url, file,
         };
         
-        let result: MimeTypedString;
+        let result: TypedResponse;
+        let status: HttpStatus;
         try {
             swear(file.extends(root), () => 
                 `requested resource ${file} must be at or under the root`
@@ -35,10 +36,11 @@ export function Router_registerFileTransform<T extends MimeTypedString>(
             // IK that (async) checking for exists is bad
             // alternative is that esbuild or something else downstream creates a more obscure error
             // while we know the exact problem right here.
-            swear(virtual || file.exists(), () => 
+            swear(virtual || (await file.exists_async()), () => 
                 `resource ${file} does not exist (and is not virtual)`
             );
             result = await render_async(requestInfo);
+            status = HttpStatus.OK;
         } catch (render_error) {
             console.error(render_error);
             try {
@@ -51,7 +53,9 @@ export function Router_registerFileTransform<T extends MimeTypedString>(
                 console.error(renderError_error);
                 result = ErrorDescription(renderError_error);
             }
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        Response_send(res, result);
+        // FIXME: Some ERRORs are actually BAD REQUESTs
+        Response_send(res, result, status);
     });
 }

@@ -1,8 +1,7 @@
-import { RaspGlobalDefines, RaspRequestInfo } from "@wkronemeijer/react-server-page";
-import { stringifyJson } from "@wkronemeijer/system";
-
-import { ESBuildDefines } from "./BuildResult";
-import { FileTransformRequest } from "../Transforms/FileTransform";
+import {RaspGlobalDefines, RaspRequestInfo} from "@wkronemeijer/react-server-page";
+import {FileTransformRequest} from "../Transforms/FileTransform";
+import {ESBuildDefines} from "./BuildResult";
+import {stringifyJson} from "@wkronemeijer/system";
 
 const RequestKey = "__REQUEST_INFO" satisfies keyof RaspGlobalDefines;
 
@@ -15,5 +14,5 @@ function FileTransformRequest_toInfo(req: FileTransformRequest): RaspRequestInfo
 
 export function prepareRequestInfo(req: FileTransformRequest): ESBuildDefines {
     const info = FileTransformRequest_toInfo(req);
-    return { [RequestKey]: stringifyJson(info) };
+    return {[RequestKey]: stringifyJson(info)};
 }
