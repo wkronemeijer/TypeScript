@@ -16,13 +16,12 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
     const router  = express.Router();
     const rootUrl = pathToFileURL(rootFolder);
     
-    function register<T extends FileTransform>(transform: T): void {
+    function register(transform: FileTransform): void {
         Router_registerFileTransform(router, rootUrl, transform);
     }
     
     router.use(PerformanceLogger);
     {
-        // TODO: Maybe pass a list of transforms to configureServer?
         register(IndexRenderer);
         register(JsonManifestRenderer);
         register(JsonPageRenderer);
