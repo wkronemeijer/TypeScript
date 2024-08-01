@@ -24,24 +24,25 @@ swear(!shareableDependencies.includes(badDependency), () =>
     `${badDependency} MUST NOT be shared.`
 );
 
-export async function buildAndRunCjs(req: FileTransformRequest): Promise<NodeModule> {
-    const {file} = req;
-    const filePath = file.path;
+export async function buildAndRunCjs(
+    req: FileTransformRequest,
+): Promise<NodeModule> {
+    const filePath = req.file.path;
     
-    // The part that saves me an unbelievable amount of time
-    // The thing that makes this whole stupid tool even work
     const buildResult = await esbuild.build({
         entryPoints: [filePath],
         bundle: true,
         write: false,
         jsx: "automatic",
+        charset: "utf8", 
         
         platform: "node",
         format: "cjs",
         target: [ESTarget],
         
-        minifyWhitespace: true,
-        sourcemap: "inline",
+        minify: true,
+        keepNames: true,
+        // sourcemap: "inline",
         
         external: shareableDependencies.slice(),
         define: prepareRequestInfo(req),

@@ -6,18 +6,20 @@ import {esbuild} from "../../../lib";
 export const JavaScriptRenderer: FileTransform<JavaScriptScript> = {
     pattern: /\.[jt]sx?$/,
     async render_async({file}): Promise<JavaScriptScript> {
+        const filePath = file.path;
         const buildResult = await esbuild.build({
-            entryPoints: [file.path],
+            entryPoints: [filePath],
             bundle: true,
             write: false,
             jsx: "automatic",
             charset: "utf8", 
             
-            target: [ESTarget],
             platform: "browser",
+            target: [ESTarget],
             
-            minifyWhitespace: true,
-            sourcemap: "inline",
+            minify: true,
+            keepNames: true,
+            // sourcemap: "inline",
         });
         const result = BuildResult_getOutputFile(buildResult);
         return JavaScriptScript(result);
