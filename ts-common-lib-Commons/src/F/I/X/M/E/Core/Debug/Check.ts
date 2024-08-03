@@ -1,8 +1,8 @@
-import { getDescriptiveName } from "../Data/Names/GetName";
-import { InstanceOwner } from "../Data/InstanceOwner";
-import { SameValueZero } from "../SameValueZero";
-import { equalsAny } from "../Traits/Eq/Equatable";
-import { Falsy } from "../Types/Truthy";
+import {getDescriptiveName} from "../Data/Names/GetName";
+import {InstanceOwner} from "../Data/InstanceOwner";
+import {SameValueZero} from "../SameValueZero";
+import {equalsAny} from "../Traits/Eq/Equatable";
+import {Falsy} from "../Types/Truthy";
 
 type errorConstructor = new(message: string, options?: ErrorOptions) => Error;
 

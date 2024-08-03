@@ -31,7 +31,12 @@ export type UnionToIntersection<U> = (
  */
 export type ExpandType<T> = {} & { [P in keyof T]: T[P] };
 
-/** Placeholder for unknown strings. Can be used in a union without disabling autocomplete. */
+/** 
+ * Placeholder for unknown strings. 
+ * Can be used in a union without disabling autocomplete. 
+ * 
+ * @deprecated Prefer to use {@link HintedString} whose name is less confusing
+ */
 export type UnknownString = (string & {});
 
 // From https://github.com/microsoft/TypeScript/issues/29729#issuecomment-554669605
@@ -40,7 +45,7 @@ export type UnknownString = (string & {});
  */
 export type HintedString<THint extends string> = (
     | THint 
-    | UnknownString
+    | (string & {})
 );
 
 export type Promisify<F> = F extends (...args: infer P) => infer R ? (...args: P) => Promise<R> : never;
@@ -64,3 +69,6 @@ export type ReadWrite<T> = {
 export type ReadonlyRecord<K extends number | string | symbol, T> = { 
     readonly [P in K]: T; 
 };
+
+/** Counterpart to {@link NonNullable}. */
+export type Nullable<T> = T | null | undefined;

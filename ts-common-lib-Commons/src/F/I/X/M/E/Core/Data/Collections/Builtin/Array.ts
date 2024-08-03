@@ -1,6 +1,5 @@
-import { value_t } from "../../../Types/Primitive";
-
-const { trunc, random } = Math;
+import {random, trunc} from "../../../Re-export/Math";
+import {value_t} from "../../../Types/Primitive";
 
 /** Returns the first valid index of an array. */
 export function Array_firstIndex(array: ArrayLike<any>): number | undefined {

@@ -4,7 +4,7 @@
 export type keyof_t = keyof any;
 
 /** All primitive values with _value_ (and not _reference_) equality. */
-export type value_t = 
+export type value_t = (
     | undefined 
     | null 
     | boolean
@@ -12,13 +12,13 @@ export type value_t =
     | bigint
     | string
     | symbol
-;
+);
 
 /** Dual of {@link value_t}, defined by having reference equality. */
-export type reference_t = 
+export type reference_t = (
     // | Function // object includes functions
     | object
-;
+);
 
 const typeof_value = typeof NaN; // lol
 
