@@ -1,28 +1,12 @@
-import {BuildResult_getOutputFile, ESTarget} from "../../Extensions/BuildResult";
 import {JavaScriptScript} from "../../ResultTypes/JavaScriptScript";
+import {buildIife_async} from "../EvalCjs";
 import {FileTransform} from "../FileTransform";
-import {esbuild} from "../../../lib";
 
 export const JavaScriptRenderer: FileTransform<JavaScriptScript> = {
     pattern: /\.[jt]sx?$/,
-    async render_async({file}): Promise<JavaScriptScript> {
-        const filePath = file.path;
-        const buildResult = await esbuild.build({
-            entryPoints: [filePath],
-            bundle: true,
-            write: false,
-            jsx: "automatic",
-            charset: "utf8", 
-            
-            platform: "browser",
-            target: [ESTarget],
-            
-            minify: true,
-            keepNames: true,
-            // sourcemap: "inline",
-        });
-        const result = BuildResult_getOutputFile(buildResult);
-        return JavaScriptScript(result);
+    async render_async(req): Promise<JavaScriptScript> {
+        const iife = await buildIife_async(req);
+        return JavaScriptScript(iife);
     },
     async renderError_async(error) {
         const message = (
