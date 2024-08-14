@@ -2,8 +2,6 @@ import {DirectoryObject, FileObject} from "@wkronemeijer/system-node";
 import {TypedResponse} from "../MimeType";
 import {ReadonlyURL} from "@wkronemeijer/system";
 
-type PathDescription = string | RegExp;
-
 export interface FileTransformRequest {
     /** `file:` URL which is the root of what is being served. */
     readonly rootUrl: ReadonlyURL;
@@ -18,7 +16,7 @@ export interface FileTransformRequest {
 
 export interface FileTransform<S extends TypedResponse = TypedResponse> {
     /** Successful matches of the path component of the request url trigger this tranform. */
-    readonly pattern: PathDescription;
+    readonly pattern: string | RegExp;
     
     /** Whether the request file is **not** required to exist. */
     readonly virtual?: boolean;

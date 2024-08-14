@@ -42,8 +42,8 @@ export function Router_registerFileTransform<T extends TypedResponse>(
             result = await render_async(requestInfo);
             status = HttpStatus.OK;
         } catch (render_error) {
-            console.error(render_error);
             try {
+                console.error(String(render_error));
                 if (render_error instanceof Error) {
                     result = await renderError_async(render_error, requestInfo);
                 } else {

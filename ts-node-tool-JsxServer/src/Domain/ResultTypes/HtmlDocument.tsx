@@ -1,8 +1,8 @@
-import {CSSProperties, ReactElement} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import {name as packageName} from "../../../package.json";
 import {TypedResponse} from "../MimeType";
 import {FileTransform} from "../Transforms/FileTransform";
+import {ReactElement} from "react";
 
 export type HtmlDocument = TypedResponse<"text/html">;
 
@@ -24,20 +24,21 @@ export const MetaViewport = () => <>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 </>;
 
-export const renderHtmlError_async = (async (error: Error): Promise<HtmlDocument> => {
-    const { name, stack } = error;
-    const style = {
-        color: "red",
-        whiteSpace: "pre-wrap",
-    } satisfies CSSProperties;
-    
+export const renderHtmlError_async = (async (
+    {name, stack}: Error,
+): Promise<HtmlDocument> => {
     return HtmlDocument(<html>
         <head>
             <title>{`${name}`}</title>
             <MetaViewport/>
         </head>
         <body>
-            <div style={style}>{stack}</div>
+            <div style={{
+                color: "red",
+                whiteSpace: "pre-wrap",
+            }}>
+                {stack}
+            </div>
         </body>
     </html>);
 }) satisfies FileTransform["renderError_async"];
