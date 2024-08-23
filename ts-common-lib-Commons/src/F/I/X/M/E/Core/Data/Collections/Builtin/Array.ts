@@ -33,9 +33,26 @@ export function Array_normalize<T>(singletonOrList: T | readonly T[]): readonly 
     return singletonOrList instanceof Array ? singletonOrList : [singletonOrList];
 }
 
-export function Array_swap<T>(self: T[], i: number, j: number): void {
-    // I hope V8 has a peephole for this
-    [self[i], self[j]] = [self[j]!, self[i]!];
+/** 
+ * Swaps two elements of an array. 
+ * Only swaps if both indices are in bounds and not equal.
+ * No-op otherwise.
+ * */
+export function Array_swap<T>(
+    self: T[], 
+    i: number, 
+    j: number,
+): void {
+    const length = self.length;
+    if (
+        0 <= i && i < length && 
+        0 <= j && j < length && 
+        i !== j
+    ) {
+        const temp = self[i]!;
+        self[i]    = self[j]!;
+        self[j]    = temp;
+    }
 }
 
 export function Array_shuffleInPlace<T>(self: T[]): void {
