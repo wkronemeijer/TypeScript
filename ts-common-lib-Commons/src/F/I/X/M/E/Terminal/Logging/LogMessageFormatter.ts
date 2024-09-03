@@ -62,11 +62,11 @@ export const PowerlineLogMessageFormatter: LogMessageFormatter = message => {
     if (showTime || showLabel) {
         const {
             apply: setBg, unset: unsetBg,
-        } = AnsiTextStyle_use({ background: color ?? "white" });
+        } = AnsiTextStyle_use({background: color ?? "white"});
         
         const {
             apply: setBold, unset: unsetBold,
-        } = AnsiTextStyle_use({ fontWeight: "bold" });
+        } = AnsiTextStyle_use({fontWeight: "bold"});
         
         result.append(setBg);
         result.append(" ");
@@ -89,7 +89,7 @@ export const PowerlineLogMessageFormatter: LogMessageFormatter = message => {
         result.append(unsetBg);
     }
     
-    result.append(AnsiTextStyle_set({ color }));
+    result.append(AnsiTextStyle_set({color}));
     if (showLabel) {
         result.append(PowerlineArrow);
         result.append(" ");
@@ -114,3 +114,11 @@ export const LogMessageFormatter_Simple: LogMessageFormatter = req => {
 }
 
 export const formatLogMessage = ReplaceableFunction(LogMessageFormatter_PlainText);
+
+//////////////////
+// Plain helper //
+//////////////////
+
+export function powerlineLabel(text: string): string {
+    return `\x1b[7m ${text} \x1b[27m\uE0B0`
+}
