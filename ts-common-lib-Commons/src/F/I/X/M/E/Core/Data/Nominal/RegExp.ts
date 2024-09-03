@@ -1,8 +1,7 @@
-import { HasInstance, HasInstance_inject } from "../../HasInstance";
-import { giveDeprecationWarning } from "../../Deprecated";
-import { Function_setName } from "../Function/Function";
-import { Newtype } from "./Newtype";
-import { swear } from "../../Errors/Assert";
+import {HasInstance, HasInstance_inject} from "../../HasInstance";
+import {Function_setName} from "../Function/Function";
+import {Newtype} from "./Newtype";
+import {swear} from "../../Errors/Assert";
 
 export interface RegExpChecker<M>
 extends HasInstance<M> {
@@ -27,12 +26,4 @@ export function RegExpNewtype<const S extends string>(
     HasInstance_inject(checker, hasInstance);
     Function_setName(checker, name);
     return checker;
-}
-
-/** @deprecated Use {@link RegExpNewtype} */
-export function Newtype_createRegExpChecker<T extends Newtype<string, any>>(
-    pattern: RegExp
-): RegExpChecker<T> {
-    giveDeprecationWarning(Newtype_createRegExpChecker, RegExpNewtype);
-    return RegExpNewtype("(anonymous pattern type)", pattern) as any;
 }

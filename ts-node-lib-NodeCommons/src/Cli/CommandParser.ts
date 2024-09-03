@@ -1,4 +1,4 @@
-import { ExpandType, Newtype, Newtype_createRegExpChecker, swear } from "@wkronemeijer/system";
+import { ExpandType, Newtype, RegExpNewtype, swear } from "@wkronemeijer/system";
 
 import { CliParseResult, CliCommandTree_Translate } from "./ParseResult";
 import { CliSubcommandTree, CliCommandTree } from "./CommandTree";
@@ -18,8 +18,8 @@ interface CliCommandParserConstructor {
     new<const T extends CliCommandTree>(tree: T): CliCommandParser<T>;
 }
 
-export type  SubcommandParserName = Newtype<string, "SubcommandParserName">;
-export const SubcommandParserName = Newtype_createRegExpChecker<SubcommandParserName>(/[a-z\-]+/);
+export type  SubcommandParserName = ReturnType<typeof SubcommandParserName>;
+export const SubcommandParserName = RegExpNewtype("SubcommandParserName", /[a-z\-]+/);
 
 export const CliCommandParser
 :            CliCommandParserConstructor 

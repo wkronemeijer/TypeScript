@@ -1,5 +1,3 @@
-import {panic} from "./Errors/Panic";
-
 const warned = new WeakSet;
 
 /** 
