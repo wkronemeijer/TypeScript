@@ -1,11 +1,7 @@
-import {Path_resolve, getLocalIp} from "@wkronemeijer/system-node";
+import {DirectoryObject, getLocalIp} from "@wkronemeijer/system-node";
 import {configureServer} from "./Domain/ConfigureServer";
-import {pathToFileURL} from "url";
 import {terminal} from "@wkronemeijer/system";
 import {express} from "./lib";
-
-const PORT = 8080;
-const ROOT = Path_resolve(".");
 
 // Not sure where to put this...it should only run once.
 function registerCustomFileTypes() {
@@ -14,12 +10,18 @@ function registerCustomFileTypes() {
     });
 }
 
-export function main(): void {
+export async function main([dir]: readonly string[]): Promise<void> {
+    if (dir) {
+        process.chdir(dir);
+    }
+    const root = new DirectoryObject(".");
+    const port = 8080;
+    
     registerCustomFileTypes();
     
-    configureServer(ROOT).listen(PORT);
+    configureServer(root).listen(port);
     
-    terminal.log(`Root folder: ${pathToFileURL(ROOT).href}`);
-    terminal.log(`Local address: ${getLocalIp("IPv4")}:${PORT}`);
-    terminal.log(`\n>>> Connect to http://localhost:${PORT}/ <<<\n`);
+    terminal.log(`Root folder ▶ ${root.url.href}`);
+    terminal.log(`Local address ▶ ${getLocalIp("IPv4")}:${port}`);
+    terminal.log(`\n>>> Connect to http://localhost:${port}/ <<<\n`);
 }

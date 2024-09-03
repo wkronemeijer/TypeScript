@@ -1,7 +1,6 @@
 import {Router_registerFileTransform} from "./Extensions/Router";
 import {PerformanceLogger} from "./Handlers/PerformanceLogger";
-import {pathToFileURL} from "url";
-import {AbsolutePath} from "@wkronemeijer/system-node";
+import {DirectoryObject} from "@wkronemeijer/system-node";
 import {ErrorLogger} from "./Handlers/ErrorLogger";
 import {express} from "../lib";
 
@@ -14,12 +13,11 @@ import {FileTransform} from "./Transforms/FileTransform";
 import {IndexRenderer} from "./Transforms/Server/Index";
 import {SvgRenderer} from "./Transforms/Server/Svg";
 
-function configureRouter(rootFolder: AbsolutePath): express.Router {
-    const router  = express.Router();
-    const rootUrl = pathToFileURL(rootFolder);
+function configureRouter(root: DirectoryObject): express.Router {
+    const router = express.Router();
     
     function register(transform: FileTransform): void {
-        Router_registerFileTransform(router, rootUrl, transform);
+        Router_registerFileTransform(router, root.url, transform);
     }
     
     router.use(PerformanceLogger);
@@ -36,14 +34,14 @@ function configureRouter(rootFolder: AbsolutePath): express.Router {
         // #bundled?
         register(JavaScriptRenderer);
     }
-    router.use(express.static(rootFolder));
+    router.use(express.static(root.path));
     router.use(ErrorLogger);
     
     return router;
 }
 
-export function configureServer(rootFolder: AbsolutePath): express.Express {
+export function configureServer(root: DirectoryObject): express.Express {
     const server = express();
-    server.use(configureRouter(rootFolder));
+    server.use(configureRouter(root));
     return server;
 }

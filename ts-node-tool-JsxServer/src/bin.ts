@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 
-import {printThrowable} from "@wkronemeijer/system";
+import {startProgram} from "@wkronemeijer/system-node";
 import {main} from ".";
 
-try {
-    main();
-} catch (err) {
-    printThrowable(err);
-}
+startProgram(main);
