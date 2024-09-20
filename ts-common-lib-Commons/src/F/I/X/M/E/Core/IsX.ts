@@ -1,5 +1,11 @@
-const { isNaN, isFinite: Number_isFinite, isSafeInteger } = Number;
-const { isArray: Array_hasInstance } = Array;
+const { 
+    isSafeInteger: Number_isSafeInteger,
+    isFinite: Number_isFinite, 
+    isNaN: Number_isNaN, 
+ } = Number;
+const {
+    isArray: Array_hasInstance,
+} = Array;
 
 /////////////////////////////////
 // Value types (except number) //
@@ -29,13 +35,17 @@ export function isString(value: unknown): value is string {
 // Numerics //
 //////////////
 
-export function isInteger(value: unknown): value is number {
-    return isSafeInteger(value);
-}
+export const isInteger: (value: unknown) => value is number = Number_isSafeInteger as any;
 
-export function isFinite(value: unknown): value is number {
-    return Number_isFinite(value);
-}
+export const isFinite: (value: unknown) => value is number = Number_isFinite as any;
+
+/** 
+ * Synonym for {@link Number.isNaN}. 
+ * Like that function, it does not coerce its argument. 
+ * 
+ * Named like this to not conflict with `globalThis.isNaN`.
+ */
+export const isErrorNumber: (value: unknown) => value is number = Number_isNaN as any;
 
 /** 
  * Returns true if the given value is of type number and not NaN. 
@@ -44,16 +54,8 @@ export function isFinite(value: unknown): value is number {
  * - Unlike {@link isFinite}, this function accepts &pm;infinity.
  */
 export function isNumber(value: unknown): value is number {
-    return (typeof value === "number" && !isNaN(value));
+    return (typeof value === "number" && !Number_isNaN(value));
 }
-
-/** 
- * Synonym for {@link Number.isNaN}. 
- * Like that function, it does not coerce its argument. 
- */
-export function isErrorNumber(value: unknown): value is number {
-    return isNaN(value);
-} 
 
 /////////////////////
 // Reference types //
