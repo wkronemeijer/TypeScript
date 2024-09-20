@@ -11,7 +11,7 @@ export interface HasKind<K extends string> {
 
 export type Case<
     K extends string, 
-    P extends {},
+    P extends {} = {},
 > = ExpandType<
     & HasKind<K>
     & P
