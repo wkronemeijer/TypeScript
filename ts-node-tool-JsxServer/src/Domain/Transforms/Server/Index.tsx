@@ -1,9 +1,44 @@
 import {HtmlDocument, MetaViewport, renderHtmlError_async} from "../../ResultTypes/HtmlDocument";
 import {DirectoryObject, FileObject} from "@wkronemeijer/system-node";
-import {collect, from, singularize} from "@wkronemeijer/system";
 import {ReactPagePattern} from "./Page";
 import {FileTransform} from "../FileTransform";
 import {ReactNode} from "react";
+import {collect} from "@wkronemeijer/system";
+
+function isReactPage(object: FileObject): boolean {
+    return ReactPagePattern.test(object.path); 
+    // technically express matches against URLs, 
+    // but our pattern only matches at the end (which is the same for the path and url)
+}
+
+const FaviconPattern = /favicon\./i;
+
+function isFavicon(object: FileObject): boolean {
+    return FaviconPattern.test(object.path); 
+}
+
+interface IndexEntry {
+    readonly root: DirectoryObject;
+    readonly page: FileObject;
+    readonly favicon: FileObject | undefined;
+}
+
+function* iterateIndex(root: DirectoryObject): Generator<IndexEntry> {
+    const files    = root.recursiveGetAllFiles();
+    const pages    = files.filter(isReactPage);
+    const favicons = files.filter(isFavicon);
+    
+    outer:
+    for (const page of pages) {
+        for (const favicon of favicons) {
+            if (favicon.directory === page.directory) {
+                yield {root, page, favicon};
+                continue outer;
+            } 
+        }
+        yield {root, page, favicon: undefined};
+    }
+}
 
 const IndexStyle = String.raw`
 body {
@@ -26,16 +61,13 @@ h3 {
     margin: 0;
 }
 main {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    align-items: start;
+    columns: 400px;
     gap: 4px;
-    width: max-content;
-    height: 80vh;
 }
 a {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 4px;
     border-radius: 4px;
     padding: 4px;
 }
@@ -45,40 +77,63 @@ a:hover {
     text-fill-color: white;
     text-decoration: none;
 }
+a img {
+    display: block;
+}
+a span {
+    flex-grow: 1;
+}
 `.trim();
 
-function CLink(props: {
-    readonly href: string;
+const FaviconSize = 16;
+
+// From https://stackoverflow.com/a/9967193
+const EmptyImageUri = (
+    `data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==`
+);
+
+function CIndexEntry({entry: {root, page, favicon}}: {
+    readonly entry: IndexEntry;
 }): JSX.Element {
-    const { href } = props;
-    return <a href={href}>
-        {decodeURIComponent(href).replace(ReactPagePattern, "")}
+    const pageUri = root.urlTo(page);
+    // TODO: Proper way to derive names
+    // TODO: Skip the name of single-page directories
+    const pageName = (
+        decodeURIComponent(pageUri)
+        .replace(ReactPagePattern, "")
+    );
+    const faviconUri = favicon ? root.urlTo(favicon) : EmptyImageUri;
+    return <a href={pageUri}>
+        <img
+            width={FaviconSize} 
+            height={FaviconSize}
+            src={faviconUri}
+            alt={`The favicon for ${pageName}`}
+        />
+        <span>
+            {pageName}
+        </span>
     </a>;
 }
 
 const sequencePages = collect(function*(
-    root: FileObject,
-    pages: FileObject[], 
+    entries: readonly IndexEntry[],
 ): Generator<ReactNode> {
-    for (const page of pages) {
-        yield <CLink key={page.path} href={root.urlTo(page)}/>
+    for (const entry of entries) {
+        yield <CIndexEntry key={entry.page.path} entry={entry}/>
     }
 });
 
-// TODO: Could be a component
-// But all the `root={root} pages={pages}` didn't seem worth it
-function redirectIfUnambigous(root: DirectoryObject, pages: readonly FileObject[]): ReactNode {
-    let page;
-    return <>
-        {pages.length === 1 && (page = pages[0]) && 
-        <meta httpEquiv="refresh" content={`0;url=${root.urlTo(page)}`}/>} 
-    </>
-}
-
-function isReactPage(object: FileObject) {
-    return ReactPagePattern.test(object.path); 
-    // technically express matches against URLs, 
-    // but our pattern only matches at the end (which is the same for the path and url)
+function RedirectIfUnambigous({entries}: {
+    readonly entries: readonly IndexEntry[];
+}): ReactNode {
+    const [entry] = entries;
+    if (entries.length === 1 && entry) {
+        const uri = entry.root.urlTo(entry.page);
+        return <meta httpEquiv="refresh" content={`0;url=${uri}`}/>
+    } else {
+        return <></>
+    }
 }
 
 export const IndexRenderer: FileTransform<HtmlDocument> = {
@@ -89,25 +144,21 @@ export const IndexRenderer: FileTransform<HtmlDocument> = {
         // In a way, its more of a sitemap
         // Also it is specific to the root
         const title = `Index of ${root.name}`;
-        const pages = (
-            from(root.recursiveGetAllFiles())
-            .where(isReactPage)
-            .toArray()
-        );
+        const entries = [...iterateIndex(root)];
         return HtmlDocument(<html>
             <head>
                 <title>{`${title}`}</title>
                 <MetaViewport/>
-                {redirectIfUnambigous(root, pages)}
+                <RedirectIfUnambigous entries={entries}/>
                 <style>{IndexStyle}</style>
             </head>
             <body>
                 <header>
                     <h1>{title}</h1>
-                    <h2>{singularize(pages.length, "pages")}</h2>
+                    <h2>{entries.length} entries</h2>
                 </header>
                 <main>
-                    {sequencePages(root, pages)}
+                    {sequencePages(entries)}
                 </main>
             </body>
         </html>);
