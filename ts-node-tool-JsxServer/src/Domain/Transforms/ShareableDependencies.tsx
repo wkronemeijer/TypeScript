@@ -8,6 +8,7 @@ const shareableDependencies: readonly string[] = [
     "@wkronemeijer/system",
     "@wkronemeijer/system-node",
     "@wkronemeijer/react-server-page-provider",
+    "node-notifier",
 ] satisfies OwnDependency[];
 
 const requiredDependency = (

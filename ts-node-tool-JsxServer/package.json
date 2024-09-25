@@ -9,11 +9,12 @@
         "@wkronemeijer/system": "*",
         "@wkronemeijer/system-node": "*",
         "@wkronemeijer/react-server-page": "*",
-        "@wkronemeijer/react-server-page-provider": "*",        
+        "@wkronemeijer/react-server-page-provider": "*",
         "react": "*",
         "react-dom": "*",
         "esbuild": "*",
         "express": "*",
+        "node-notifier": "*",
         "sass-embedded": "*"
     },
     "bin": {
