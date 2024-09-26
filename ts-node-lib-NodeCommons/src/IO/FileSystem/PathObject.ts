@@ -1,13 +1,13 @@
 // Soooooo many items
 // TODO: Reduce the number of exported items somehow
-import { AbsolutePath, AnyPath, PathDetails, Path_addSuffixExtension, Path_changeExtension, Path_super, Path_getDetails, Path_getParent, Path_isRoot, Path_join, Path_relative, Path_resolve, RelativePath, RelativePath_toUrl } from "./Path";
+import { AbsolutePath, AnyPath, PathDetails, Path_addSuffixExtension, Path_changeExtension, Path_super, Path_getDetails, Path_getParent, Path_isRoot, Path_join, Path_relative, Path_resolve, RelativePath, RelativePath_toUrl, Path_equals } from "./Path";
 import { FileExtension, OptionalFileExtension } from "./Extension";
-import { Immutable, Printable } from "@wkronemeijer/system";
+import { EquatableObject, Immutable, Printable } from "@wkronemeijer/system";
 import { HasAbsolutePath } from "./HasAbsolutePath";
 import { pathToFileURL } from "url";
 
 export interface PathObject 
-extends HasAbsolutePath, Printable {
+extends EquatableObject, HasAbsolutePath, Printable {
     readonly url: URL;
     
     readonly directory: AbsolutePath;
@@ -125,6 +125,14 @@ implements   PathObject {
     
     removeExtension(): this {
         return this.changeExtension("");
+    }
+    
+    //////////////////////////
+    // implements Equatable //
+    //////////////////////////
+    
+    equals(other: this): boolean {
+        return Path_equals(this.path, other.path);
     }
     
     //////////////////////////

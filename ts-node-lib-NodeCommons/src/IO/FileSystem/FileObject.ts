@@ -33,10 +33,11 @@ interface FileObjectSyncMethods {
 
 type FileObjectAsyncMethods = AsyncMethods<FileObjectSyncMethods>;
 
-/** Present a wrapper around a path and shortcuts for common file operations.
+/** 
+ * Present a wrapper around a path and shortcuts for common file operations.
  * File operations swallow errors and just return `mempty`.
  */
-export interface FileObject extends PathObject, FileObjectSyncMethods, FileObjectAsyncMethods { }
+export interface FileObject extends PathObject, FileObjectSyncMethods, FileObjectAsyncMethods {}
 // TODO: Maybe use Result<T, E> sometime?
 
 interface FileObjectConstructor {
