@@ -1,6 +1,6 @@
-import {TypedResponse} from "../MimeType";
+import {TypedResponseBody} from "../TypedResponseBody";
 
-export type JavaScriptScript = TypedResponse<"text/javascript">;
+export type JavaScriptScript = TypedResponseBody<"text/javascript">;
 
 /** Renders the JSX to static markup, and preprends the doctype. */
 export function JavaScriptScript(content: string): JavaScriptScript {
@@ -9,6 +9,6 @@ export function JavaScriptScript(content: string): JavaScriptScript {
     // Wouldn't do much.
     return {
         type: "text/javascript",
-        body: content,
+        value: content,
     };
 }

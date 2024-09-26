@@ -1,14 +1,11 @@
-import {TypedResponse} from "../MimeType";
+import {TypedResponseBody} from "../TypedResponseBody";
 
-export type CssStylesheet = TypedResponse<"text/css">;
+export type CssStylesheet = TypedResponseBody<"text/css">;
 
-/** Renders the JSX to static markup, and preprends the doctype. */
+/** Renders SCSS to CSS. */
 export function CssStylesheet(content: string): CssStylesheet {
-    // TODO: What could we even verify?
-    // The presence of an IIFE?
-    // Wouldn't do much.
     return {
         type: "text/css",
-        body: content,
+        value: content,
     };
 }

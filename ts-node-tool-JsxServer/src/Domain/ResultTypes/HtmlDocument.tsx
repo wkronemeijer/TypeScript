@@ -1,10 +1,10 @@
 import {renderToStaticMarkup} from "react-dom/server";
 import {name as packageName} from "../../../package.json";
-import {TypedResponse} from "../MimeType";
+import {TypedResponseBody} from "../TypedResponseBody";
 import {FileTransform} from "../Transforms/FileTransform";
 import {ReactElement} from "react";
 
-export type HtmlDocument = TypedResponse<"text/html">;
+export type HtmlDocument = TypedResponseBody<"text/html">;
 
 /** Renders the JSX to static markup, and prepends the doctype. */
 export function HtmlDocument(element: ReactElement): HtmlDocument {
@@ -14,9 +14,9 @@ export function HtmlDocument(element: ReactElement): HtmlDocument {
     // Is there a way to do that without regex?
     // Or parsing the result document.
     
-    return { 
+    return {
         type: "text/html", 
-        body: `<!DOCTYPE html>\n${comment}\n${markup}`,
+        value: `<!DOCTYPE html>\n${comment}\n${markup}`,
     };
 }
 

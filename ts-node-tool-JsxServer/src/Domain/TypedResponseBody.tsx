@@ -15,7 +15,7 @@ export const ShouldLogMimeTypePattern = new RegExp(
     `^(${CommonMimeType.values.join("|")})`
 );
 
-export interface TypedResponse<K extends MimeType = MimeType> {
+export interface TypedResponseBody<K extends MimeType = MimeType> {
     readonly type: K;
-    readonly body: string;
+    readonly value: string;
 }

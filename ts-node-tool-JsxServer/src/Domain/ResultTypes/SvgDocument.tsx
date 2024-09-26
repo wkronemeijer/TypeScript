@@ -1,10 +1,10 @@
 import {renderToStaticMarkup} from "react-dom/server";
 import {name as packageName} from "../../../package.json";
-import {TypedResponse} from "../MimeType";
+import {TypedResponseBody} from "../TypedResponseBody";
 import {FileTransform} from "../Transforms/FileTransform";
 import {ReactElement} from "react";
 
-export type SvgDocument = TypedResponse<"image/svg+xml">;
+export type SvgDocument = TypedResponseBody<"image/svg+xml">;
 
 /** Renders the JSX to static markup, and prepends the doctype. */
 export function SvgDocument(element: ReactElement): SvgDocument {
@@ -15,7 +15,7 @@ export function SvgDocument(element: ReactElement): SvgDocument {
     // SVG doesn't want or need neither a <!DOCTYPE/> nor a <?xml/> statement
     return { 
         type: "image/svg+xml", 
-        body: `${comment}\n${markup}`,
+        value: `${comment}\n${markup}`,
     };
 }
 

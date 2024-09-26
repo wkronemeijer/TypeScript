@@ -1,5 +1,5 @@
-import {TypedResponse, ShouldLogMimeTypePattern} from "../MimeType";
-import {CONTENT_TYPE, HttpStatus} from "../HttpHeader";
+import {HttpHeader, TypedResponse, TypedResponse_getStatusCode} from "../TypedResponse";
+import {ShouldLogMimeTypePattern} from "../TypedResponseBody";
 import {express} from "../../lib";
 
 export function Response_getContentType(self: express.Response): (
@@ -8,7 +8,7 @@ export function Response_getContentType(self: express.Response): (
     | string[] 
     | undefined
 ) {
-    return self.getHeader(CONTENT_TYPE);
+    return self.getHeader("Content-Type" satisfies HttpHeader);
 }
 
 export function Response_shouldLog(self: express.Response): boolean {
@@ -19,13 +19,18 @@ export function Response_shouldLog(self: express.Response): boolean {
     );
 }
 
-export function Response_send<T extends TypedResponse>(
-    self: express.Response,
-    value: T,
-    status: HttpStatus,
+export function Response_send(
+    res: express.Response,
+    response: TypedResponse,
 ): void {
-    self
-    .status(status)
-    .type(value.type)
-    .send(value.body);
+    res.status(TypedResponse_getStatusCode(response));
+    
+    if (response.kind !== "See Other") {
+        const {body} = response;
+        res.type(body.type);
+        res.send(body.value);
+    } else {
+        res.header("Location" satisfies HttpHeader, response.location);
+        res.send();
+    }
 }

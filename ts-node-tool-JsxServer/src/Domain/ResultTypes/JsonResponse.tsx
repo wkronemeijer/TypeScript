@@ -1,13 +1,13 @@
 import {JsonReplacer, stringifyJson} from "@wkronemeijer/system";
-import {TypedResponse} from "../MimeType";
+import {TypedResponseBody} from "../TypedResponseBody";
 import {FileTransform} from "../Transforms/FileTransform";
 
-export type JsonResponse = TypedResponse<"application/json">;
+export type JsonResponse = TypedResponseBody<"application/json">;
 
 export function JsonResponse(value: unknown, replacer?: JsonReplacer): JsonResponse {
     return {
         type: "application/json",
-        body: stringifyJson(value, replacer),
+        value: stringifyJson(value, replacer),
     }
 }
 
