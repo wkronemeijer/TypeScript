@@ -2,7 +2,7 @@ import {FileTransform, FileTransformRequest} from "../Transforms/FileTransform";
 import {ErrorResponse, TypedResponse} from "../TypedResponse";
 import {FileObject, DirectoryObject} from "@wkronemeijer/system-node";
 import {TypedResponseBody} from "../TypedResponseBody";
-import {Exception, guard} from "@wkronemeijer/system";
+import {Exception, guard, terminal} from "@wkronemeijer/system";
 import {ErrorDescription} from "../ResultTypes/ErrorDescription";
 import {Response_send} from "./Response";
 import {express} from "../../lib";
@@ -41,7 +41,7 @@ async function tryRender_async<T extends TypedResponseBody>(
             body: await render_async(request),
         };
     } catch (error) {
-        console.error("rendering failed:", String(error));
+        terminal.error(`rendering failed: ${String(error)}`);
         try {
             if (error instanceof Error) {
                 return {
@@ -50,7 +50,7 @@ async function tryRender_async<T extends TypedResponseBody>(
                 };
             }
         } catch (nestedError) {
-            console.error("rendering error failed:", nestedError);
+            terminal.error(`error rendering failed: ${String(nestedError)}`);
             error = nestedError;
         }
         
