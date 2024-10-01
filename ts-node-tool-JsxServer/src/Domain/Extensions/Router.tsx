@@ -73,13 +73,10 @@ export function Router_registerFileTransform<T extends TypedResponseBody>(
         return async (req, res) => {
             const url = new URL(rootUrl + req.url);
             const file = FileObject.fromUrl(url);
-            
             let {body} = req;
-            console.log({body, type: typeof body});
             if (!isString(body)) {
                body = undefined; 
             }
-            
             Response_send(res, await tryRender_async(transform, {
                 method, 
                 rootUrl, 
