@@ -20,6 +20,9 @@ function configureRouter(root: DirectoryObject): express.Router {
         Router_registerFileTransform(router, root.url, transform);
     }
     
+    router.use(express.text({
+        type: "*/*",
+    }));
     router.use(PerformanceLogger);
     {
         register(IndexRenderer);

@@ -7,6 +7,7 @@ import {FileTransform} from "../FileTransform";
 
 export const JsonPageRenderer: FileTransform<JsonResponse> = {
     pattern: /\.json\.[jt]s$/,
+    allowPost: true,
     async render_async(request) {
         const module = await buildAndRunCjs_async(request);
         const json = await module.exports.default;

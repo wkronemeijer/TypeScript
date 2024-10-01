@@ -1,5 +1,12 @@
 import {TypedResponseBody} from "./TypedResponseBody";
 
+export type HttpMethod = (
+    | "GET"
+    | "HEAD"
+    | "POST"
+    | "PUT"
+);
+
 export type HttpHeader = (
     | "Content-Type"
     | "Location"

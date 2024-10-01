@@ -1,8 +1,8 @@
+import {ErrorResponse, HttpMethod, TypedResponse} from "../TypedResponse";
+import {Exception, guard, isString, terminal} from "@wkronemeijer/system";
 import {FileTransform, FileTransformRequest} from "../Transforms/FileTransform";
-import {ErrorResponse, TypedResponse} from "../TypedResponse";
 import {FileObject, DirectoryObject} from "@wkronemeijer/system-node";
 import {TypedResponseBody} from "../TypedResponseBody";
-import {Exception, guard, terminal} from "@wkronemeijer/system";
 import {ErrorDescription} from "../ResultTypes/ErrorDescription";
 import {Response_send} from "./Response";
 import {express} from "../../lib";
@@ -67,16 +67,32 @@ export function Router_registerFileTransform<T extends TypedResponseBody>(
     transform: FileTransform<T>,
 ): void {
     const root = DirectoryObject.fromUrl(rootUrl);
-    const {pattern} = transform;
+    const {pattern, allowPost = false} = transform;
     
-    router.get(pattern, async (req, res) => {
-        const url = new URL(rootUrl + req.url);
-        const file = FileObject.fromUrl(url);
-        const requestInfo: FileTransformRequest = {
-            rootUrl, root, url, file,
-        };
-        Response_send(res, await tryRender_async(transform, requestInfo));
-    });
+    function createHandler(method: HttpMethod): express.RequestHandler {
+        return async (req, res) => {
+            const url = new URL(rootUrl + req.url);
+            const file = FileObject.fromUrl(url);
+            
+            let {body} = req;
+            console.log({body, type: typeof body});
+            if (!isString(body)) {
+               body = undefined; 
+            }
+            
+            Response_send(res, await tryRender_async(transform, {
+                method, 
+                rootUrl, 
+                root, 
+                url, 
+                file, 
+                body,
+            }));
+        }
+    };
     
-    // TODO: Allow POST
+    router.get(pattern, createHandler("GET"));
+    if (allowPost) {
+        router.post(pattern, createHandler("POST"));
+    }
 }

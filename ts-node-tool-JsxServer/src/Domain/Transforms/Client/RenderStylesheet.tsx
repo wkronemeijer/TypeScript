@@ -28,7 +28,7 @@ const AnsiEscapeSequence = /\x1B\[\d{1,2}m/g;
 
 export const StylesheetRenderer: FileTransform<CssStylesheet> = {
     pattern: /\.scss$/,
-    async render_async({ file }) {
+    async render_async({file}) {
         const path = file.path;
         const compileResult = await scss.compileAsync(path, {
             sourceMap: true,

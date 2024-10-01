@@ -7,7 +7,7 @@ export const PerformanceLogger: express.RequestHandler = ((req, res, next) => {
     res.once("finish", () => {
         const end = performance.now();
         if (Response_shouldLog(res)) {
-            terminal.perf(`GET \x1b[4m${req.url}\x1b[24m in ${(end - start).toFixed(2)}ms`);
+            terminal.perf(`${req.method} \x1b[4m${req.url}\x1b[24m in ${(end - start).toFixed(2)}ms`);
         }
     });
     next();
