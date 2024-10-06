@@ -17,7 +17,7 @@ function isFavicon(object: FileObject): boolean {
     return FaviconPattern.test(object.path); 
 }
 
-const RaspPrefixPattern = /^rasp\-/;
+const RaspPrefixPattern = /(?<=^|\/)rasp\-/g;
 const IndexPattern = /\/[Ii]ndex$/;
 
 interface IndexEntry {
