@@ -1,32 +1,35 @@
-import { ExpandType, UnionToIntersection, defineProperty, swear } from "@wkronemeijer/system";
-import { Dispatch } from "react";
+import {ExpandType, UnionToIntersection, defineProperty, swear} from "@wkronemeijer/system";
+import {Dispatch} from "react";
 
 export interface StoredCall {
+    /** Name of the method. */
     readonly name: string,
+    /** Argument list for the method. */
     readonly args: readonly unknown[],
 }
 
 export function applyStoredCall_unsafe(
     source: object, 
-    details: StoredCall, 
+    {name, args}: StoredCall, 
     thisArg: object = source,
 ): unknown {
-    const { name, args } = details;
     swear(name in source, () => 
-        `target is missing member '${name}'`
+        `method '${name}' is missing in target`
     );
     const method = (source as any)[name] as unknown;
     swear(typeof method === "function", () => 
-        `member '${name}' is not a function`
+        `property '${name}' of target is not a function.`
     );
     return method.apply(thisArg, args);
 }
 
+
+/** Yields segments to display inside `console.log`.  */
+// console.log has funny logic when it comes to how it formats arguments
 function* segments(self: StoredCall): Iterable<unknown> {
-    let first = true;
-    
     yield `${self.name}(`;
     
+    let first = true;
     for (const arg of self.args) {
         if (first) {
             first = false;
@@ -34,18 +37,20 @@ function* segments(self: StoredCall): Iterable<unknown> {
             yield ",";
         }
         if (typeof arg === "function") {
-            // logged functions look terrible
             yield `ƒ ${arg.name || "(anonymous)"}`;
+        } else if (typeof arg === "string") {
+            yield `'${arg}'`;
         } else {
             yield arg;
         }
     }
-    
     yield `)`;
 }
 
-
-export function logStoredCall(self: StoredCall, logger = console.log): void {
+export function logStoredCall(
+    self: StoredCall, 
+    logger = console.log,
+): void {
     logger(...segments(self));
 }
 
@@ -87,6 +92,8 @@ const CommonHandler: ProxyHandler<(value: unknown) => void> = {
     },
 };
 
-export function augmentDispatch<T>(dispatcher: Dispatch<T>): AugmentedDispatch<T> {
+export function augmentDispatch<T>(
+    dispatcher: Dispatch<T>
+): AugmentedDispatch<T> {
     return new Proxy(dispatcher, CommonHandler) as any;
 }

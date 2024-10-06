@@ -1,6 +1,6 @@
-import { Dictionary, Dictionary_toMap } from "./Dictionary";
-import { Selector } from "../../../Types/Function";
-import { value_t } from "../../../Types/Primitive";
+import {Dictionary, Dictionary_toMap} from "./Dictionary";
+import {Selector} from "../../../Types/Function";
+import {value_t} from "../../../Types/Primitive";
 
 export interface MapLike<K, V> {
     has(key: K): boolean;
@@ -74,3 +74,22 @@ export function Map_toDictionary<K extends string, V>(
 
 /** @deprecated Move to Record_* */
 export const Map_fromDictionary = Dictionary_toMap
+
+/** 
+ * Returns the value associated with the given key.
+ * If that value is missing, 
+ * computes it using the key and stores the result.
+ */
+export function Map_computeIfAbsent<K, V>(
+    self: Map<K, V>,
+    key: K,
+    compute: (key: K) => V
+): V {
+    if (self.has(key)) {
+        return self.get(key)!;
+    } else {
+        const value = compute(key);
+        self.set(key, value);
+        return value;
+    }
+}

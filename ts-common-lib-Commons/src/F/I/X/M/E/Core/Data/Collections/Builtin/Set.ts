@@ -1,5 +1,5 @@
-import { value_t } from "../../../Types/Primitive";
-import { panic } from "../../../Errors/Panic";
+import {value_t} from "../../../Types/Primitive";
+import {panic} from "../../../Errors/Panic";
 
 ////////////////
 // Cached set //
@@ -64,13 +64,16 @@ export const Set_toFunction: <T extends value_t>(self: ReadonlySet<T>) => (item:
 /////////////////////
 
 export function Set_union<T>(lhs: ReadonlySet<T>, rhs: ReadonlySet<T>): Set<T> {
-    return new Set([...lhs, ...rhs]);
+    return new Set(function*() {
+        yield* lhs;
+        yield* rhs;
+    }());
 }
 
 export function Set_intersection<T>(lhs: ReadonlySet<T>, rhs: ReadonlySet<T>): Set<T> {
     const result = new Set<T>;
-    for (const item of [...lhs, ...rhs]) {
-        if (lhs.has(item) && rhs.has(item)) {
+    for (const item of lhs) {
+        if (rhs.has(item)) {
             result.add(item);
         }
     }
