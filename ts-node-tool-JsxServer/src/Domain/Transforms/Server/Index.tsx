@@ -1,9 +1,9 @@
 import {HtmlDocument, MetaViewport, renderHtmlError_async} from "../../ResultTypes/HtmlDocument";
+import {collect, compare, from, Ordering} from "@wkronemeijer/system";
 import {DirectoryObject, FileObject} from "@wkronemeijer/system-node";
 import {ReactPagePattern} from "./Page";
 import {FileTransform} from "../FileTransform";
 import {ReactNode} from "react";
-import {collect} from "@wkronemeijer/system";
 
 function isReactPage(object: FileObject): boolean {
     return ReactPagePattern.test(object.path); 
@@ -17,13 +17,39 @@ function isFavicon(object: FileObject): boolean {
     return FaviconPattern.test(object.path); 
 }
 
+const RaspPrefixPattern = /^rasp\-/;
+const IndexPattern = /\/[Ii]ndex$/;
+
 interface IndexEntry {
     readonly root: DirectoryObject;
+    readonly name: string;
     readonly page: FileObject;
+    readonly pageUri: string;
     readonly favicon: FileObject | undefined;
+    readonly faviconUri: string | undefined;
 }
 
-function* iterateIndex(root: DirectoryObject): Generator<IndexEntry> {
+function IndexEntry({root, page, favicon}: {
+    readonly root: DirectoryObject; 
+    readonly page: FileObject; 
+    readonly favicon?: FileObject | undefined;
+}): IndexEntry {
+    const pageUri = root.urlTo(page);
+    const faviconUri = favicon && root.urlTo(favicon);
+    const name = (
+        decodeURIComponent(pageUri)
+        .replace(RaspPrefixPattern, "")
+        .replace(ReactPagePattern, "")
+        .replace(IndexPattern, "")
+    );
+    return {root, name, page, pageUri, favicon, faviconUri};
+}
+
+function IndexEntry_compare(lhs: IndexEntry, rhs: IndexEntry): Ordering {
+    return compare(lhs.name.toLowerCase(), rhs.name.toLowerCase());
+}
+
+function* iterateIndexEntries(root: DirectoryObject): Generator<IndexEntry> {
     const files    = root.recursiveGetAllFiles();
     const pages    = files.filter(isReactPage);
     const favicons = files.filter(isFavicon);
@@ -32,11 +58,53 @@ function* iterateIndex(root: DirectoryObject): Generator<IndexEntry> {
     for (const page of pages) {
         for (const favicon of favicons) {
             if (favicon.directory === page.directory) {
-                yield {root, page, favicon};
+                yield IndexEntry({root, page, favicon});
                 continue outer;
             } 
         }
-        yield {root, page, favicon: undefined};
+        yield IndexEntry({root, page});
+    }
+}
+
+const FaviconSize = 16;
+
+// From https://stackoverflow.com/a/9967193
+const EmptyImageUri = (
+    `data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==`
+);
+
+function CIndexEntry({entry: {name, pageUri, faviconUri = EmptyImageUri}}: {
+    readonly entry: IndexEntry;
+}): JSX.Element {
+    return <a href={pageUri}>
+        <img
+            width={FaviconSize} 
+            height={FaviconSize}
+            src={faviconUri}
+            alt={`The favicon for ${name}`}
+        />
+        <span>
+            {name}
+        </span>
+    </a>;
+}
+
+const sequencePages = collect(function*(
+    entries: readonly IndexEntry[],
+): Generator<ReactNode> {
+    for (const entry of entries) {
+        yield <CIndexEntry key={entry.page.path} entry={entry}/>
+    }
+});
+
+function RedirectIfUnambigous({entries: [firstEntry, ...otherEntries]}: {
+    readonly entries: readonly IndexEntry[];
+}): ReactNode {
+    if (firstEntry && otherEntries.length === 0) {
+        const target = firstEntry.pageUri;
+        return <meta httpEquiv="refresh" content={`0;url=${target}`}/>
+    } else {
+        return <></>
     }
 }
 
@@ -85,69 +153,19 @@ a span {
 }
 `.trim();
 
-const FaviconSize = 16;
-
-// From https://stackoverflow.com/a/9967193
-const EmptyImageUri = (
-    `data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==`
-);
-
-function CIndexEntry({entry: {root, page, favicon}}: {
-    readonly entry: IndexEntry;
-}): JSX.Element {
-    const pageUri = root.urlTo(page);
-    // TODO: Proper way to derive names
-    // TODO: Skip the name of single-page directories
-    const pageName = (
-        decodeURIComponent(pageUri)
-        .replace(ReactPagePattern, "")
-    );
-    const faviconUri = favicon ? root.urlTo(favicon) : EmptyImageUri;
-    return <a href={pageUri}>
-        <img
-            width={FaviconSize} 
-            height={FaviconSize}
-            src={faviconUri}
-            alt={`The favicon for ${pageName}`}
-        />
-        <span>
-            {pageName}
-        </span>
-    </a>;
-}
-
-const sequencePages = collect(function*(
-    entries: readonly IndexEntry[],
-): Generator<ReactNode> {
-    for (const entry of entries) {
-        yield <CIndexEntry key={entry.page.path} entry={entry}/>
-    }
-});
-
-function RedirectIfUnambigous({entries}: {
-    readonly entries: readonly IndexEntry[];
-}): ReactNode {
-    const [entry] = entries;
-    if (entries.length === 1 && entry) {
-        const uri = entry.root.urlTo(entry.page);
-        return <meta httpEquiv="refresh" content={`0;url=${uri}`}/>
-    } else {
-        return <></>
-    }
-}
-
 export const IndexRenderer: FileTransform<HtmlDocument> = {
     pattern: "/",
     virtual: true,
-    async render_async({ root }) {
-        // TODO: Rework this to generate the index of any page?
-        // In a way, its more of a sitemap
-        // Also it is specific to the root
+    async render_async({root}) {
         const title = `Index of ${root.name}`;
-        const entries = [...iterateIndex(root)];
+        const entries = (
+            from(iterateIndexEntries(root))
+            .orderBy(IndexEntry_compare)
+            .toArray()
+        );
         return HtmlDocument(<html>
             <head>
-                <title>{`${title}`}</title>
+                <title>{title}</title>
                 <MetaViewport/>
                 <RedirectIfUnambigous entries={entries}/>
                 <style>{IndexStyle}</style>
