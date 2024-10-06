@@ -30,3 +30,5 @@ export function ObjectMatcher_toReducer<
         applyStoredCall_unsafe(matcher, action, state);
     });
 }
+
+export const ActionObjectReducer = ObjectMatcher_toReducer;
