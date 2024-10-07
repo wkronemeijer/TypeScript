@@ -15,6 +15,8 @@ function determineErrorStatus(error: Error): ErrorResponse["kind"] {
     }
 }
 
+const BELL = '\x07';
+
 async function tryRender_async<T extends TypedResponseBody>(
     transform: FileTransform<T>, 
     request: FileTransformRequest,
@@ -41,7 +43,7 @@ async function tryRender_async<T extends TypedResponseBody>(
             body: await render_async(request),
         };
     } catch (error) {
-        terminal.error(`rendering failed: ${String(error)}`);
+        terminal.error(`${BELL}rendering failed: ${String(error)}`);
         try {
             if (error instanceof Error) {
                 return {
@@ -50,7 +52,7 @@ async function tryRender_async<T extends TypedResponseBody>(
                 };
             }
         } catch (nestedError) {
-            terminal.error(`error rendering failed: ${String(nestedError)}`);
+            terminal.error(`${BELL}error rendering failed: ${String(nestedError)}`);
             error = nestedError;
         }
         
