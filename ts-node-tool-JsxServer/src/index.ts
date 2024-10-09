@@ -26,13 +26,16 @@ export async function main(args: readonly string[]): Promise<void> {
         },
     } = parseArgumentList(args);
     
-    let root = new DirectoryObject(rawRoot || positionalRoot || process.env[RASP_HOME] || ".");
-    let port = +rawPort;
+    const root = new DirectoryObject(rawRoot || positionalRoot || process.env[RASP_HOME] || ".");
+    const port = +rawPort;
     
     guard(surplus.length === 0, "too many arguments");
     guard(rawRoot === undefined || positionalRoot === undefined, 
         "a positional and a named root can not be given at the same time"
     );
+    guard(root.exists(), () => 
+        `directory '${root.path}' does not exist`
+    )
     guard(isInteger(port) && port > 0, () => 
         `'${rawPort}' is not a valid port number`
     );
