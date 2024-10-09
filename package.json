@@ -6,6 +6,7 @@
         "devtool": "devtool.cjs"
     },
     "dependencies": {
+        "@wkronemeijer/clap": "file:ts-common-lib-NoConfigCliParser",
         "@wkronemeijer/compiler-toolkit": "file:ts-common-lib-CompilerToolkit",
         "@wkronemeijer/react-server-page": "file:ts-node-lib-ReactServerPage",
         "@wkronemeijer/react-server-page-provider": "file:ts-node-lib-ReactServerPageProvider",
