@@ -21,7 +21,7 @@ export async function main(args: readonly string[]): Promise<void> {
     const {
         positionalArguments: [positionalRoot, ...surplus], 
         namedArguments: {
-            directory: rawRoot, 
+            root: rawRoot, 
             port: rawPort = "8080",
         },
     } = parseArgumentList(args);
