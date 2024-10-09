@@ -1,4 +1,4 @@
-import {formatThrowable} from "@wkronemeijer/system";
+import {printThrowable} from "@wkronemeijer/system";
 
 /** Wrapper to run main, meant for `bin.js`. */
 export async function startProgram(
@@ -8,7 +8,7 @@ export async function startProgram(
     try {
         await main([...args]);
     } catch (e) {
-        formatThrowable(e);
+        printThrowable(e);
         if (e instanceof Error) {
             return e;
         } else {
