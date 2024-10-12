@@ -1,8 +1,10 @@
 const {
     create: createObject, 
     defineProperty, defineProperties, hasOwn: hasOwnProperty,
-    freeze, 
-    assign, entries, fromEntries,
+    freeze: freezeObject, 
+    assign: assignObject, 
+    entries, 
+    fromEntries: objectFromEntries,
     getPrototypeOf, setPrototypeOf,
     getOwnPropertyDescriptor,
     
@@ -16,10 +18,17 @@ const {
     deleteProperty,
 } = Reflect;
 
-/**
- * @deprecated use `createObject` instead, it is less ambiguous
- */
+/** @deprecated use `createObject` instead */
 const create = createObject;
+
+/** @deprecated use `freezeObject` instead */
+const freeze = freezeObject;
+
+/** @deprecated use `assignObject` instead */
+const assign = assignObject;
+
+/** @deprecated use `objectFromEntries` instead */
+const fromEntries = objectFromEntries;
 
 export {
     create, createObject,
@@ -29,8 +38,9 @@ export {
     getOwnPropertyDescriptor,
     hasProperty, hasOwnProperty, 
     ownKeys, ownStringKeys, ownSymbolKeys,
-    entries, fromEntries,
+    entries, 
     
-    assign, 
-    freeze, 
+    fromEntries, objectFromEntries,
+    assign, assignObject,
+    freeze, freezeObject,
 };

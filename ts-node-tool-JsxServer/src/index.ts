@@ -22,12 +22,12 @@ export async function main(args: readonly string[]): Promise<void> {
         positionalArguments: [positionalRoot, ...surplus], 
         namedArguments: {
             root: rawRoot, 
-            port: rawPort = "8080",
+            port: rawPort,
         },
     } = parseArgumentList(args);
     
     const root = new DirectoryObject(rawRoot || positionalRoot || process.env[RASP_HOME] || ".");
-    const port = +rawPort;
+    const port = +(rawPort ?? "8080");
     
     guard(surplus.length === 0, "too many arguments");
     guard(rawRoot === undefined || positionalRoot === undefined, 
