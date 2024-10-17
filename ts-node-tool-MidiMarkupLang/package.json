@@ -1,0 +1,16 @@
+{
+    "name": "@wkronemeijer/midimlc",
+    "main": "dist/index.js",
+    "devDependencies": {
+        "@types/node": "*",
+        "typescript": "*"
+    },
+    "dependencies": {
+        "@wkronemeijer/system": "*",
+        "@wkronemeijer/system-node": "*",
+        "jzz": "*"
+    },
+    "bin": {
+        "midimlc": "dist/bin.js"
+    }
+}
