@@ -1,10 +1,10 @@
-import { typeof_withNull, value_t } from "../../Types/Primitive";
-import { isFunction, isObject } from "../../IsX";
-import { getConstructorName } from "../../Data/Names/GetConstructorName";
-import { Ordering } from "./Ordering";
-import { panic } from "../../Errors/Panic";
+import {typeof_withNull, value_t} from "../../Types/Primitive";
+import {isFunction, isObject} from "../../IsX";
+import {getConstructorName} from "../../Data/Names/GetConstructorName";
+import {Ordering} from "./Ordering";
+import {panic} from "../../Errors/Panic";
 
-const { Less, Equal, Greater } = Ordering;
+const {Less, Equal, Greater} = Ordering;
 
 //////////////
 // Comparer //

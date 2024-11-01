@@ -1,4 +1,6 @@
+import {Comparable, compareAny, Comparer} from "../../../Traits/Ord/Comparable";
 import {random, trunc} from "../../../Re-export/Math";
+import {Selector} from "../../../Types/Function";
 import {value_t} from "../../../Types/Primitive";
 
 /** Returns the first valid index of an array. */
@@ -86,4 +88,29 @@ export function Array_isNotEmpty(arr: readonly unknown[]): boolean {
 
 export function Array_includesAny<T extends value_t>(self: ReadonlyArray<T>, value: unknown): value is T {
     return self.includes(value as any);
+}
+
+/////////////
+// Sorting //
+/////////////
+
+/** NB: Mutates the given array. */
+export function Array_sortBy<T>(self: T[], comparer: Comparer<T>): T[] {
+    self.sort(comparer);
+    return self;
+}
+
+/** NB: Mutates the given array. */
+export function Array_sortOn<T, U extends Comparable>(
+    self: T[],
+    selector: Selector<T, U>,
+    comparer: Comparer<U> = compareAny,
+): T[] {
+    Array_sortBy(self, (a, b) => comparer(selector(a), selector(b)));
+    return self;
+}
+
+/** NB: Mutates the given array. */
+export function Array_sorted<T>(self: T[]): T[] {
+    return Array_sortBy(self, compareAny);
 }

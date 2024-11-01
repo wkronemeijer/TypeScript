@@ -2,16 +2,24 @@ import {sleep, swear} from "@wkronemeijer/system";
 import {jazz} from "./lib";
 import {} from "@wkronemeijer/system-node";
 
+function pickOutput(access: (
+    | WebMidi.MIDIAccess
+)): WebMidi.MIDIOutput {
+    const [output, ...surplus] = access.outputs.values();
+    swear(output, "no output found");
+    swear(surplus.length === 0, "too many outputs");
+    return output;
+}
+
 export async function main(_: readonly string[]): Promise<void> {
-    console.log("searching devices...");
+    process.stdout.write("searching devices...");
     const access = await jazz.requestMIDIAccess({
         software: true,
         sysex: false,
     });
+    process.stdout.write("done\n");
+    const output = pickOutput(access);
     
-    const [output, ...surplus] = access.outputs.values();
-    swear(output, "no output found");
-    swear(surplus.length === 0, "too many outputs");
     
     const NOTE_ON  = 0x90;
     const NOTE_OFF = 0x80;

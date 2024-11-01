@@ -1,6 +1,6 @@
-import { isErrorNumber } from "../../IsX";
-import { Newtype } from "../../Data/Nominal/Newtype";
-import { sign } from "../../Re-export/Math";
+import {isErrorNumber} from "../../IsX";
+import {Newtype} from "../../Data/Nominal/Newtype";
+import {sign} from "../../Re-export/Math";
 
 /**
  * Represents the relative ordering of two items, 
