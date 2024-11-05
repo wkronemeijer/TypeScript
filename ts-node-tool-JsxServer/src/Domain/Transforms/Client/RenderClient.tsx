@@ -3,7 +3,7 @@ import {buildIife_async} from "../EvalCjs";
 import {FileTransform} from "../FileTransform";
 
 export const JavaScriptRenderer: FileTransform<JavaScriptScript> = {
-    pattern: /\.[jt]sx?$/,
+    pattern: /\.(ts|tsx|jsx)$/, // ignore plain .js
     async render_async(req): Promise<JavaScriptScript> {
         const iife = await buildIife_async(req);
         return JavaScriptScript(iife);
