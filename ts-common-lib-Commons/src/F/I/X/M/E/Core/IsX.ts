@@ -62,14 +62,30 @@ export function isNumber(value: unknown): value is number {
 /////////////////////
 
 // Why did `null` have to be typeof "object" again?
+/** Returns where the argument is an object. Returns `false` for `null`. */
 export function isObject(value: unknown): value is object {
     return (typeof value === "object" && value !== null);
 }
 
+/** 
+ * Returns where the argument is an array. 
+ * Uses the built-in `Array.prototype.isArray`. 
+ */
 export function isArray(value: unknown): value is unknown[] {
     return Array_hasInstance(value);
 }
 
+/** Returns where the argument is a function. */
 export function isFunction(value: unknown): value is Function {
     return typeof value === "function";
+}
+
+/** Returns whether the argument is an error. */
+export function isError(value: unknown): value is Error {
+    return isObject(value) && value instanceof Error;
+}
+
+/** Returns whether the argument is **not** an error. */
+export function isOk<const T>(value: T): value is Exclude<T, Error> {
+    return !isError(value);
 }

@@ -15,6 +15,15 @@ export function modulo(i: number, n: number): number {
     return (((i % n) + n) % n);
 }
 
+export function gcd(a: number, b: number): number {
+    while (b !== 0) {
+        var t = b;
+        b = modulo(a, b);
+        a = t;
+    }
+    return a;
+}
+
 // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#getting_a_random_integer_between_two_values_inclusive
 export function Random_intRangeInclusive(min: number, max: number): number {
     min = ceil(min);
