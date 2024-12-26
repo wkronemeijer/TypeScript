@@ -1,4 +1,4 @@
-import {Case, floor, isFinite, isInteger, Member, modulo, Newtype, NewtypeChecker, StringEnum, swear} from "@wkronemeijer/system";
+import {Case, floor, from, isFinite, isInteger, Member, modulo, Newtype, NewtypeChecker, panic, StringEnum, swear, UnionMatcher} from "@wkronemeijer/system";
 import {Ratio} from "./Ratio";
 
 export type  PitchClass = Member<typeof PitchClass>;
@@ -17,29 +17,49 @@ export const PitchClass = StringEnum({
     "B": 11,
 });
 
-const SEMITONE_COUNT = PitchClass.values.length;
+const SEMITONE_COUNT = 12;
+swear(SEMITONE_COUNT === PitchClass.values.length);
 
-export type  Pitch = Newtype<number, "Pitch">;
-export function Pitch({pitchClass, octave}: PitchObject): Pitch {
+export type     Pitch = Newtype<number, "Pitch">;
+export function Pitch(pitchClass: PitchClass = "C", octave = 4): Pitch {
     const ord = PitchClass.getOrdinal(pitchClass);
+    swear(isInteger(octave), "octave must be an integer");
     return (ord + SEMITONE_COUNT * octave) as Pitch;
 }
 
-export interface PitchObject {
-    readonly pitchClass: PitchClass;
-    readonly octave: number;
+export function Pitch_deconstruct(self: Pitch): [PitchClass, number] {
+    const pc = PitchClass.fromOrdinal(modulo(self, SEMITONE_COUNT));
+    const octave = floor(self / SEMITONE_COUNT);
+    swear(pc !== undefined);
+    return [pc, octave];
 }
+
+/** &approx; relative pitch */
+export type  Interval = Newtype<number, "Interval">;
+export const Interval = NewtypeChecker("Interval", {
+    constrain: isInteger,
+});
+
+export const Pitch_shift: {
+    (self: Pitch, size: Interval): Pitch;
+    (self: Interval, size: Interval): Interval;
+} = (self: Pitch | Interval, size: Interval): any => {
+    return self + size;
+};
+
+/////////////////////
+// Parsing pitches //
+/////////////////////
 
 type OctaveNo = (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9);
 
 export type PitchString = `${PitchClass}${OctaveNo}`;
 
-export function parsePitchObject(string: (
+export function parsePitch(string: (
     | PitchString 
     | (string & {})
-)): PitchObject | undefined {
+)): Pitch | undefined {
     string = string.toUpperCase().trim();
-    
     if (string.length < 2 || string.length > 3) {return}
     
     const len = string.length;
@@ -51,15 +71,16 @@ export function parsePitchObject(string: (
     const octave = parseInt(octaveString);
     if (!isInteger(octave)) {return}    
     
-    return {pitchClass, octave};
+    return Pitch(pitchClass, octave);
 }
 
-export function Pitch_toObject(self: Pitch): PitchObject {
-    const pc = PitchClass.fromOrdinal(modulo(self, SEMITONE_COUNT));
-    const octave = floor(self / SEMITONE_COUNT);
-    swear(pc !== undefined);
-    return {pitchClass: pc, octave};
+export function pitch(string: PitchString): Pitch {
+    return parsePitch(string) ?? panic(
+        `failed to parse '${string}' as pitch`
+    );
 }
+
+pitch("C4");
 
 /////////////////
 // Timekeeping //
@@ -70,23 +91,32 @@ export const AbsoluteTime = NewtypeChecker("AbsoluteTime", {
     constrain: isFinite,
 });
 
+export function absoluteNow(): AbsoluteTime {
+    return AbsoluteTime(performance.now() / MILLISECONDS_PER_SECOND);
+}
+
 export type  RelativeTime = ReturnType<typeof RelativeTime>;
 export const RelativeTime = NewtypeChecker("RelativeTime", {
     constrain: isFinite,
 });
 
+export type Time = (
+    | AbsoluteTime
+    | RelativeTime
+);
+
+export const Time_shift: {
+    (self: AbsoluteTime, size: RelativeTime): AbsoluteTime;
+    (self: RelativeTime, size: RelativeTime): RelativeTime;
+} = (self: Time, size: RelativeTime): any => {
+    return self + size;
+};
+
 const MILLISECONDS_PER_SECOND = 1000;
 
-export function AbsoluteTime_toMilliSeconds(self: AbsoluteTime): number {
+export function Time_toMilliSeconds(self: Time): number {
     return MILLISECONDS_PER_SECOND * self;
 }
-
-interface SymbolicArrangement {
-    
-}
-
-
-
 
 ////////////////
 // Combinator //
@@ -101,9 +131,40 @@ export type Arrangement = (
         readonly length: Ratio;
     }>
     | Case<"melody", {
-        readonly sequence: Arrangement[];
+        readonly parts: Arrangement[];
     }>
     | Case<"harmony", {
-        readonly simultaneous: Arrangement[];
+        readonly parts: Arrangement[];
     }>
-)
+);
+
+export const Arrangement_getLength = UnionMatcher<Arrangement, [], Ratio>({
+    note({length}): Ratio {
+        return length;
+    },
+    rest({length}): Ratio {
+        return length;
+    },
+    harmony({parts}): Ratio {
+        return (
+            from(parts)
+            .max(part => Arrangement_getLength(part))
+        ) ?? Ratio.zero;
+    },
+    melody({parts}): Ratio {
+        return from(parts).aggregate(Ratio.zero, (sum, part) => sum.plus(Arrangement_getLength(part)));
+    }
+})
+
+////////////////////
+// Time Signature //
+////////////////////
+
+export interface TimeSignature {
+    readonly upper: number;
+    readonly lower: number;
+}
+
+export function TimeSignature(upper: number, lower: number): TimeSignature {
+    return {upper, lower};
+}

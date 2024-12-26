@@ -1,5 +1,5 @@
 import {Array_sorted, Case, collect, ComparableObject, compare, isInteger, NewtypeChecker, Ordering, UnionMatcher} from "@wkronemeijer/system";
-import {AbsoluteTime, AbsoluteTime_toMilliSeconds} from "./Symbolic";
+import {AbsoluteTime, Time_toMilliSeconds} from "./Symbolic";
 
 function checkRange(min: number, max: number): (x: number) => boolean {
     return x => min <= x && x <= max;
@@ -73,8 +73,8 @@ export class PlannedMidiEvent implements ComparableObject {
         readonly event: MidiEvent,
         readonly time: AbsoluteTime,
     ) {
-        this.bytes = MidiEvent_getBytes(event);
-        this.timeMs = AbsoluteTime_toMilliSeconds(this.time)
+        this.bytes  = MidiEvent_getBytes(event);
+        this.timeMs = Time_toMilliSeconds(this.time)
     }
     
     compare(other: this): Ordering {
@@ -84,16 +84,18 @@ export class PlannedMidiEvent implements ComparableObject {
     }
 }
 
+/////////////////
+// MessageSink //
+/////////////////
+
 export interface MidiMessageSink {
     send(message: readonly number[], timestampMs: number): void;
 }
 
 export function MidiMessageSink_sendAll(
     self: MidiMessageSink, 
-    [...events]: Iterable<PlannedMidiEvent>,
-): void {
-    Array_sorted(events);
-    
+    events: Iterable<PlannedMidiEvent>,
+): void {    
     for (const event of events) {
         self.send(event.bytes, event.timeMs);
     }
