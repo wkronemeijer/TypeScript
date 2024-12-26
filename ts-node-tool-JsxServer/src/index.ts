@@ -10,6 +10,7 @@ const RASP_HOME = "RASP_HOME";
 function registerCustomFileTypes() {
     express.static.mime.define({
         "text/plain": ["dd"],
+        "image/jpeg": ["jfif"],
     });
 }
 
