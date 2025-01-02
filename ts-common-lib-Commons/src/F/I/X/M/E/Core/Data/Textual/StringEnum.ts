@@ -1,19 +1,22 @@
-import { Array_firstElement, Array_IndexNotFound, Array_lastElement } from "../Collections/Builtin/Array";
-import { Comparer, compare as System_compare } from "../../Traits/Ord/Comparable";
-import { StringEnumPlaceholder_hasInstance } from "./StringEnumPlaceholder";
-import { StringEnumInitializer } from "./StringEnumInitializer";
-import { ensures, requires } from "../../Errors/Assert";
-import { EqualityComparer } from "../../Traits/Eq/Equatable";
-import { StringBuilder } from "./StringBuilder";
-import { Map_reverse } from "../Collections/Builtin/Map";
-import { ArrayMember } from "../Collections/Enumeration";
-import { HasInstance } from "../../HasInstance";
-import { Set_hasAny } from "../Collections/Builtin/Set";
-import { Printable } from "../../Printable";
-import { Ordering } from "../../Traits/Ord/Ordering";
-import { panic } from "../../Errors/Panic";
+// Incredibly commonly used custom "type" to assist with 
+// using a union of string literals as an enum.
 
-const { isSafeInteger } = Number;
+import {Array_firstElement, Array_IndexNotFound, Array_lastElement} from "../Collections/Builtin/Array";
+import {Comparer, compare as System_compare} from "../../Traits/Ord/Comparable";
+import {StringEnumPlaceholder_hasInstance} from "./StringEnumPlaceholder";
+import {StringEnumInitializer} from "./StringEnumInitializer";
+import {ensures, requires} from "../../Errors/Assert";
+import {EqualityComparer} from "../../Traits/Eq/Equatable";
+import {defineProperty} from "../../Re-export/Object";
+import {StringBuilder} from "./StringBuilder";
+import {Map_reverse} from "../Collections/Builtin/Map";
+import {ArrayMember} from "../Collections/Enumeration";
+import {HasInstance} from "../../HasInstance";
+import {Set_hasAny} from "../Collections/Builtin/Set";
+import {Printable} from "../../Printable";
+import {isInteger} from "../../IsX";
+import {Ordering} from "../../Traits/Ord/Ordering";
+import {panic} from "../../Errors/Panic";
 
 /////////////////////
 // StringEnum type //
@@ -21,6 +24,19 @@ const { isSafeInteger } = Number;
 
 export interface StringEnum<E extends string> 
 extends Iterable<E>, Printable, HasInstance<E> {
+    /** 
+     * The descriptive name of this enum.
+     */
+    readonly name: string;
+    
+    /** 
+     * Asserts that the given string is a member of this enum 
+     * and throws otherwise. 
+     * 
+     * If you want to check arbitrary values, use {@link check}.
+     */
+    (string: string): E;
+    
     //////////////////////////
     // Collection of values //
     //////////////////////////
@@ -39,7 +55,7 @@ extends Iterable<E>, Printable, HasInstance<E> {
     /** 
      * Iterates over all values, in ascending order of ordinal. 
      */
-    [Symbol.iterator](): Iterator<E>;
+    [Symbol.iterator](): IterableIterator<E>;
     
     //////////////
     // Defaults //
@@ -187,7 +203,7 @@ function OrdinalMap<E extends string>(
             }
             
             // Using `requires` here gives causes TS7022 (circular type inference) for some reason 🥴
-            if (isSafeInteger(ordinal)) {
+            if (isInteger(ordinal)) {
                 addMember(name, ordinal);
                 iota = ordinal + 1;
             } else {
@@ -245,6 +261,14 @@ function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>)
     const memberByOrdinal = Map_reverse(ordinalByName);
     const leastOrdinal    = Math.min(...ordinalByName.values());
     
+    const constructor = (value: string): E => {
+        if (hasInstance(value)) {
+            return value;
+        } else {
+            panic(`'${value}' is not a member of this string enum`);
+        }
+    };
+    
     //////////////////////////
     // Collection of values //
     //////////////////////////
@@ -257,7 +281,7 @@ function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>)
     
     function iterator(): IterableIterator<E> {
         return values[Symbol.iterator]();
-    }
+    };
     
     //////////////
     // Defaults //
@@ -266,12 +290,22 @@ function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>)
     const defaultValue = (
         memberByOrdinal.get(0) ??
         memberByOrdinal.get(leastOrdinal) ??
-        panic("Ordinal was empty?")
+        panic("failed to find candidate default value")
     );
     
     function withDefault(this: StringEnum<E>, newDefault: E): StringEnum<E> {
         // TODO: check performance of splatting vs Object.create in this situation
-        return { ...this, default: newDefault };
+        // return { ...this, default: newDefault };
+        
+        return new Proxy(this, {
+            get(target, key, _) {
+                if (key === "default") {
+                    return newDefault;
+                } else {
+                    return Reflect.get(target, key);
+                }
+            },
+        });
     };
     
     ////////////////
@@ -337,26 +371,41 @@ function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>)
     // Result //
     ////////////
     
-    return {
-        values,
-        toString,
-        equals,
-        setOfValues,
-        hasInstance,
-        [Symbol.hasInstance]: hasInstance,
-        check,
-        compare,
-        min,
-        max,
-        minimum,
-        maximum,
-        maxLength,
-        default: defaultValue,
-        getOrdinal,
-        fromOrdinal,
-        [Symbol.iterator]: iterator,
-        withDefault,
-    } satisfies StringEnum<E>;
+    // Name is by default not writable, but it /is/ configurable
+    defineProperty(constructor, "name", {
+        configurable: true,
+        value: `StringEnum(_)`
+    });
+    
+    // Define an own @@hasInstance property
+    // then set it later so TS infers the correct type for constructor
+    defineProperty(constructor, Symbol.hasInstance, {
+        configurable: true,
+        writable: true,
+        enumerable: true,
+        value: undefined,
+    });
+    
+    constructor.values              = values;
+    constructor.toString            = toString; 
+    constructor.equals              = equals;
+    constructor.setOfValues         = setOfValues;
+    constructor.hasInstance         = hasInstance;
+    constructor[Symbol.hasInstance] = hasInstance;
+    constructor.check               = check;
+    constructor.compare             = compare;
+    constructor.min                 = min;
+    constructor.max                 = max;
+    constructor.minimum             = minimum;
+    constructor.maximum             = maximum;
+    constructor.maxLength           = maxLength;
+    constructor.default             = defaultValue;
+    constructor.getOrdinal          = getOrdinal;
+    constructor.fromOrdinal         = fromOrdinal;
+    constructor[Symbol.iterator]    = iterator;
+    constructor.withDefault         = withDefault;
+    
+    return constructor satisfies StringEnum<E>;
 }
 
 ////////////////

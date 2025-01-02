@@ -1,5 +1,5 @@
-import { StringEnum } from "./StringEnum";
-import { check } from "../../Debug/Check";
+import {StringEnum} from "./StringEnum";
+import {check} from "../../Debug/Check";
 
 describe("StringEnum", () => {
     describe("create()", () => {
@@ -44,6 +44,22 @@ describe("StringEnum", () => {
         });
         it("rejects NaN values", () => {
             check.throws(() => StringEnum({ member: NaN }));
+        });
+        it("is callable", () => {
+            type  MyEnum = ReturnType<typeof MyEnum>;
+            const MyEnum = StringEnum(['a', 'b', 'c']);
+            
+            MyEnum("a");
+            MyEnum("b");
+            MyEnum("c");
+            check.throws(() => MyEnum('d'));
+        });
+        it("has custom toString", () => {
+            check.notOk(
+                StringEnum(['a', 'b', 'c'])
+                .toString()
+                .includes("function")
+            );
         });
     });
     

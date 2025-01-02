@@ -4,6 +4,7 @@
         //////////
         // Emit //
         //////////
+        
         "module": "commonjs",
         "declaration": true,
         "alwaysStrict": true,
