@@ -14,7 +14,7 @@ const {
 const TAU = 2 * PI;
 
 // Lowercase
-const e = E;
+const e   = E;
 const pi  = PI;
 const tau = TAU;
 // Greek (only if you are a unicode masochist)

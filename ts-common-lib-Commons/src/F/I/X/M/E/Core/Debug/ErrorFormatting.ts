@@ -1,4 +1,5 @@
 import { getConstructorName } from "../Data/Names/GetConstructorName";
+import {deprecatedAlias} from "../Deprecated";
 import { Exception } from "../Exception";
 
 // Alright Here's the hard part
@@ -34,4 +35,4 @@ export function printThrowable(error: Throwable): void {
 }
 
 /** @deprecated Use {@link printThrowable} instead. */
-export const printError = printThrowable;
+export const printError = deprecatedAlias("printError", printThrowable);

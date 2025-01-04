@@ -1,6 +1,7 @@
 import {Dictionary, Dictionary_toMap} from "./Dictionary";
 import {Selector} from "../../../Types/Function";
 import {value_t} from "../../../Types/Primitive";
+import {deprecatedAlias} from "../../../Deprecated";
 
 export interface MapLike<K, V> {
     has(key: K): boolean;
@@ -73,7 +74,9 @@ export function Map_toDictionary<K extends string, V>(
 }
 
 /** @deprecated Move to Record_* */
-export const Map_fromDictionary = Dictionary_toMap
+export const Map_fromDictionary = deprecatedAlias("Map_fromDictionary", 
+    Dictionary_toMap,
+);
 
 /** 
  * Returns the value associated with the given key.

@@ -1,3 +1,5 @@
+import {deprecatedAlias} from "../Deprecated";
+
 const {
     create: createObject, 
     defineProperty, defineProperties, hasOwn: hasOwnProperty,
@@ -19,16 +21,16 @@ const {
 } = Reflect;
 
 /** @deprecated use `createObject` instead */
-const create = createObject;
+const create = deprecatedAlias("create", createObject);
 
 /** @deprecated use `freezeObject` instead */
-const freeze = freezeObject;
+const freeze = deprecatedAlias("freeze", freezeObject);
 
 /** @deprecated use `assignObject` instead */
-const assign = assignObject;
+const assign = deprecatedAlias("assign", assignObject);
 
 /** @deprecated use `objectFromEntries` instead */
-const fromEntries = objectFromEntries;
+const fromEntries = deprecatedAlias("fromEntries", objectFromEntries);
 
 export {
     create, createObject,
