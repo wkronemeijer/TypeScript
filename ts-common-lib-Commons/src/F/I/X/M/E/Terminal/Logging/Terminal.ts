@@ -168,7 +168,11 @@ export const terminal = new Proxy({
     writeLine: userLoggers.log.writeLine,
 } as const, {
     get(target, property, receiver) {
-        logDeprecationWarning({marker: terminal, oldName: nameof({terminal})});
+        logDeprecationWarning({
+            marker: terminal, 
+            oldName: "terminal from @wkronemeijer/system",
+            newName: "terminal from @wkronemeijer/terminal"
+        });
         delete this.get;
         return Reflect.get(target, property, receiver);
     },
