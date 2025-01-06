@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 
 /** 
  * Will be set to true the given number of milliseconds after the component is mounted. 

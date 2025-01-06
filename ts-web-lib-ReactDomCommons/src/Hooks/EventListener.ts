@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useLayoutEffect, useRef } from "react";
+import {RefObject, useEffect, useLayoutEffect, useRef} from "react";
 
 // Based on https://github.com/juliencrn/usehooks-ts/blob/master/src/useEventListener/useEventListener.ts
 

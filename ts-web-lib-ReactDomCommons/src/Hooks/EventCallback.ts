@@ -1,6 +1,5 @@
-import { panic } from "@wkronemeijer/system";
-
-import { useCallback, useLayoutEffect, useRef } from "react";
+import {useCallback, useLayoutEffect, useRef} from "react";
+import {panic} from "@wkronemeijer/system";
 
 // Based on https://github.com/reactjs/rfcs/blob/useevent/text/0000-useevent.md
 
