@@ -4,12 +4,11 @@
 import {DeveloperLogChannel, LogChannel, UserLogChannel} from "./LogChannel";
 import {StringTargetLine, stringBuild} from "../../Core/Data/Textual/StringBuilder";
 import {Function_includeProperties} from "../../Core/Data/Function/Function";
-import {logDeprecationWarning} from "../../Core/Deprecated";
 import {TimingReport_toString} from "../TimingReportFormatter";
 import {LoggingFunction} from "./LoggingFunction";
 import {Dictionary} from "../../Core/Data/Collections/Builtin/Dictionary";
 import {LogMessage} from "./LogMessage";
-import {nameof} from "../../Core/Debug/Nameof";
+import {doOnce} from "../../(Prelude)/DoOnce";
 import {__log} from "./Logger";
 
 /////////////////////////
@@ -168,12 +167,14 @@ export const terminal = new Proxy({
     writeLine: userLoggers.log.writeLine,
 } as const, {
     get(target, property, receiver) {
-        logDeprecationWarning({
-            marker: terminal, 
-            oldName: "terminal from @wkronemeijer/system",
-            newName: "terminal from @wkronemeijer/terminal"
+        delete this.get; // delete to prevent infinite loop
+        doOnce(terminal, () => {
+            const current = "@wkronemeijer/system";
+            const future = "@wkronemeijer/terminal";
+            terminal.warn(
+                `'terminal' will be moved from ${current} to ${future} soon`
+            );
         });
-        delete this.get;
         return Reflect.get(target, property, receiver);
     },
 });

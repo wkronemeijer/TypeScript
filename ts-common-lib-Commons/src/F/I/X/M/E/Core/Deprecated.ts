@@ -1,4 +1,4 @@
-const marked = new WeakSet;
+import {doOnce} from "../(Prelude)/DoOnce";
 
 interface DeprecationWarningOptions {
     /** Object used to track if a warning has already been logged. */
@@ -13,16 +13,14 @@ interface DeprecationWarningOptions {
  * Logs a deprecation warning. 
  * Uses a marker to log only once. 
  */
-export function logDeprecationWarning(
-    {marker, oldName, newName}: DeprecationWarningOptions,
-): void {
-    if (!marked.has(marker)) {
+export function logDeprecationWarning(options: DeprecationWarningOptions): void {
+    doOnce(options.marker, () => {
+        const {oldName, newName} = options;
         console.warn(newName !== undefined ? 
             `'${oldName}' is deprecated, use '${newName}' instead` : 
             `'${oldName}' is deprecated`
         );
-        marked.add(marker);
-    }
+    });
 }
 
 /** 
@@ -50,26 +48,28 @@ export function deprecatedAlias<F extends Function>(
     newFunc: F,
     newName = newFunc.name,
 ): F {
-    const marker = {};
+    const marker     = {};
+    const logWarning = () => void console.warn(
+        `'${oldName}' is deprecated, use '${newName}' instead`
+    );
     
-    const options: DeprecationWarningOptions = {marker, oldName, newName};
     const handler: ProxyHandler<F> = {};
     
-    function trap<K extends (
+    function addTrap<K extends (
         & keyof typeof handler
         & keyof typeof Reflect
     )>(key: K): void {
         handler[key] = (...args: unknown[]) => {
-            logDeprecationWarning(options);
-            handler[key] = undefined; // remove afterwards for good measure
+            handler[key] = undefined; 
+            doOnce(marker, logWarning);
             return (Reflect[key] as any)(...args);
         }
     }
     
-    trap("get");
-    trap("set");
-    trap("apply");
-    trap("construct");
+    addTrap("get");
+    addTrap("set");
+    addTrap("apply");
+    addTrap("construct");
     
     return new Proxy(newFunc, handler);
 }

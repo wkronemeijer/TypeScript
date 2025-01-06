@@ -6,6 +6,7 @@ import { inspectValue } from "../Inspect";
 import { Date_toHHmm } from "../../Core/Data/Date";
 import { LogMessage } from "./LogMessage";
 import { LogChannel } from "./LogChannel";
+import {doOnce} from "../../(Prelude)/DoOnce";
 
 // Formatter feels more of a problem for the implementor
 // Can still provide the type and a default tho.
@@ -120,5 +121,12 @@ export const formatLogMessage = ReplaceableFunction(LogMessageFormatter_PlainTex
 //////////////////
 
 export function powerlineLabel(text: string): string {
-    return `\x1b[7m ${text} \x1b[27m\uE0B0`
+    doOnce(powerlineLabel, () => {
+        const current = "@wkronemeijer/system";
+        const future = "@wkronemeijer/terminal";
+        console.warn(
+            `'powerlineLabel' will be moved from ${current} to ${future} soon`
+        );
+    });
+    return `\x1b[7m ${text} \x1b[27m\uE0B0`;
 }

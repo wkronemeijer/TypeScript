@@ -1,5 +1,5 @@
-import { LogChannel, LogChannel_getColor } from "./LogChannel";
-import { AnsiColor } from "../Console/TextDecoration";
+import {LogChannel, LogChannel_getColor} from "./LogChannel";
+import {AnsiColor} from "../Console/TextDecoration";
 
 // TODO: Unify, and strip escape codes when outputting to not isatty
 // TODO: logmessageformatter selection should be an expect function
