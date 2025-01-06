@@ -1,17 +1,19 @@
 import {deprecatedAlias} from "../Deprecated";
 
 const {
+    defineProperty, 
+    defineProperties, 
+    hasOwn: hasOwnProperty,
     create: createObject, 
-    defineProperty, defineProperties, hasOwn: hasOwnProperty,
     freeze: freezeObject, 
     assign: assignObject, 
-    entries, 
-    fromEntries: objectFromEntries,
-    getPrototypeOf, setPrototypeOf,
+    getPrototypeOf, 
+    setPrototypeOf,
     getOwnPropertyDescriptor,
-    
     getOwnPropertyNames: ownStringKeys,
     getOwnPropertySymbols: ownSymbolKeys,
+    entries: ownStringProperties, 
+    fromEntries: _fromEntries,
 } = Object;
 
 const {
@@ -29,22 +31,36 @@ const freeze = deprecatedAlias("freeze", freezeObject, "freezeObject");
 /** @deprecated use `assignObject` instead */
 const assign = deprecatedAlias("assign", assignObject, "assignObject");
 
+/** @deprecated use `assignObject` instead */
+const entries = deprecatedAlias(
+    "entries", ownStringProperties, "ownStringProperties",
+);
+
 /** @deprecated use `objectFromEntries` instead */
 const fromEntries = deprecatedAlias(
-    "fromEntries", objectFromEntries, "objectFromEntries"
+    "fromEntries", _fromEntries, "Object.fromEntries",
 );
 
 export {
-    create, createObject,
-    getPrototypeOf, setPrototypeOf,
-    
-    defineProperty, defineProperties, deleteProperty,
+    create, 
+    createObject,
+    getPrototypeOf, 
+    setPrototypeOf,
+    defineProperty, 
+    defineProperties, 
+    deleteProperty,
     getOwnPropertyDescriptor,
-    hasProperty, hasOwnProperty, 
-    ownKeys, ownStringKeys, ownSymbolKeys,
+    hasProperty, 
+    hasOwnProperty, 
+    ownKeys, 
+    ownStringKeys, 
+    ownSymbolKeys,
+    ownStringProperties,
+    assignObject,
+    freezeObject,
+    // @deprecated:
+    fromEntries,
     entries, 
-    
-    fromEntries, objectFromEntries,
-    assign, assignObject,
-    freeze, freezeObject,
+    assign, 
+    freeze, 
 };

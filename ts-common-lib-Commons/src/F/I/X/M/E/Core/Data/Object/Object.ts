@@ -1,5 +1,5 @@
-import { defineProperty, ownKeys } from "../../Re-export/Object";
-import { panic } from "../../Errors/Panic";
+import {defineProperty, ownKeys} from "../../Re-export/Object";
+import {panic} from "../../Errors/Panic";
 
 /** Same as {@link Object.create}, but preserves type so you can use it for what prototypes were meant to do. */
 export function Object_create<T extends object>(prototype: T, overwrite: Partial<T> = {}): T {

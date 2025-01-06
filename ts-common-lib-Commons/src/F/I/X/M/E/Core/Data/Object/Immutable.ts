@@ -1,5 +1,10 @@
-import { create, defineProperty, entries, freeze } from "../../Re-export/Object";
-import { Constructor } from "../../Types/Mixins";
+import {
+    createObject, 
+    freezeObject, 
+    defineProperty, 
+    ownStringProperties,
+} from "../../Re-export/Object";
+import {Constructor} from "../../Types/Mixins";
 
 // TODO: Immutable can totally be a mixin
 // Use it on URL to make it resemebly `vscode.Uri`
@@ -20,9 +25,9 @@ export class Immutable {
     // Pick loses intellisense, but still has appropriate type errors
     // Weird too because `this extends Point` at all times inside the function
     with<K extends keyof this>(newProps: Pick<this, K>): this {
-        freeze(this); // Freeze the base so it can't change from under us
-        const newThis = create(this);
-        for (const [key, value] of entries(newProps)) {
+        freezeObject(this); // Freeze the base so it can't change from under us
+        const newThis = createObject(this);
+        for (const [key, value] of ownStringProperties(newProps)) {
             defineProperty(newThis, key, { 
                 enumerable: true, 
                 value,
@@ -46,10 +51,10 @@ function immutable<C extends Constructor>(
         }
         
         with<K extends keyof this>(newProps: Pick<this, K>): this {
-            freeze(this); // freeze the base, so it can't change from under us
-            const newThis = create(this);
+            freezeObject(this); // freeze the base, so it can't change from under us
+            const newThis = createObject(this);
             
-            for (const [key, value] of entries(newProps)) {
+            for (const [key, value] of ownStringProperties(newProps)) {
                 defineProperty(newThis, key, { 
                     enumerable: true, 
                     value,

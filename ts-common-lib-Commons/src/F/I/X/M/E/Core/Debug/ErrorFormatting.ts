@@ -1,19 +1,20 @@
-import { getConstructorName } from "../Data/Names/GetConstructorName";
+import {getConstructorName} from "../Data/Names/GetConstructorName";
 import {deprecatedAlias} from "../Deprecated";
-import { Exception } from "../Exception";
+import {Exception} from "../Exception";
 
 // Alright Here's the hard part
-// Exceptions go through the same channel as eerrors, even when exceptions shouldn't get a stack trace.
+// Exceptions go through the same channel as errors, even when exceptions shouldn't get a stack trace.
 // Returned errors perhaps?
 
 export type Throwable = unknown;
 
-export function throwableToError(throwable: Throwable): Error {
-    if (throwable instanceof Error) {
-        return throwable
+export function throwableToError(cause: Throwable): Error {
+    if (cause instanceof Error) {
+        return cause;
     } else {
-        const message = `Expected Error, received ${getConstructorName(throwable)} (${throwable})`;
-        return new TypeError(message, { cause: throwable });
+        const name = getConstructorName(cause);
+        const message = `expected Error, received ${name} (${cause})`;
+        return new TypeError(message, {cause});
     }
 }
 
