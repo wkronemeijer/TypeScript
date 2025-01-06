@@ -1,5 +1,5 @@
 import {Response_shouldLog} from "../Extensions/Response";
-import {terminal} from "@wkronemeijer/system";
+import {terminal} from "@wkronemeijer/ansi-console";
 import {express} from "../../lib";
 
 export const PerformanceLogger: express.RequestHandler = ((req, res, next) => {

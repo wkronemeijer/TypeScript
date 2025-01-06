@@ -1,4 +1,4 @@
-import { RegExpNewtype } from "@wkronemeijer/system";
+import {RegExpNewtype} from "@wkronemeijer/system";
 
 /** File extension. 
  * 

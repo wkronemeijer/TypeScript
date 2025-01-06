@@ -1,11 +1,10 @@
-import { AsyncMethods, ReadonlyURL, from } from "@wkronemeijer/system";
-
-import { AnyPath, Path_CurrentDirectory } from "./Path";
-import { FileEntityStats } from "./EntityStats";
-import { FileEntityKind } from "./EntityKind";
-import { GetFileSystem } from "./GetFileSystem";
-import { PathObject } from "./PathObject";
-import { fileURLToPath } from "node:url";
+import {AsyncMethods, ReadonlyURL, from} from "@wkronemeijer/system";
+import {AnyPath, Path_CurrentDirectory} from "./Path";
+import {FileEntityStats} from "./EntityStats";
+import {FileEntityKind} from "./EntityKind";
+import {GetFileSystem} from "./GetFileSystem";
+import {fileURLToPath} from "url";
+import {PathObject} from "./PathObject";
 
 interface FileObjectSyncMethods {
     // TODO: decide

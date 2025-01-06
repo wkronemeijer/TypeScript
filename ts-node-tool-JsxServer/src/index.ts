@@ -1,6 +1,7 @@
-import {guard, isInteger, powerlineLabel, terminal} from "@wkronemeijer/system";
 import {DirectoryObject, getLocalIp} from "@wkronemeijer/system-node";
+import {terminal, powerlineLabel} from "@wkronemeijer/ansi-console";
 import {parseArgumentList} from "@wkronemeijer/clap";
+import {guard, isInteger} from "@wkronemeijer/system";
 import {configureServer} from "./Domain/ConfigureServer";
 import {express} from "./lib";
 

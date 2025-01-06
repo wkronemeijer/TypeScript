@@ -1,10 +1,8 @@
 // Analogous to System.Runtime.CompilerServices
-import { fileURLToPath } from "url";
-
-import { panic } from "@wkronemeijer/system";
-
-import { AbsolutePath } from "../IO/FileSystem/Path";
-import { File } from "../IO/FileSystem/FileObject";
+import {fileURLToPath} from "url";
+import {AbsolutePath} from "../IO/FileSystem/Path";
+import {panic} from "@wkronemeijer/system";
+import {File} from "../IO/FileSystem/FileObject";
 
 type CallStackFormatter = NonNullable<typeof Error.prepareStackTrace>;
 type CallStack          = Parameters<CallStackFormatter>[1];

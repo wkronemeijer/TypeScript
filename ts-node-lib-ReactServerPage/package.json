@@ -9,11 +9,11 @@
         "test": "ts-mocha src/**/*.spec.ts"
     },
     "devDependencies": {
-        "typescript": "*"
+        "typescript": "^5.7.2"
     },
     "dependencies": {
+        "@wkronemeijer/react-server-page-provider": "^0.0.1",
         "@wkronemeijer/system": "*",
-        "@wkronemeijer/system-node": "*",
-        "@wkronemeijer/react-server-page-provider": "*"
+        "@wkronemeijer/system-node": "*"
     }
 }

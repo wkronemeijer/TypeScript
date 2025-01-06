@@ -8,15 +8,15 @@
         "test": "ts-mocha src/**/*.spec.ts"
     },
     "devDependencies": {
-        "typescript": "*"
+        "typescript": "^5.7.2"
     },
     "peerDependencies": {
-        "react": "*",
-        "react-dom": "*",
-        "immer": "*"
+        "immer": "^10.1.1",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
     },
     "dependencies": {
-        "@types/react": "*",
-        "@types/react-dom": "*"
+        "@types/react": "^18.3.18",
+        "@types/react-dom": "^18.3.5"
     }
 }

@@ -118,12 +118,5 @@ export const formatLogMessage = PowerlineLogMessageFormatter;
 //////////////////
 
 export function powerlineLabel(text: string): string {
-    doOnce(powerlineLabel, () => {
-        const current = "@wkronemeijer/system";
-        const future = "@wkronemeijer/terminal";
-        console.warn(
-            `'powerlineLabel' will be moved from ${current} to ${future} soon`
-        );
-    });
     return `\x1b[7m ${text} \x1b[27m\uE0B0`;
 }

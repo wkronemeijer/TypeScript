@@ -1,4 +1,4 @@
-import { terminal } from "@wkronemeijer/system";
+import { terminal } from "@wkronemeijer/ansi-console";
 import { Directory } from "@wkronemeijer/system-node";
 
 import { NoteBook } from "./Composing/NoteBook";

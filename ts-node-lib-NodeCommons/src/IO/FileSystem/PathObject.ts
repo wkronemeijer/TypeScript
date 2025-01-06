@@ -1,10 +1,29 @@
 // Soooooo many items
 // TODO: Reduce the number of exported items somehow
-import { AbsolutePath, AnyPath, PathDetails, Path_addSuffixExtension, Path_changeExtension, Path_super, Path_getDetails, Path_getParent, Path_isRoot, Path_join, Path_relative, Path_resolve, RelativePath, RelativePath_toUrl, Path_equals } from "./Path";
-import { FileExtension, OptionalFileExtension } from "./Extension";
-import { EquatableObject, Immutable, Printable } from "@wkronemeijer/system";
-import { HasAbsolutePath } from "./HasAbsolutePath";
-import { pathToFileURL } from "url";
+import {
+    AnyPath, 
+    AbsolutePath, 
+    RelativePath, 
+    PathDetails, 
+    Path_addSuffixExtension, 
+    Path_changeExtension, 
+    Path_super, 
+    Path_getDetails, 
+    Path_getParent, 
+    Path_isRoot, 
+    Path_join, 
+    Path_relative, 
+    Path_resolve, 
+    RelativePath_toUrl, 
+    Path_equals,
+} from "./Path";
+import {FileExtension, OptionalFileExtension} from "./Extension";
+import {EquatableObject, Immutable, Printable} from "@wkronemeijer/system";
+import {pathToFileURL} from "url";
+
+export interface HasAbsolutePath {
+    readonly path: AbsolutePath;
+}
 
 export interface PathObject 
 extends EquatableObject, HasAbsolutePath, Printable {

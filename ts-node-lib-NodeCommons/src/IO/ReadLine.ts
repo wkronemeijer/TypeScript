@@ -1,4 +1,7 @@
-const { stdin, stdout } = process;
+// TODO: Should this be moved to ansi-console?
+
+import {stdin, stdout} from "process";
+
 const bufferEncoding: BufferEncoding = "utf-8";
 
 /** 

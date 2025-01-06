@@ -1,7 +1,7 @@
-import { Member, StringEnum } from "@wkronemeijer/system";
+import {StringEnum} from "@wkronemeijer/system";
 
 /** Partial enumeration of the kinds of file entities. */
-export type  FileEntityKind = Member<typeof FileEntityKind>;
+export type  FileEntityKind = ReturnType<typeof FileEntityKind>;
 export const FileEntityKind = StringEnum([
     "file",
     "directory",

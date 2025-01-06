@@ -1,4 +1,4 @@
-import { ReadonlyRecord, RegExpNewtype, collect, ownStringKeys } from "@wkronemeijer/system";
+import {ReadonlyRecord, RegExpNewtype, collect, ownStringKeys} from "@wkronemeijer/system";
 
 export type  NodeName = ReturnType<typeof NodeName>;
 export const NodeName = RegExpNewtype("NodeName", /(@[a-z-]+\/)?[a-z-]+/);

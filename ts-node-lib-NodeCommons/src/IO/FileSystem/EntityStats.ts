@@ -1,4 +1,4 @@
-import { FileEntityKind } from "./EntityKind";
+import {FileEntityKind} from "./EntityKind";
 
 export interface FileEntityStats {
     readonly kind: FileEntityKind;

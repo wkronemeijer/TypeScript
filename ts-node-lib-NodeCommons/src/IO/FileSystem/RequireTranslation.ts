@@ -2,11 +2,10 @@
 // WHOOPS! You are using TS, which means its somewhere else entirely
 // Which is what this function is for. A wrapper around require.resolve
 
-import { panic, requires } from "@wkronemeijer/system";
-
-import { AnyPath, Path_Separator, RelativePath } from "./Path";
-import { Directory, File } from "./FileObject";
-import { getCallerFile } from "../../Reflection/Caller";
+import {deprecatedAlias, doOnce, panic, requires} from "@wkronemeijer/system";
+import {AnyPath, Path_Separator, RelativePath} from "./Path";
+import {DirectoryObject, FileObject} from "./FileObject";
+import {getCallerFile} from "../../Reflection/Caller";
 
 interface PathTranslator_Options {
     /** Location of JS files. */
@@ -15,21 +14,28 @@ interface PathTranslator_Options {
     readonly src: RelativePath;
 }
 
-export function PathTranslator_create(options: PathTranslator_Options): (path: AnyPath) => File {
-    const { dist, src } = options;
+export function PathTranslator_create(
+    {src, dist}: PathTranslator_Options,
+): (path: AnyPath) => FileObject {
+    doOnce(PathTranslator_create, () => {
+        console.warn("'PathTranslator_create' is deprecated");
+    });
     requires(dist.split(Path_Separator).length === 1,
-        "dist must have a single component.");
+        "'dist' must have a single component",
+    );
     requires(src.split(Path_Separator).length === 1,
-        "src must have a single component.");
-    
+        "'src' must have a single component.",
+    );
     return anyPath => {
         const distFile = getCallerFile();
         
         // Search for roots
-        let current: Directory = distFile;
+        let current: DirectoryObject = distFile;
         while (true) {
             if (current.isRoot) {
-                panic(`Expected '${dist}' path segment to appear in path starting in '${distFile}'.`);
+                panic(
+                    `expected '${dist}' path segment to appear in '${distFile}'`
+                );
             } else if (current.fullName === dist) {
                 break;
             } else {
@@ -51,7 +57,7 @@ export function PathTranslator_create(options: PathTranslator_Options): (path: A
 
 /** Resolves to files using (my standard) `dist` and `src` folders. */
 // as for why not use the default args? because now this is 1 instance shared by (all of my) code.
-export const requireFile = PathTranslator_create({
+export const requireFile = deprecatedAlias("requireFile", PathTranslator_create({
     dist: RelativePath("dist"),
     src: RelativePath("src"),
-});
+}));

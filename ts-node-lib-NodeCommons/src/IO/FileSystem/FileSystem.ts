@@ -1,8 +1,7 @@
-import { SyncAndAsync } from "@wkronemeijer/system";
-
-import { AbsolutePath, RelativePath } from "./Path";
-import { FileEntityStats } from "./EntityStats";
-import { FileEntityKind } from "./EntityKind";
+import {AbsolutePath, RelativePath} from "./Path";
+import {FileEntityStats} from "./EntityStats";
+import {FileEntityKind} from "./EntityKind";
+import {SyncAndAsync} from "@wkronemeijer/system";
 
 // Idea: use an options object for everything
 // Considering the mess that is the node:fs api, 

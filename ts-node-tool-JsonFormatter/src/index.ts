@@ -1,8 +1,10 @@
-import { pathToFileURL } from "url";
+import {formatJson_HaskellStyle} from "./Formatter";
+import {File, FileExtension} from "@wkronemeijer/system-node";
+import {pathToFileURL} from "url";
+import {requires} from "@wkronemeijer/system";
+import {terminal} from "@wkronemeijer/ansi-console";
 
-import { File, StringEnum, requires, terminal } from "@wkronemeijer/system";
-
-import { formatJson_HaskellStyle } from "./Formatter";
+const extension = FileExtension(".hsfmt.json"); // "(H)a(s)kell (f)or(m)a(t)"
 
 export function main(args: string[]) {
     const inputPath = args[0];
@@ -12,7 +14,7 @@ export function main(args: string[]) {
     const lineLengthLimit = rawLength >= 40 ? rawLength : undefined;
     
     const inputFile  = new File(inputPath);
-    const outputFile = inputFile.changeExtension(".hsfmt.json") // "(H)a(s)kell (f)or(m)a(t)"
+    const outputFile = inputFile.changeExtension(extension) 
     
     const inputUri = pathToFileURL(inputPath);
     

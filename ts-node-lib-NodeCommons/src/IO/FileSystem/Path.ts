@@ -1,7 +1,6 @@
 // Wraps nodejs's path module, to maintain information about the kind of path.
-
-import {Newtype, satisfiesStrictly, swear} from "@wkronemeijer/system";
 import {FileExtension, OptionalFileExtension} from "./Extension";
+import {Newtype, satisfiesStrictly, swear} from "@wkronemeijer/system";
 
 import {
     // TODO: Namespace imports are slower in Lua, not sure about JS however.
@@ -12,7 +11,7 @@ import {
     isAbsolute as node_isAbsolute, 
     sep        as node_sep,
     extname    as node_extname,
- } from "path";
+} from "path";
 import {
     pathToFileURL as node_pathToFileURL,
 } from "url";

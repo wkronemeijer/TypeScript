@@ -1,6 +1,7 @@
-import {formatThrowable, terminal} from "@wkronemeijer/system";
 import {ErrorDescription} from "../ResultTypes/ErrorDescription";
+import {formatThrowable} from "@wkronemeijer/system";
 import {Response_send} from "../Extensions/Response";
+import {terminal} from "@wkronemeijer/ansi-console";
 import {express} from "../../lib";
 
 export const ErrorLogger: express.ErrorRequestHandler = ((e: unknown, req, res, next) => {

@@ -156,22 +156,10 @@ const bonus: BonusFunctionality = {
     passthrough: devLoggers.trace.passthrough,
 };
 
-/** Custom console. */
-export const terminal = new Proxy({
+/** ANSI-enhanced console. */
+export const terminal = {
     ...userLoggers,
     ...devLoggers,
     ...bonus,
     writeLine: userLoggers.log.writeLine,
-} as const, {
-    get(target, property, receiver) {
-        delete this.get; // delete to prevent infinite loop
-        doOnce(terminal, () => {
-            const current = "@wkronemeijer/system";
-            const future = "@wkronemeijer/terminal";
-            terminal.warn(
-                `'terminal' will be moved from ${current} to ${future} soon`
-            );
-        });
-        return Reflect.get(target, property, receiver);
-    },
-});
+} as const;

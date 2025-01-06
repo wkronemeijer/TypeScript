@@ -1,10 +1,10 @@
-import * as fs  from "node:fs";
-import * as fs_async from "node:fs/promises";
+import * as fs  from "fs";
+import * as fs_async from "fs/promises";
 
-import { AbsolutePath, Path_join, Path_relative } from "./Path";
-import { FileSystem, FileSystemDirectoryEntry } from "./FileSystem";
-import { FileEntityStats } from "./EntityStats";
-import { FileEntityKind } from "./EntityKind";
+import {AbsolutePath, Path_join, Path_relative} from "./Path";
+import {FileSystem, FileSystemDirectoryEntry} from "./FileSystem";
+import {FileEntityStats} from "./EntityStats";
+import {FileEntityKind} from "./EntityKind";
 
 const encodingOptions = {
     encoding: "utf-8",
