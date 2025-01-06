@@ -5,8 +5,8 @@ import {ErrorLogger} from "./Handlers/ErrorLogger";
 import {express} from "../lib";
 
 import {JsonManifestRenderer} from "./Transforms/Server/Manifest";
-import {JavaScriptRenderer} from "./Transforms/Client/RenderClient";
-import {StylesheetRenderer} from "./Transforms/Client/RenderStylesheet";
+import {TypeScriptRenderer} from "./Transforms/Client/TypeScript";
+import {StylesheetRenderer} from "./Transforms/Client/Scss";
 import {ReactPageRenderer} from "./Transforms/Server/Page";
 import {JsonPageRenderer} from "./Transforms/Server/Json";
 import {FileTransform} from "./Transforms/FileTransform";
@@ -35,7 +35,7 @@ function configureRouter(root: DirectoryObject): express.Router {
         // Must be last...
         // FIXME: Create and extension (or something) for client-side TS
         // #bundled?
-        register(JavaScriptRenderer);
+        register(TypeScriptRenderer);
     }
     router.use(express.static(root.path));
     router.use(ErrorLogger);
