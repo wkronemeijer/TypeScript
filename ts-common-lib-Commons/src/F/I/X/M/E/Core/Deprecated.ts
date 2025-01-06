@@ -47,10 +47,10 @@ export function giveDeprecationWarning<F extends Function>(
 /** Returns an alias of the function that logs one-time deprecation warning. */
 export function deprecatedAlias<F extends Function>(
     oldName: string, 
-    func: F,
+    newFunc: F,
+    newName = newFunc.name,
 ): F {
     const marker = {};
-    const newName = func.name;
     
     const options: DeprecationWarningOptions = {marker, oldName, newName};
     const handler: ProxyHandler<F> = {};
@@ -71,5 +71,5 @@ export function deprecatedAlias<F extends Function>(
     trap("apply");
     trap("construct");
     
-    return new Proxy(func, handler);
+    return new Proxy(newFunc, handler);
 }

@@ -21,16 +21,18 @@ const {
 } = Reflect;
 
 /** @deprecated use `createObject` instead */
-const create = deprecatedAlias("create", createObject);
+const create = deprecatedAlias("create", createObject, "createObject");
 
 /** @deprecated use `freezeObject` instead */
-const freeze = deprecatedAlias("freeze", freezeObject);
+const freeze = deprecatedAlias("freeze", freezeObject, "freezeObject");
 
 /** @deprecated use `assignObject` instead */
-const assign = deprecatedAlias("assign", assignObject);
+const assign = deprecatedAlias("assign", assignObject, "assignObject");
 
 /** @deprecated use `objectFromEntries` instead */
-const fromEntries = deprecatedAlias("fromEntries", objectFromEntries);
+const fromEntries = deprecatedAlias(
+    "fromEntries", objectFromEntries, "objectFromEntries"
+);
 
 export {
     create, createObject,
