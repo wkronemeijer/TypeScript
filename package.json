@@ -6,6 +6,7 @@
         "devtool": "devtool.cjs"
     },
     "dependencies": {
+        "@wkronemeijer/ansi-console": "file:ts-node-lib-AnsiConsole",
         "@wkronemeijer/clap": "file:ts-common-lib-NoConfigCliParser",
         "@wkronemeijer/compiler-toolkit": "file:ts-common-lib-CompilerToolkit",
         "@wkronemeijer/react-server-page": "file:ts-node-lib-ReactServerPage",

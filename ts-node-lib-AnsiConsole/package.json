@@ -1,5 +1,5 @@
 {
-    "name": "@wkronemeijer/system-node",
+    "name": "@wkronemeijer/ansi-console",
     "main": "dist/index.js",
     "types": "dist_t/index.d.ts",
     "scripts": {
@@ -12,6 +12,7 @@
         "typescript": "*"
     },
     "dependencies": {
-        "@wkronemeijer/system": "*"
+        "@wkronemeijer/system": "*",
+        "@wkronemeijer/system-node": "*"
     }
 }
