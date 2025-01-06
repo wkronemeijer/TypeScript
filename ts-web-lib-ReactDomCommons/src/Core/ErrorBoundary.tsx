@@ -1,49 +1,43 @@
 import {Component, ReactNode} from "react";
 import {formatThrowable} from "@wkronemeijer/system";
 
-const NO_ERROR = Symbol("no error");
+type  $ok = typeof $ok;
+const $ok = Symbol("ok");
 
-interface ErrorBoundary_Props {
+interface Props {
+    // Reminder that in ES, /any/ value can be thrown
+    readonly error: $ok | unknown;
+}
+
+interface State {
     readonly children: ReactNode;
 }
 
-interface ErrorBoundary_State {
-    readonly error: unknown | typeof NO_ERROR;
-}
-
-export class ErrorBoundary 
-extends Component<ErrorBoundary_Props, ErrorBoundary_State> {
-    constructor(props: ErrorBoundary_Props) {
+export class ErrorBoundary extends Component<State, Props> {
+    constructor(props: State) {
         super(props);
-        this.state = {error: NO_ERROR};
+        this.state = {error: $ok};
     }
     
-    static getDerivedStateFromError(error: unknown): Partial<ErrorBoundary_State> {
+    static getDerivedStateFromError(error: unknown): Partial<Props> {
         return {error};
     }
     
-    componentDidCatch(_error: unknown, _errorInfo: unknown) {
+    componentDidCatch(_error: unknown, _info: unknown) {
         // React already logs the stack, so we don't have to.
     }
     
-    reset = (): void => {
-        this.setState({error: NO_ERROR});
-    }
+    reset = () => void this.setState({error: $ok});
     
     render(): ReactNode {
         const {error} = this.state;
-        if (error !== NO_ERROR) {
-            const name = error instanceof Error ? error.name : "error";
-            const description = formatThrowable(error);
-            return <div className="CErrorBoundary">
-                <h1 className="Title">Uncaught {name}</h1>
-                <button onClick={this.reset}>Retry</button>
-                <pre className="Message"><code>
-                    {description}
-                </code></pre>
-            </div>
-        } else {
-            return this.props.children;
-        }
+        if (error === $ok) {return this.props.children}
+        const name = error instanceof Error ? error.name : "error";
+        const description = formatThrowable(error);
+        return <div className="CErrorBoundary">
+            <h1 className="Title">Uncaught {name}</h1>
+            <button onClick={this.reset}>Retry</button>
+            <pre className="Message"><code>{description}</code></pre>
+        </div>
     }
 }
