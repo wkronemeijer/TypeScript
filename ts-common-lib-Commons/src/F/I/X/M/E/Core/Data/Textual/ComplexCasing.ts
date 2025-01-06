@@ -1,5 +1,5 @@
-import { capitalize, uncapitalize, uppercase, lowercase } from "./Casing";
-import { neverPanic } from "../../Errors/Panic";
+import {capitalize, uncapitalize, uppercase, lowercase} from "./Casing";
+import {unreachable} from "../../Errors/Panic";
 
 ////////////////////////////////
 // (Deprecated) simple casing //
@@ -53,10 +53,13 @@ export function WordCase_apply<S extends string, CO extends WordCase>(
         case "lower"       : return lowercase(str)    as WordCase_Apply<S, CO>;
         case "capitalize"  : return capitalize(str)   as WordCase_Apply<S, CO>;
         case "uncapitalize": return uncapitalize(str) as WordCase_Apply<S, CO>;
-        default: neverPanic(casing);
+        default: unreachable(casing);
     }
 }
 
-export function WordCase_applyRange<S extends string, CO extends WordCase>(str: S, casings: readonly CO[]): WordCase_Apply<S, CO>[] {
+export function WordCase_applyRange<S extends string, CO extends WordCase>(
+    str: S, 
+    casings: readonly CO[],
+): WordCase_Apply<S, CO>[] {
     return casings.map(casing => WordCase_apply(str, casing));
 }

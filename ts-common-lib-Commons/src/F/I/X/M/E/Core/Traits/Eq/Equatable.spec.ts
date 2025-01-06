@@ -1,6 +1,6 @@
-import { EquatableObject, equals, equalsAny } from "./Equatable";
-import { check } from "../../Debug/Check";
-import { panic } from "../../Errors/Panic";
+import {EquatableObject, equals, equalsAny} from "./Equatable";
+import {check} from "../../Debug/Check";
+import {panic} from "../../Errors/Panic";
 
 describe("equals()", () => {
     it("works for values", () => {

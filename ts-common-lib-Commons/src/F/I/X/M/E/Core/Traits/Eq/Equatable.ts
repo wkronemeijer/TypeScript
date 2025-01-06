@@ -1,5 +1,5 @@
-import { isErrorNumber, isFunction, isObject } from "../../IsX";
-import { value_t } from "../../Types/Primitive";
+import {isErrorNumber, isFunction, isObject} from "../../IsX";
+import {value_t} from "../../Types/Primitive";
 
 //////////////////////
 // EqualityComparer //

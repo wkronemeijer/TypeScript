@@ -6,6 +6,7 @@
         "typescript": "*"
     },
     "dependencies": {
+        "@wkronemeijer/clap": "*",
         "@wkronemeijer/system": "*",
         "@wkronemeijer/system-node": "*",
         "@wkronemeijer/react-server-page": "*",

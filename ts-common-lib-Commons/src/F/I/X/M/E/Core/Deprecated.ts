@@ -1,4 +1,4 @@
-import {doOnce} from "../(Prelude)/DoOnce";
+import {doOnce} from "./DoOnce";
 
 interface DeprecationWarningOptions {
     /** Object used to track if a warning has already been logged. */

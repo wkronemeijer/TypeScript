@@ -8,7 +8,7 @@ import {TimingReport_toString} from "../TimingReportFormatter";
 import {LoggingFunction} from "./LoggingFunction";
 import {Dictionary} from "../../Core/Data/Collections/Builtin/Dictionary";
 import {LogMessage} from "./LogMessage";
-import {doOnce} from "../../(Prelude)/DoOnce";
+import {doOnce} from "../../Core/DoOnce";
 import {__log} from "./Logger";
 
 /////////////////////////

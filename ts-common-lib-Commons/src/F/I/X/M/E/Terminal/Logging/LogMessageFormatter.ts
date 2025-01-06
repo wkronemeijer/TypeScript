@@ -6,7 +6,7 @@ import { inspectValue } from "../Inspect";
 import { Date_toHHmm } from "../../Core/Data/Date";
 import { LogMessage } from "./LogMessage";
 import { LogChannel } from "./LogChannel";
-import {doOnce} from "../../(Prelude)/DoOnce";
+import {doOnce} from "../../Core/DoOnce";
 
 // Formatter feels more of a problem for the implementor
 // Can still provide the type and a default tho.
