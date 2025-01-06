@@ -13,11 +13,9 @@ interface DeprecationWarningOptions {
  * Logs a deprecation warning. 
  * Uses a marker to log only once. 
  */
-export function logDeprecationWarning({
-    marker, 
-    oldName, 
-    newName, 
-}: DeprecationWarningOptions): void {
+export function logDeprecationWarning(
+    {marker, oldName, newName}: DeprecationWarningOptions,
+): void {
     if (!marked.has(marker)) {
         console.warn(newName !== undefined ? 
             `'${oldName}' is deprecated, use '${newName}' instead` : 

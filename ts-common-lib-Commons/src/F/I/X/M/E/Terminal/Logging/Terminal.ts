@@ -1,14 +1,16 @@
 // console but const and with some extra goodies.
 // FEATURE: terminal.indent() and terminal.dedent() support, for making groups easier to make pretty.
 
-import {Dictionary} from "../../Core/Data/Collections/Builtin/Dictionary";
-import {Function_includeProperties} from "../../Core/Data/Function/Function";
-import {StringTargetLine, stringBuild} from "../../Core/Data/Textual/StringBuilder";
-import {TimingReport_toString} from "../TimingReportFormatter";
 import {DeveloperLogChannel, LogChannel, UserLogChannel} from "./LogChannel";
-import {LogMessage} from "./LogMessage";
-import {__log} from "./Logger";
+import {StringTargetLine, stringBuild} from "../../Core/Data/Textual/StringBuilder";
+import {Function_includeProperties} from "../../Core/Data/Function/Function";
+import {logDeprecationWarning} from "../../Core/Deprecated";
+import {TimingReport_toString} from "../TimingReportFormatter";
 import {LoggingFunction} from "./LoggingFunction";
+import {Dictionary} from "../../Core/Data/Collections/Builtin/Dictionary";
+import {LogMessage} from "./LogMessage";
+import {nameof} from "../../Core/Debug/Nameof";
+import {__log} from "./Logger";
 
 /////////////////////////
 // Bonus functionality //
@@ -159,9 +161,15 @@ const bonus: BonusFunctionality = {
 };
 
 /** Custom console. */
-export const terminal = {
+export const terminal = new Proxy({
     ...userLoggers,
     ...devLoggers,
     ...bonus,
     writeLine: userLoggers.log.writeLine,
-} as const;
+} as const, {
+    get(target, property, receiver) {
+        logDeprecationWarning({marker: terminal, oldName: nameof({terminal})});
+        delete this.get;
+        return Reflect.get(target, property, receiver);
+    },
+});

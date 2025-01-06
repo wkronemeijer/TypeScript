@@ -1,6 +1,6 @@
-import { humanizeDuration } from "../Core/Data/Textual/Formatting/Duration";
-import { StringBuilder } from "../Core/Data/Textual/StringBuilder";
-import { requires } from "../Core/Errors/Assert";
+import {humanizeDuration} from "../Core/Data/Textual/Formatting/Duration";
+import {StringBuilder} from "../Core/Data/Textual/StringBuilder";
+import {requires} from "../Core/Errors/Assert";
 
 export interface TimingReport {
     readonly label: string;
@@ -8,8 +8,9 @@ export interface TimingReport {
     readonly end: number;
 }
 
-export function TimingReport_toString(self: TimingReport): string {
-    const { label, start, end } = self;
+export function TimingReport_toString(
+    {label, start, end}: TimingReport,
+): string {
     requires(0 <= start && start <= end, "range error");
     
     const timeDelta = end - start;
