@@ -1,10 +1,8 @@
 // Q: Why don't you split it up into more files?
 // A: Because I don't think it makes the code any clearer. 
 
-import { StringBuilder } from "../../Core/Data/Textual/StringBuilder";
-import { StringEnum } from "../../Core/Data/Textual/StringEnum";
-import { Newtype } from "../../Core/Data/Nominal/Newtype";
-import { Member } from "../../Core/Data/Collections/Enumeration";
+import {StringEnum} from "../../Core/Data/Textual/StringEnum";
+import {Newtype} from "../../Core/Data/Nominal/Newtype";
 
 ///////////////
 // AnsiColor //
@@ -24,7 +22,7 @@ import { Member } from "../../Core/Data/Collections/Enumeration";
 //     Unset = 9
 // }
 
-export type  AnsiColor = Member<typeof AnsiColor>;
+export type  AnsiColor = ReturnType<typeof AnsiColor>;
 export const AnsiColor = StringEnum({
     /** Black in dark mode, white in light mode. */
     black: 0,
@@ -44,7 +42,7 @@ export const AnsiColor = StringEnum({
 // Font weight //
 /////////////////
 
-export type  AnsiFontWeight = Member<typeof AnsiFontWeight>;
+export type  AnsiFontWeight = ReturnType<typeof AnsiFontWeight>;
 export const AnsiFontWeight = StringEnum([
     "unset",
     "bold",

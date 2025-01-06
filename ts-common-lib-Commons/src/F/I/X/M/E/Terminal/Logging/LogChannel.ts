@@ -1,9 +1,8 @@
-import { PartialRecord_toPartialFunction } from "../../Core/Data/Collections/Record";
-import { StringEnum } from "../../Core/Data/Textual/StringEnum";
-import { AnsiColor } from "../Console/TextDecoration";
-import { Member } from "../../Core/Data/Collections/Enumeration";
+import {PartialRecord_toPartialFunction} from "../../Core/Data/Collections/Record";
+import {StringEnum} from "../../Core/Data/Textual/StringEnum";
+import {AnsiColor} from "../Console/TextDecoration";
 
-export type  UserLogChannel = Member<typeof UserLogChannel>;
+export type  UserLogChannel = ReturnType<typeof UserLogChannel>;
 export const UserLogChannel = StringEnum([
     "info",
     "log",
@@ -11,14 +10,14 @@ export const UserLogChannel = StringEnum([
     "error", // error (duh)
 ] as const).withDefault("log");
 
-export type  DeveloperLogChannel = Member<typeof DeveloperLogChannel>;
+export type  DeveloperLogChannel = ReturnType<typeof DeveloperLogChannel>;
 export const DeveloperLogChannel = StringEnum([
     "trace",
     "perf",
     "meta", // everything else
 ] as const).withDefault("meta");
 
-export type  LogChannel = Member<typeof LogChannel>;
+export type  LogChannel = ReturnType<typeof LogChannel>;
 export const LogChannel = StringEnum([
     ...UserLogChannel.values,
     ...DeveloperLogChannel.values,

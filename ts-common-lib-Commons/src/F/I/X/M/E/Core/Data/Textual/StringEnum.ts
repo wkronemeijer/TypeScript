@@ -1,22 +1,35 @@
 // Incredibly commonly used custom "type" to assist with 
 // using a union of string literals as an enum.
 
-import {Array_firstElement, Array_IndexNotFound, Array_lastElement} from "../Collections/Builtin/Array";
+import {Array_firstElement, Array_lastElement} from "../Collections/Builtin/Array";
 import {Comparer, compare as System_compare} from "../../Traits/Ord/Comparable";
-import {StringEnumPlaceholder_hasInstance} from "./StringEnumPlaceholder";
-import {StringEnumInitializer} from "./StringEnumInitializer";
-import {ensures, requires} from "../../Errors/Assert";
 import {EqualityComparer} from "../../Traits/Eq/Equatable";
 import {defineProperty} from "../../Re-export/Object";
 import {StringBuilder} from "./StringBuilder";
 import {Map_reverse} from "../Collections/Builtin/Map";
 import {ArrayMember} from "../Collections/Enumeration";
 import {HasInstance} from "../../HasInstance";
-import {Set_hasAny} from "../Collections/Builtin/Set";
 import {Printable} from "../../Printable";
 import {isInteger} from "../../IsX";
 import {Ordering} from "../../Traits/Ord/Ordering";
 import {panic} from "../../Errors/Panic";
+
+///////////////////////////
+// StringEnumInitializer // 
+///////////////////////////
+
+const placeholders = [true, "iota"] as const;
+
+type StringEnumPlaceholder = (typeof placeholders)[number];
+
+function isPlaceholder(value: unknown): value is StringEnumPlaceholder {
+    return placeholders.includes(value as any);
+}
+
+export type StringEnumInitializer<E extends string> = (
+    | readonly E[] 
+    | {readonly [P in E]: number | StringEnumPlaceholder}
+);
 
 /////////////////////
 // StringEnum type //
@@ -159,9 +172,23 @@ extends Iterable<E>, Printable, HasInstance<E> {
     toString(): string;
 }
 
+interface StringEnumConstructor {
+    /**
+     * Creates an enum from a set of string values.
+     * The result can for instance be used to iterate over all values in order.
+     */
+    <const E extends string>(values: StringEnumInitializer<E>): StringEnum<E>;
+    
+    // DESIGN NOTE:
+    // At some point we may need to use a object for options
+    // name is a candidate
+    // default is a candidate
+}
+
 ////////////////
 // OrdinalMap //
 ////////////////
+// #region OrdinalMap
 
 type OrdinalMap<E extends string> = ReadonlyMap<E, number>;
 
@@ -173,11 +200,12 @@ function OrdinalMap<E extends string>(
     const usedOrdinals = new Set<number>;
     
     function addMember(name: E, ordinal: number): void {
-        requires(!usedNames.has(name), 
-            () => `Duplicate name '${name}'.`);
-        requires(!usedOrdinals.has(ordinal), 
-            () => `Duplicate ordinal '${ordinal}'.`);
-        
+        if (usedNames.has(name)) {
+            panic(`duplicate member '${name}'`);
+        }
+        if (usedOrdinals.has(ordinal)) {
+            panic(`duplicate ordinal (${ordinal})`);
+        } 
         result.set(name, ordinal);
         usedNames.add(name);
         usedOrdinals.add(ordinal);
@@ -196,18 +224,17 @@ function OrdinalMap<E extends string>(
             let ordinal: number;
             if (typeof value === "number") {
                 ordinal = value;
-            } else if (StringEnumPlaceholder_hasInstance(value)) { 
+            } else if (isPlaceholder(value)) { 
                 ordinal = iota;
             } else {
-                panic(`'${value}' is not a valid ordinal initializer.`);
+                panic(`'${value}' is not a valid ordinal initializer`);
             }
             
-            // Using `requires` here gives causes TS7022 (circular type inference) for some reason 🥴
             if (isInteger(ordinal)) {
                 addMember(name, ordinal);
                 iota = ordinal + 1;
             } else {
-                panic(`Failed to convert '${value}' into a valid ordinal.`);
+                panic(`failed to convert '${value}' into a valid ordinal`);
             }
         }
     }
@@ -230,34 +257,36 @@ function OrdinalMap_toString<E extends string>(values: OrdinalMap<E>): string {
     return result.toString();
 }
 
+/////////////////////
+// StringEnum impl //
+/////////////////////
+// #region impl StringEnum
+
 /**
  * Turns a function `(number, number) -> number` 
  * and lifts it to `(E, E) -> E`.
- * Throws if any ordinal is not a member.
+ * 
+ * Panics if the result is not a member.
  */
 function liftIndexFunction<EA extends readonly string[]>(
     values: EA,
-    innerFunc: (a: number, b: number) => number
+    func: (a: number, b: number) => number,
 ): (a: ArrayMember<EA>, b: ArrayMember<EA>) => ArrayMember<EA> {
     return (a, b): ArrayMember<EA> => {
         const indexA = values.indexOf(a);
         const indexB = values.indexOf(b);
-        
-        requires(indexA !== Array_IndexNotFound);
-        requires(indexA !== Array_IndexNotFound);
-        
-        const result = values[innerFunc(indexA, indexB)];
-        
-        ensures(result !== undefined, () => 
-            `Function '${innerFunc.name}' return out of range.`);
+        const result = values[func(indexA, indexB)];
+        if (result === undefined) {
+            panic(`function '${func.name}' return out of range`);
+        }
         return result;
     };
 }
 
 function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>): StringEnum<E> {
-    requires(ordinalByName.size > 0, 
-        `StringEnum must not be empty.`);
-    
+    if (ordinalByName.size === 0) {
+        panic(`StringEnum must not be empty`);
+    }
     const memberByOrdinal = Map_reverse(ordinalByName);
     const leastOrdinal    = Math.min(...ordinalByName.values());
     
@@ -313,7 +342,7 @@ function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>)
     ////////////////
     
     function hasInstance(x: unknown): x is E {
-        return Set_hasAny(setOfValues, x);
+        return setOfValues.has(x as any);
     }
     
     function check(x: unknown): E {
@@ -324,7 +353,7 @@ function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>)
     // class Eq //
     //////////////
     
-    function equals(a: E, b: E) {
+    function equals(a: E, b: E): boolean {
         return hasInstance(a) && a === b;
     }
     
@@ -332,8 +361,8 @@ function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>)
     // class Ord //
     ///////////////
     
-    const minimum = Array_firstElement<E>(values) ?? panic();
-    const maximum = Array_lastElement <E>(values) ?? panic();
+    const minimum = Array_firstElement(values) ?? panic();
+    const maximum = Array_lastElement (values) ?? panic();
     
     const min     = liftIndexFunction(values, Math.min);
     const max     = liftIndexFunction(values, Math.max);
@@ -416,8 +445,6 @@ function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>)
  * Creates an enum from a set of string values.
  * Being a runtime value, it can be used for iteration, validation or having a default.
  */
-export function StringEnum<const E extends string>(
-    values: StringEnumInitializer<E>,
-): StringEnum<E> {
+export const StringEnum: StringEnumConstructor = values => {
     return OrdinalMap_toStringEnum(OrdinalMap(values));
 }
