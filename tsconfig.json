@@ -15,11 +15,9 @@
         // TypeScript //
         ////////////////
         
-        "target": "ES2022",
-        "lib": ["ES2022"],
-        "types": [
-            "mocha"
-        ],
+        "target": "ES2024",
+        "lib": ["ES2024"],
+        "types": ["mocha"],
         "resolveJsonModule": true,
         "forceConsistentCasingInFileNames": true,
         "noErrorTruncation": true,
