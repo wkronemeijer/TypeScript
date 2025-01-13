@@ -6,7 +6,10 @@ import {fileURLToPath} from "url";
 import {RawSourceMap} from "source-map-js";
 import {scss} from "../../../lib";
 
-function SourceMap_relativize(self: RawSourceMap, path: AbsolutePath): RawSourceMap {
+function SourceMap_relativize(
+    self: RawSourceMap, 
+    path: AbsolutePath,
+): RawSourceMap {
     const newSources = self.sources.map(fileUrl => {
         const source = path;
         const target = AbsolutePath(fileURLToPath(fileUrl));

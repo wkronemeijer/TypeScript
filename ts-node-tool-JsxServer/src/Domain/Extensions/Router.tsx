@@ -19,15 +19,10 @@ function determineErrorStatus(error: Error): ErrorResponse["kind"] {
 const BELL = '\x07';
 
 async function tryRender_async<T extends TypedResponseBody>(
-    transform: FileTransform<T>, 
+    {virtual = false, render_async, renderError_async}: FileTransform<T>, 
     request: FileTransformRequest,
 ): Promise<TypedResponse> {
     const {root, file} = request;
-    const {
-        virtual = false, 
-        render_async, 
-        renderError_async,
-    } = transform;
     
     // I know that (async) checking for exists is a bad idea
     // The alternative is that esbuild or something else downstream creates a more obscure error;
@@ -53,10 +48,11 @@ async function tryRender_async<T extends TypedResponseBody>(
                 };
             }
         } catch (nestedError) {
-            terminal.error(`${BELL}error rendering failed: ${String(nestedError)}`);
+            terminal.error(
+                `${BELL}error rendering failed: ${String(nestedError)}`
+            );
             error = nestedError;
         }
-        
         return {
             kind: "Internal Server Error", 
             body: ErrorDescription(error)
@@ -70,26 +66,29 @@ export function Router_registerFileTransform<T extends TypedResponseBody>(
     transform: FileTransform<T>,
 ): void {
     const root = DirectoryObject.fromUrl(rootUrl);
-    const {pattern, allowPost = false} = transform;
     
     function createHandler(method: HttpMethod): express.RequestHandler {
         return async (req, res) => {
-            const url = new URL(rootUrl + req.url);
+            const partialRequestUrl = req.url;
+            const url = new URL(rootUrl + partialRequestUrl);
             const file = FileObject.fromUrl(url);
             let {body} = req;
             if (!isString(body)) {
                body = undefined; 
             }
             Response_send(res, await tryRender_async(transform, {
-                method, 
+                partialRequestUrl,
                 rootUrl, 
+                method, 
                 root, 
                 url, 
                 file, 
                 body,
             }));
-        }
+        };
     };
+    
+    const {pattern, allowPost = false} = transform;
     
     router.get(pattern, createHandler("GET"));
     if (allowPost) {

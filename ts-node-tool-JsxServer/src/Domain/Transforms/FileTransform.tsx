@@ -16,6 +16,9 @@ export interface FileTransformRequest {
     /** Virtual file object currently being served. */
     readonly file: FileObject;
     
+    /** Partial request URL, forwarded from Express. */
+    readonly partialRequestUrl: string;
+    
     /** Body associated with this request. */
     readonly body: string | undefined;
 }
