@@ -1,7 +1,8 @@
 import {Comparable, compareAny, Comparer} from "../../../Traits/Ord/Comparable";
+import {deprecatedAlias} from "../../../Deprecated";
 import {random, trunc} from "../../../Re-export/Math";
 import {Selector} from "../../../Types/Function";
-import {value_t} from "../../../Types/Primitive";
+import {combine} from "../../N_OrMore";
 
 /** Returns the first valid index of an array. */
 export function Array_firstIndex(array: ArrayLike<any>): number | undefined {
@@ -13,10 +14,16 @@ export function Array_lastIndex(array: ArrayLike<any>): number | undefined {
     return (array.length > 0) ? (array.length - 1) : undefined;
 }
 
+/** 
+ * Returns the last element of an array. Consider using `array.at(0)` instead. 
+ */
 export function Array_firstElement<T>(array: ArrayLike<T>): T | undefined {
     return array[0];
 }
 
+/** 
+ * Returns the last element of an array. Consider using `array.at(-1)` instead. 
+ */
 export function Array_lastElement<T>(array: ArrayLike<T>): T | undefined {
     return array[array.length - 1];
 }
@@ -30,10 +37,14 @@ export function Array_randomElement<T>(self: ArrayLike<T>): T | undefined {
 /** Value indicating that the requested item was not found. */
 export const Array_IndexNotFound = -1;
 
-// TODO: replace when combine gets added
-export function Array_normalize<T>(singletonOrList: T | readonly T[]): readonly T[] {
-    return singletonOrList instanceof Array ? singletonOrList : [singletonOrList];
-}
+/** 
+ * Normalizes a singleton or an array, to an array.  
+ * 
+ * @deprecated Use `combine` instead.
+ * */
+export const Array_normalize: (
+    <T>(singletonOrList: T | readonly T[]) => readonly T[]
+) = deprecatedAlias("Array_normalize", combine);
 
 /** 
  * Swaps two elements of an array. 
@@ -57,17 +68,16 @@ export function Array_swap<T>(
     }
 }
 
+// Based https://stackoverflow.com/a/2450976
 export function Array_shuffleInPlace<T>(self: T[]): void {
-    // https://stackoverflow.com/a/2450976
-    let randomIndex  = 0;
     let currentIndex = self.length;
+    let randomIndex: number;
     
     // While there remain elements to shuffle.
     while (currentIndex !== 0) {
         // Pick a remaining element.
         randomIndex   = trunc(random() * currentIndex);
         currentIndex -= 1;
-        
         Array_swap(self, currentIndex, randomIndex);
     }
 }
@@ -86,7 +96,10 @@ export function Array_isNotEmpty(arr: readonly unknown[]): boolean {
     return arr.length !== 0;
 }
 
-export function Array_includesAny<T extends value_t>(self: ReadonlyArray<T>, value: unknown): value is T {
+export function Array_includesAny<T>(
+    self: ReadonlyArray<T>, 
+    value: unknown
+): value is T {
     return self.includes(value as any);
 }
 

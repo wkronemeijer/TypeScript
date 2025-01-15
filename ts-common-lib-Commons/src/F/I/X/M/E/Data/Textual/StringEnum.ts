@@ -1,7 +1,6 @@
 // Incredibly commonly used custom "type" to assist with 
 // using a union of string literals as an enum.
 
-import {Array_firstElement, Array_lastElement} from "../Collections/Builtin/Array";
 import {Comparer, compare as System_compare} from "../../Traits/Ord/Comparable";
 import {EqualityComparer} from "../../Traits/Eq/Equatable";
 import {defineProperty} from "../../Re-export/Object";
@@ -361,8 +360,8 @@ function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>)
     // class Ord //
     ///////////////
     
-    const minimum = Array_firstElement(values) ?? panic();
-    const maximum = Array_lastElement (values) ?? panic();
+    const minimum = values.at( 0) ?? panic();
+    const maximum = values.at(-1) ?? panic();
     
     const min     = liftIndexFunction(values, Math.min);
     const max     = liftIndexFunction(values, Math.max);
