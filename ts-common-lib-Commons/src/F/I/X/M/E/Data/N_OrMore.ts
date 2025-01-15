@@ -1,5 +1,5 @@
 export type OneOrMore<T>  = T | Iterable<T>;
-export type ZeroOrMore<T> = OneOrMore<T> | undefined;
+export type ZeroOrMore<T> = OneOrMore<T> | null | undefined;
 
 function isIterableObject(elements: unknown): elements is Iterable<unknown> {
     return (
@@ -10,12 +10,13 @@ function isIterableObject(elements: unknown): elements is Iterable<unknown> {
 }
 
 /** 
- * Normalizes undefined, individual values and iterable collections of value to a single combined array type. 
- * Strings are treated as single values, even though they are technically iterable. 
+ * Normalizes undefined, individual values and iterables into an array. 
+ * 
+ * **NB**: Strings are treated as single values, even though they are iterable. 
  */
 export function combine<const T>(elements: ZeroOrMore<T>): T[] {
     // TODO: Use switch(true)
-    if (elements === undefined) {
+    if (elements === null || elements === undefined) {
         return [];
     } else if (isIterableObject(elements)) {
         return [...elements];
@@ -24,9 +25,17 @@ export function combine<const T>(elements: ZeroOrMore<T>): T[] {
     }
 }
 
+/**
+ * Returns the first (= "primary") element of an nullable iterable. 
+ * 
+ * **NB**: Strings are treated as single values, even though they are iterable. 
+ * 
+ * @deprecated Use `combine(...)[0]` instead. 
+ * Or wait until they add `at()` to `Iterator.prototype`.
+ */
 export function primary<const T>(elements: ZeroOrMore<T>): T | undefined {
     // TODO: Use switch(true)
-    if (elements === undefined) {
+    if (elements === null || elements === undefined) {
         return undefined;
     } else if (isIterableObject(elements)) {
         const [first] = elements;
