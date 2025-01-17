@@ -1,4 +1,5 @@
 import {AbsolutePath, Path_relative, RelativePath_toUrl} from "@wkronemeijer/system-node";
+import {checkUsesBundleSuffix} from "../CheckBundle";
 import {stringifyJson, swear} from "@wkronemeijer/system";
 import {CssStylesheet} from "../../ResultTypes/CssStylesheet";
 import {FileTransform} from "../FileTransform";
@@ -31,7 +32,9 @@ const AnsiEscapeSequence = /\x1B\[\d{1,2}m/g;
 
 export const StylesheetRenderer: FileTransform<CssStylesheet> = {
     pattern: /\.scss$/,
-    async render_async({file}) {
+    async render_async(req) {
+        checkUsesBundleSuffix(req);
+        const {file} = req;
         const path = file.path;
         const compileResult = await scss.compileAsync(path, {
             sourceMap: true,
