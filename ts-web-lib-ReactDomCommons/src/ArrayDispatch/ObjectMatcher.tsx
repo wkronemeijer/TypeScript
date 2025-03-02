@@ -1,6 +1,7 @@
 import {CallObjectFor, StoredCall, applyStoredCall_unsafe, logStoredCall} from "./StoredCall";
 import {produce, Draft} from "immer";
 
+// TODO: Use `T & ThisType<N>?`;
 export type ReplaceThis<T, N> = {
     readonly [P in keyof T]: T[P] extends (...args: infer A) => infer R ? (
         (this: N, ...args: A) => R
