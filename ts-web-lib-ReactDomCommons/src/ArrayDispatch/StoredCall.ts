@@ -9,9 +9,9 @@ export interface StoredCall {
 }
 
 export function applyStoredCall_unsafe(
-    source: object, 
+    source: {}, 
     {name, args}: StoredCall, 
-    thisArg: object = source,
+    thisArg: {} = source,
 ): unknown {
     if (!(name in source)) {
         panic(`method '${name}' is missing in target`);
