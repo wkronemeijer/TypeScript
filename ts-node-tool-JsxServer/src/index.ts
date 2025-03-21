@@ -1,9 +1,11 @@
 import {DirectoryObject, getAddressPort, getLocalIp} from "@wkronemeijer/system-node";
 import {terminal, powerlineLabel} from "@wkronemeijer/ansi-console";
+import type {bin as PackageBin} from "../package.json";
 import {parseArgumentList} from "@wkronemeijer/clap";
 import {guard, isInteger} from "@wkronemeijer/system";
 import {configureServer} from "./Domain/ConfigureServer";
 import {express} from "./lib";
+
 
 // Not sure where to put this...it should only run once.
 function registerCustomFileTypes() {
@@ -14,7 +16,8 @@ function registerCustomFileTypes() {
     });
 }
 
-const RASP_HOME = "RASP_HOME";
+const COMMAND_NAME = "rasp-server" satisfies keyof typeof PackageBin;
+const RASP_HOME    = "RASP_HOME";
 
 const DefaultRoot = ".";
 const DefaultPort = "8080";
@@ -60,6 +63,8 @@ export async function main(args: readonly string[]): Promise<void> {
     const server = configureServer(root).listen(desiredPort);
     
     const actualPort = getAddressPort(server) ?? desiredPort;
+    
+    terminal.log(`\x1B]0;${COMMAND_NAME}\x1B\\`);
     
     terminal.log(`${powerlineLabel("Root folder")} ${root.url.href}`);
     terminal.log(`${powerlineLabel("Local address")} ${getLocalIp("IPv4")}:${actualPort}`);

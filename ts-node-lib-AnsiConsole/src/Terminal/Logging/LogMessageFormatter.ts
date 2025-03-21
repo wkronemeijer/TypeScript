@@ -1,5 +1,5 @@
 import {AnsiTextStyle_set, AnsiTextStyle_use, SgrCommand_ResetAll} from "../Console/TextDecoration";
-import {Date_toHHmm, doOnce, StringBuilder} from "@wkronemeijer/system";
+import {Date_toHHmm, StringBuilder} from "@wkronemeijer/system";
 import {stripAnsiSequences} from "../Console/Ansi/Strip";
 import {inspectValue} from "../Inspect";
 import {LogMessage} from "./LogMessage";

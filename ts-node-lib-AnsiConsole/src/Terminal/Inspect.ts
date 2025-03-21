@@ -13,7 +13,7 @@ interface InspectOptions {
 /** Platform-independent replacement for `util.inspect` */
 export function inspectValue(
     value: unknown, 
-    options: InspectOptions = {},
+    _: InspectOptions = {},
 ): DecoratedString {
     return DecoratedString(typeof value === "string" ? value : inspect(value));
 }
