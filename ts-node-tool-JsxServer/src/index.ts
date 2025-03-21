@@ -1,11 +1,10 @@
 import {DirectoryObject, getAddressPort, getLocalIp} from "@wkronemeijer/system-node";
-import {terminal, powerlineLabel} from "@wkronemeijer/ansi-console";
+import {guard, isInteger, StringBuilder} from "@wkronemeijer/system";
 import type {bin as PackageBin} from "../package.json";
 import {parseArgumentList} from "@wkronemeijer/clap";
-import {guard, isInteger} from "@wkronemeijer/system";
 import {configureServer} from "./Domain/ConfigureServer";
+import {powerlineLabel} from "@wkronemeijer/ansi-console";
 import {express} from "./lib";
-
 
 // Not sure where to put this...it should only run once.
 function registerCustomFileTypes() {
@@ -64,9 +63,25 @@ export async function main(args: readonly string[]): Promise<void> {
     
     const actualPort = getAddressPort(server) ?? desiredPort;
     
-    terminal.log(`\x1B]0;${COMMAND_NAME}\x1B\\`);
+    const openingMessage = new StringBuilder;
     
-    terminal.log(`${powerlineLabel("Root folder")} ${root.url.href}`);
-    terminal.log(`${powerlineLabel("Local address")} ${getLocalIp("IPv4")}:${actualPort}`);
-    terminal.log(`\n>>> Connect to http://localhost:${actualPort}/ <<<\n`);
+    openingMessage.append(powerlineLabel("Root folder"));
+    openingMessage.append(' ');
+    openingMessage.append(root.url.href);
+    openingMessage.appendLine();
+    
+    openingMessage.append(powerlineLabel("Local address"));
+    openingMessage.append(' ');
+    openingMessage.append(getLocalIp("IPv4"));
+    openingMessage.append(':');
+    openingMessage.append(actualPort.toString());
+    openingMessage.appendLine();
+    
+    openingMessage.append(`\x1B]0;${COMMAND_NAME}\x1B\\`);
+    openingMessage.appendLine();
+    
+    openingMessage.append(`>>> Connect to http://localhost:${actualPort}/ <<<`);
+    openingMessage.appendLine();
+    
+    console.log(openingMessage.toString());
 }
