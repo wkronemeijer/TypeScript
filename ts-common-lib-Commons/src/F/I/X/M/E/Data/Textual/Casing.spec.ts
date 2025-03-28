@@ -1,8 +1,5 @@
-import { swear } from "../../Errors/Assert";
-import { check } from "../../Debug/Check";
-import { uppercase } from "./Casing";
-
-export {};
+import {uppercase} from "./Casing";
+import {check} from "../../Debug/Check";
 
 describe("Casing", () => {
     describe("uppercase", () => {

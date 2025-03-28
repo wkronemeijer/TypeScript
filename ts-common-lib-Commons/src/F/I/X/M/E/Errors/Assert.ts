@@ -25,10 +25,6 @@ type LazyMessage = () => string;
 /** A constructor for errors, with a room for a message. */
 type UnaryErrorConstructor = new (message: Message) => Error;
 
-interface ErrorGuardFunction {
-    <T>(value: T | Error): asserts value is T;
-}
-
 /* Theory for `isOk` is sound
 Just a question of: what do we do with `requires` and `ensures`?
 I think they are cute, but was is the functional difference with `swear`?

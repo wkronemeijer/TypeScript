@@ -37,7 +37,16 @@ export function isString(value: unknown): value is string {
 
 export const isInteger: (value: unknown) => value is number = Number_isSafeInteger as any;
 
+export function isNatural(value: unknown): value is number {
+    return isInteger(value) && value >= 0;
+}
+
 export const isFinite: (value: unknown) => value is number = Number_isFinite as any;
+
+/** 
+ * Synonym for {@link Number.isNaN}. 
+ */
+export const isNaN: (value: unknown) => value is number = Number_isNaN as any;
 
 /** 
  * Synonym for {@link Number.isNaN}. 

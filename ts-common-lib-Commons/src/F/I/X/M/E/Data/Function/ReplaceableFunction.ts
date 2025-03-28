@@ -49,7 +49,7 @@ function ReplaceableFunctionPrototype(): void {
 }
 
 definePropertiesOnPrototype(ReplaceableFunctionPrototype, {
-    [$currentImpl]: (...args: unknown[]) => {
+    [$currentImpl]: (..._: unknown[]) => {
         return panic("Current implementation for ReplaceableFunctionPrototype should not be called.");
     },
     overwrite,

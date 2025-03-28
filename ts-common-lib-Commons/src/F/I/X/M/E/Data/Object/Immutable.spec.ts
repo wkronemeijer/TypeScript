@@ -34,12 +34,12 @@ describe("Immutable", () => {
     });
     it("does not modify old", () => {
         const p = new Point(3, 4);
-        const _ = p.with({ x: 10 });
+        p.with({ x: 10 });
         check.same(p.x, 3);
     });
     it("prevents modification of old", () => {
         const p = new Point(3, 4);
-        const _ = p.with({ x: 10 });
+        p.with({ x: 10 });
         check.throws(() => {
             (p as ReadWrite<typeof p>).x = 10;
         });

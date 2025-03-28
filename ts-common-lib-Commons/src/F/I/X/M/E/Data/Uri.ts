@@ -1,7 +1,5 @@
 import {EquatableObject} from "../Traits/Eq/Equatable";
-import {Contravariant} from "../Types/Magic";
 import {Printable} from "../Printable";
-import {Assert} from "../Types/Assert";
 
 interface UriComponents {
     /**
@@ -86,18 +84,11 @@ extends UriComponents, EquatableObject, Printable {
     toJSON(): string;
 }
 
-type UrlFactoryParameters = ConstructorParameters<typeof URL>;
-
 type UriLike = string | {readonly href: string};
 type UriFactoryParameters = readonly [
     url: UriLike,
     base?: UriLike,
 ];
-
-type Assert_UriIsMorePermissive = Assert<
-    Contravariant<UriFactoryParameters> extends 
-    Contravariant<UrlFactoryParameters> 
-? true : false>;
 
 interface UriConstructor {
     new(...args: UriFactoryParameters): Uri;

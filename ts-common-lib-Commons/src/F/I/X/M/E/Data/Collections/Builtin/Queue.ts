@@ -7,7 +7,3 @@ export interface Queue<T> extends ReadonlyArray<T> {
     /** Removes the first element from the queue and returns it. */    
     shift(): T | undefined;
 }
-
-const t_assignable: 
-    Array<number> extends Queue<number> ? 
-true : false = true;

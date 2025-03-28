@@ -66,7 +66,7 @@ function numberCompare(lhs: number, rhs: number): Ordering {
     return Ordering(lhs - rhs);
 }
 
-function constantEqual(lhs: unknown, rhs: unknown): Ordering {
+function constantEqual(_lhs: unknown, _rhs: unknown): Ordering {
     return Equal;
 }
 

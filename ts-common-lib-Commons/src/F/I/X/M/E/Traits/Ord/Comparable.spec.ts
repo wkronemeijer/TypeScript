@@ -1,15 +1,8 @@
-import { ComparableObject, Comparer, compare, compareAny, compareIterable } from "./Comparable";
-import { Ordering, Ordering_Equal, Ordering_Greater, Ordering_Less } from "./Ordering";
-import { Assert } from "../../Types/Assert";
-import { check } from "../../Debug/Check";
+import {Ordering, Ordering_Equal, Ordering_Greater, Ordering_Less} from "./Ordering";
+import {ComparableObject, compare, compareAny, compareIterable} from "./Comparable";
+import {check} from "../../Debug/Check";
 
-const { Less, Equal, Greater } = Ordering;
-
-type Array_comparer<T> = NonNullable<Parameters<Array<T>["sort"]>[0]>;
-
-type Assert_ComparerIsArrayCompatible = Assert<
-    Comparer<number> extends Array_comparer<number>
-? true : false>;
+const {Less, Equal, Greater} = Ordering;
 
 describe("compare()", () => {
     it("works for numbers", () => {

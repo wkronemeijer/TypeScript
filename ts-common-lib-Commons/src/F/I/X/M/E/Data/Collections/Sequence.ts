@@ -1,21 +1,11 @@
-import { Comparer, compare, compareAny } from "../../Traits/Ord/Comparable";
-import { FstAny, SndAny, fst, snd } from "../Tuple";
-import { Predicate, Selector } from "../../Types/Function";
-import { Array_shuffle } from "./Builtin/Array";
-import { Comparable } from "../../Traits/Ord/Comparable";
-import { Dictionary } from "./Builtin/Dictionary";
-import { identity } from "../Function/Common";
-import { Truthy } from "../../Types/Truthy";
-
-// Not sure where to place these and what to call them
-// Left-biased (return the left operand when possible)
-function Comparer_min<T>(comparer: Comparer<T>, left: T, right: T): T {
-    return comparer(right, left) < 0 ? right : left;
-}
-
-function Comparer_max<T>(comparer: Comparer<T>, left: T, right: T): T {
-    return comparer(right, left) > 0 ? right : left;
-}
+import {Comparer, compare, compareAny} from "../../Traits/Ord/Comparable";
+import {FstAny, SndAny, fst, snd} from "../Tuple";
+import {Predicate, Selector} from "../../Types/Function";
+import {Array_shuffle} from "./Builtin/Array";
+import {Comparable} from "../../Traits/Ord/Comparable";
+import {Dictionary} from "./Builtin/Dictionary";
+import {identity} from "../Function/Common";
+import {Truthy} from "../../Types/Truthy";
 
 export interface Sequence<T> extends Iterable<T> {
     /////////////////////////

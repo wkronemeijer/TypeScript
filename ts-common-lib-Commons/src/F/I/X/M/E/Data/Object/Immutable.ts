@@ -37,9 +37,9 @@ export class Immutable {
     }
 }
 
-function immutable<C extends Constructor>(
+export function decorateImmutable<C extends Constructor>(
     base: C, 
-    context: ClassDecoratorContext,
+    _: ClassDecoratorContext,
 ) {
     return class immutableImpl extends base {
         constructor(...args: any[]) {

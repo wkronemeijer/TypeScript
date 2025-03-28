@@ -1,7 +1,7 @@
 export {};
 
 /** Marks a function as not (yet) implemented. */
-function notImplemented(...args: unknown[]): never {
+function notImplemented(..._: unknown[]): never {
     throw new Error("This is not (yet) implemented.");
 }
 // Global define so you don't have to remove unused "notImplemented" imports.

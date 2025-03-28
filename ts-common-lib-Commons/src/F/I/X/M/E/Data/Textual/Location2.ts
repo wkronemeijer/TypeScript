@@ -97,11 +97,10 @@ export function getTextPreview(options: TextPreviewOptions): string {
         source,
         errorStart, 
         errorEnd, 
-        color = true, 
         errorChar = "~",
     } = options;
     
-    const [ln, col] = getTextLocation(source, errorStart);
+    const [ln] = getTextLocation(source, errorStart);
     const [lineStart, lineEnd] = getLineLocation(source, errorStart);
     const lineNumberSize = getMaxLineNo(source).toString().length;
     
