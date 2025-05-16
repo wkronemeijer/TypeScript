@@ -16,6 +16,7 @@
         "@wkronemeijer/system-react": "file:ts-web-lib-ReactDomCommons",
         "@wkronemeijer/system-web": "file:ts-web-lib-WebCommons",
         "bun": "^1.2.3",
+        "culori": "^4.0.1",
         "esbuild": "^0.25.0",
         "express": "^4.21.2",
         "http-server": "^14.1.1",
@@ -46,6 +47,6 @@
         "@types/react-reconciler": "^0.28.9",
         "mocha": "^11.0.1",
         "ts-node": "^10.9.2",
-        "typescript": "^5.7.2"
+        "typescript": "^5.8.3"
     }
 }
