@@ -26,3 +26,7 @@ export function useEvent<F extends AnyFunc>(fn: F): F {
 export const useInputEvent = useEvent<(
     (event: ChangeEvent<HTMLInputElement>) => void
 )>;
+
+export const useSelectEvent = useEvent<(
+    (event: ChangeEvent<HTMLSelectElement>) => void
+)>;
