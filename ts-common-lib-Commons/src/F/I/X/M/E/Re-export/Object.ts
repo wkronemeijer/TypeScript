@@ -31,7 +31,7 @@ const freeze = deprecatedAlias("freeze", freezeObject, "freezeObject");
 /** @deprecated use `assignObject` instead */
 const assign = deprecatedAlias("assign", assignObject, "assignObject");
 
-/** @deprecated use `assignObject` instead */
+/** @deprecated use `ownStringProperties` instead */
 const entries = deprecatedAlias(
     "entries", ownStringProperties, "ownStringProperties",
 );

@@ -1,10 +1,10 @@
-import { HashCode, HashCode_combine, HashCode_combineArray, HashCode_random } from "./HashCode";
-import { typeof_withNull, value_t } from "../../Types/Primitive";
-import { String_getCharCodes } from "../../Data/Textual/String";
-import { BigInt_getInt32s } from "../../Data/Numeric/BigInt";
-import { EquatableObject } from "../Eq/Equatable";
-import { Number_isInt32 } from "../../Data/Numeric/Integer";
-import { Number_toBits } from "../../Data/Numeric/Double";
+import {HashCode, HashCode_combine, HashCode_combineArray, HashCode_random} from "./HashCode";
+import {typeof_withNull, value_t} from "../../Types/Primitive";
+import {String_getCharCodes} from "../../Data/Textual/String";
+import {BigInt_getInt32s} from "../../Data/Numeric/BigInt";
+import {EquatableObject} from "../Eq/Equatable";
+import {Number_isInt32} from "../../Data/Numeric/Integer";
+import {Number_toBits} from "../../Data/Numeric/Double";
 
 
 ///////////////////

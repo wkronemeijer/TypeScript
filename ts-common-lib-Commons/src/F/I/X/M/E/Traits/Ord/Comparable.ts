@@ -77,7 +77,7 @@ const compareNumber   : Comparer<number>    = numberCompare;
 const compareBigInt   : Comparer<bigint>    = nativeCompare;
 const compareString   : Comparer<string>    = nativeCompare;
 
-function compareSymbol(lhs: Symbol, rhs: Symbol): Ordering {
+function compareSymbol(lhs: symbol, rhs: symbol): Ordering {
     return nativeCompare(lhs.description, rhs.description);
 }
 
