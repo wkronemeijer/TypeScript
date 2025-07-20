@@ -1,4 +1,4 @@
-import { Newtype } from "./Newtype";
+import {Newtype} from "./Newtype";
 
 export interface IdFactory<N> {
     (): N;

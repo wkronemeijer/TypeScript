@@ -1,15 +1,9 @@
-import { NewtypeChecker } from "./NewtypeChecker";
-import { value_t } from "../../Types/Primitive";
+import {NewtypeChecker} from "./NewtypeChecker";
 
 /** Newtype purely used for marking. */
-export function MarkerNewtype<
-    T       extends value_t, 
-    const S extends string,
->(
+export function MarkerNewtype<T, const S extends string>(
     name: S,
     typeCheck: (value: unknown) => value is T,
-): (
-    NewtypeChecker<T, S>
-) {
-    return NewtypeChecker(name, { constrain: typeCheck });
+): NewtypeChecker<T, S> {
+    return NewtypeChecker(name, {constrain: typeCheck});
 }

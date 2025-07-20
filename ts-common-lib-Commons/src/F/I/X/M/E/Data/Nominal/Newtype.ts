@@ -1,5 +1,4 @@
-import { Contravariant, UnionToIntersection } from "../../Types/Magic";
-import { value_t } from "../../Types/Primitive";
+import {Contravariant, UnionToIntersection} from "../../Types/Magic";
 
 const newtype = Symbol("Newtype");
 type  newtype = typeof newtype;
@@ -23,7 +22,7 @@ type SpreadIs<Tag extends string> = Tag extends any ? is<Tag> : never;
  * const refreshRate = 60 as Hertz;
  */
 export type Newtype<
-    Type extends value_t, 
+    Type, 
     Tag extends string,
 > = (
     & Type 
@@ -31,7 +30,7 @@ export type Newtype<
 );
 
 export function Newtype<
-    T extends value_t, 
+    T, 
     const S extends string
 >(value: T, _name: S): Newtype<T, S> {
     return value as any;
