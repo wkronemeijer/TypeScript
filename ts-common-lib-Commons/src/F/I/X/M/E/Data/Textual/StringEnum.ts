@@ -41,6 +41,11 @@ extends Iterable<E>, Printable, HasInstance<E> {
      */
     readonly name: string;
     
+    /** @deprecated 
+     * The parameter count of the {@link check} function. 
+     * You may have wanted to use `values.length`. */
+    readonly length: number;
+    
     /** 
      * Asserts that the given string is a member of this enum 
      * and throws otherwise. 
