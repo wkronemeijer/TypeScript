@@ -12,6 +12,9 @@
         "types": [
             // "node",
             "mocha"
-        ]
+        ],
+        
+        "noUnusedLocals": false,
+        "noUnusedParameters": false
     }
 }

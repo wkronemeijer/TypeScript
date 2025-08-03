@@ -6,6 +6,7 @@
         "devtool": "devtool.cjs"
     },
     "dependencies": {
+        "@monaco-editor/react": "^4.7.0",
         "@wkronemeijer/ansi-console": "file:ts-node-lib-AnsiConsole",
         "@wkronemeijer/clap": "file:ts-common-lib-NoConfigCliParser",
         "@wkronemeijer/compiler-toolkit": "file:ts-common-lib-CompilerToolkit",
