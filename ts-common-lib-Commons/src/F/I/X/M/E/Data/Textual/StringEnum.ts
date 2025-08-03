@@ -36,9 +36,7 @@ export type StringEnumInitializer<E extends string> = (
 
 export interface StringEnum<E extends string> 
 extends Iterable<E>, Printable, HasInstance<E> {
-    /** 
-     * The descriptive name of this enum.
-     */
+    /** The descriptive name of this enum. */
     readonly name: string;
     
     /** @deprecated 
@@ -50,7 +48,7 @@ extends Iterable<E>, Printable, HasInstance<E> {
      * Asserts that the given string is a member of this enum 
      * and throws otherwise. 
      * 
-     * If you want to check arbitrary values, use {@link check}.
+     * If you want to check arbitrary values, use {@link check}. 
      */
     (string: string): E;
     
@@ -58,33 +56,26 @@ extends Iterable<E>, Printable, HasInstance<E> {
     // Collection of values //
     //////////////////////////
     
-    /** 
-     * All values, in ascending order of ordinal. 
-     */
+    /** All values, in ascending order of ordinal. */
     readonly values: readonly E[];
     
-    /** 
-     * All values as a set. 
-    */
     // Renamed for intellisense. 
+    /** All values as a set. */
     readonly setOfValues: ReadonlySet<E>;
     
-    /** 
-     * Iterates over all values, in ascending order of ordinal. 
-     */
+    /** Iterates over all values, in ascending order of ordinal. */
     [Symbol.iterator](): IterableIterator<E>;
     
     //////////////
     // Defaults //
     //////////////
     
-    /** 
-     * Default value for this enum. 
-     */
+    /** Default value for this enum. */
     readonly default: E;
     
     /** 
-     * Returns a modified {@link StringEnum} with the given member as {@link StringEnum.default}. 
+     * Returns a modified {@link StringEnum} 
+     * with the given member as {@link StringEnum.default}. 
      */
     withDefault(newDefault: E): this;
     
@@ -92,28 +83,20 @@ extends Iterable<E>, Printable, HasInstance<E> {
     // Membership //
     ////////////////
     
-    /** 
-     * Checks if an arbitrary value is a member of this enum. 
-     */
+    /** Checks if an arbitrary value is a member of this enum. */
     hasInstance(x: unknown): x is E;
     
-    /** 
-     * Checks if an arbitrary value is a member of this enum. 
-     */
+    /** Checks if an arbitrary value is a member of this enum. */
     [Symbol.hasInstance](x: unknown): x is E;
     
-    /** 
-     * Verifies that given argument is a member of this enum and returns it. 
-     */
+    /** Verifies that given argument is a member of this enum and returns it. */
     check(x: unknown): E;
     
     //////////////
     // class Eq //
     //////////////
     
-    /** 
-     * Checks if 2 enum values are equal. 
-     */
+    /** Checks if 2 enum values are equal. */
     readonly equals: EqualityComparer<E>;
     
     ///////////////
@@ -331,11 +314,11 @@ function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>)
         // return { ...this, default: newDefault };
         
         return new Proxy(this, {
-            get(target, key, _) {
+            get(target, key, receiver) {
                 if (key === "default") {
                     return newDefault;
                 } else {
-                    return Reflect.get(target, key);
+                    return Reflect.get(target, key, receiver);
                 }
             },
         });
@@ -381,9 +364,10 @@ function OrdinalMap_toStringEnum<E extends string>(ordinalByName: OrdinalMap<E>)
     ////////////////
     // class Enum //
     ////////////////
+    // TODO: Add succ and pred
     
     function getOrdinal(x: E): number {
-        return ordinalByName.get(x) ?? panic(`Unknown member '${x}'.`);
+        return ordinalByName.get(x) ?? panic(`unknown member '${x}'.`);
     }
     
     function fromOrdinal(ord: number): E | undefined {
