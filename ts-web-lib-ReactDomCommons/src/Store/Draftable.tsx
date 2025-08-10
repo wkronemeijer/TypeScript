@@ -1,7 +1,6 @@
 // My own React State Management Solution
 
-import type {ReactNode, Context} from "react";
-import {createContext, useContext, useSyncExternalStore, useRef, useCallback, useLayoutEffect} from "react";
+import {ReactNode, Context, Dispatch, SetStateAction, createContext, useContext, useSyncExternalStore, useRef, useCallback, useLayoutEffect} from "react";
 import {createDraft, finishDraft, freeze, isDraftable} from "immer";
 
 //////////////////
@@ -18,6 +17,8 @@ export type OnlyMethods<T> = {
     // NB: Does not erase receiver type
     readonly [P in keyof T as T[P] extends AnyFunc ? P : never]: T[P];
 }
+
+type SetStatePair<T> = [T, Dispatch<SetStateAction<T>>];
 
 /////////////////
 // Store Types //
@@ -52,7 +53,11 @@ export interface Store<T> {
     readonly [$context]: Context<StoreInstance<T> | null>;
     readonly [$constructor]: StoreConstructor<T>;
     
-    /** Access the action object. */
+    /** 
+     * Manually dispatch mutations. 
+     * 
+     * Is React-stable. 
+     */
     readonly useDispatch: () => StoreDispatch<T>;
     
     /** Access a projection of the state. 
@@ -61,8 +66,22 @@ export interface Store<T> {
      * Be careful closing over local parameters in the selector function.
      * This can cause "stale props", 
      * which in turn can cause issues, e.g. when shrinking a list.
-    */
+     */
     readonly useSelector: <const U>(selector: Selector<T, U>) => U;
+    
+    /** Access a projection of the state as a useState pair.
+     * 
+     * **NB**: 
+     * Be careful closing over local parameters in the selector function.
+     * This can cause "stale props", 
+     * which in turn can cause issues, e.g. when shrinking a list.
+    */
+    readonly useSelectorState: (
+        <const U                >(selector: Selector<T, U>) => 
+        <const K extends keyof U>(key: K) => 
+        SetStatePair<U[K]>
+    );
+    // Curried for better type inference
     
     /** 
      * Uses a proxy to wrap {@link useDispatch} usage. Stable down to 1 layer.
@@ -87,6 +106,14 @@ export interface Store<T> {
 // Creating stores //
 /////////////////////
 
+function prime<T>(ssa: SetStateAction<T>): (old: T) => T {
+    if (typeof ssa === "function") {
+        return ssa as any; // FIXME: How do we exclude callable Ts?
+    } else {
+        return () => ssa;
+    }
+}
+
 /** Creates a store using a direct implmentation. */
 export function createDraftableStore<T>(klass: StoreConstructor<T>): Store<T> {
     const context = createContext<StoreInstance<T> | null>(null);
@@ -95,6 +122,7 @@ export function createDraftableStore<T>(klass: StoreConstructor<T>): Store<T> {
     // useInstance //
     /////////////////
     
+    /** Is React-stable. */
     function useInstance(): StoreInstance<T> {
         const instance = useContext(store[$context]);
         if (instance === null) {
@@ -124,6 +152,55 @@ export function createDraftableStore<T>(klass: StoreConstructor<T>): Store<T> {
             () => selector(instance.getState()),
         );
     }
+    
+    //////////////////////
+    // useSelectorState //
+    //////////////////////
+    
+    function useSelectorState<const U>(selector: Selector<T, U>) {
+        return function <const K extends keyof U>(key: K): SetStatePair<U[K]> {
+            const instance = useInstance();
+            
+            /////////
+            // Get //
+            /////////
+            
+            const value = useSyncExternalStore(
+                instance.subscribe,
+                () => selector(instance.getState())[key]
+            );
+            
+            /////////
+            // Set //
+            /////////
+            // We need to stabilize the returned function
+            // Variation on useEvent is inlined here
+            
+            const selectorRef = useRef<typeof selector>(selector);
+            const keyRef      = useRef<typeof key>(key);
+            
+            useLayoutEffect(() => {
+                selectorRef.current = selector;
+                keyRef.current      = key;
+            }, [selector, key]);
+            
+            const setValue = useCallback((ssa: SetStateAction<U[K]>) => {
+                instance.dispatch(draft => {
+                    const selector = selectorRef.current;
+                    const key      = keyRef.current;
+                    
+                    const target = selector(draft);
+                    target[key] = prime(ssa)(target[key]);
+                });
+            }, []);
+            
+            /////////
+            // Fin //
+            /////////
+            
+            return [value, setValue];
+        }
+    } 
     
     ////////////////
     // useMethods //
@@ -183,6 +260,7 @@ export function createDraftableStore<T>(klass: StoreConstructor<T>): Store<T> {
         [$constructor]: klass,
         useDispatch,
         useSelector,
+        useSelectorState,
         useReceiver,
         useShallowState,
     };
