@@ -8,8 +8,8 @@
         "test": "ts-mocha src/**/*.spec.ts"
     },
     "devDependencies": {
-        "@types/node": "^22.10.5",
-        "typescript": "^5.7.2"
+        "@types/node": "*",
+        "typescript": "*"
     },
     "dependencies": {
         "@wkronemeijer/system": "*"

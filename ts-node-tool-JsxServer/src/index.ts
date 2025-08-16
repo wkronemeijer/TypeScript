@@ -4,15 +4,16 @@ import type {bin as PackageBin} from "../package.json";
 import {parseArgumentList} from "@wkronemeijer/clap";
 import {configureServer} from "./Domain/ConfigureServer";
 import {powerlineLabel} from "@wkronemeijer/ansi-console";
-import {express} from "./lib";
 
 // Not sure where to put this...it should only run once.
 function registerCustomFileTypes() {
-    express.static.mime.define({
-        "text/plain": ["dd"],
-        "image/jpeg": ["jfif"],
-        "image/avif": ["avif"],
-    });
+    // Can't seem to find how to add MIME types for local extensions in 
+    // Express v5
+    // express.static.mime.define({
+    //     "text/plain": ["dd"],
+    //     "image/jpeg": ["jfif"],
+    //     "image/avif": ["avif"],
+    // });
 }
 
 const COMMAND_NAME = "rasp-server" satisfies keyof typeof PackageBin;

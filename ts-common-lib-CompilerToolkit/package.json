@@ -9,7 +9,7 @@
         "test": "ts-mocha src/**/*.spec.ts"
     },
     "devDependencies": {
-        "typescript": "^5.7.2"
+        "typescript": "*"
     },
     "dependencies": {
         "@wkronemeijer/system": "*"

@@ -19,14 +19,15 @@
         // TypeScript //
         ////////////////
         
-        "target": "ES2022",
+        "target": "ES2024",
         "jsx": "react-jsx",
         "lib":   [
-            "es2022",
+            "ES2024",
             "ESNext.Intl"
         ],
         "types": [
             "node",
+            "react",
             "express"
         ],
         "resolveJsonModule": true,

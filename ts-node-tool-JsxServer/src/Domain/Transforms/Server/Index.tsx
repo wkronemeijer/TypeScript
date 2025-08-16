@@ -75,7 +75,7 @@ const EmptyImageUri = (
 
 function CIndexEntry({entry: {name, pageUri, faviconUri = EmptyImageUri}}: {
     readonly entry: IndexEntry;
-}): JSX.Element {
+}): ReactNode {
     return <a href={pageUri}>
         <img
             width={FaviconSize} 
