@@ -4,9 +4,10 @@ enableMapSet();
 
 export const __LIB_REACT_DOM_COMMONS = {};
 
-declare module 'react' {
-    interface CSSProperties {
-        [key: `--${string}`]: string | number;
+// Extend interface React uses for style props
+declare module "csstype" {
+    interface Properties {
+         [key: `--${string}`]: string | number;
     }
 }
 
