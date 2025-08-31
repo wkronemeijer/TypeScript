@@ -4,8 +4,8 @@ import {Medium_processThumbs, createThumbnailRouter} from "./Domain/Thumbnail";
 import {Medium_discoverFiles, Thumb_urlPattern} from "./Domain/Medium";
 import {renderToStaticMarkup} from "react-dom/server";
 import {SortMode_applySort} from "./Domain/SortMode";
+import {DirectoryObject} from "@wkronemeijer/system-node";
 import {ProgramOptions} from "./Domain/ProgramOptions";
-import {requireFile} from "@wkronemeijer/system-node";
 import {StrictMode} from "react";
 import {terminal} from "@wkronemeijer/ansi-console";
 import {HtmlRoot} from "./Display/HtmlRoot";
@@ -16,7 +16,7 @@ function guardIsOk<T>(options: T | Error): asserts options is T {
     guard(!(options instanceof Error), () => String(options));
 }
 
-const staticFolder = requireFile("Static");
+const staticFolder = new DirectoryObject(__dirname, "Static");
 
 export async function main(args: string[]): Promise<void> {
     terminal.meta("Parsing arguments...");
