@@ -1,4 +1,4 @@
-import {AsyncMethods, ReadonlyURL, from} from "@wkronemeijer/system";
+import {AsyncMethods, from} from "@wkronemeijer/system";
 import {AnyPath, Path_CurrentDirectory} from "./Path";
 import {FileEntityStats} from "./EntityStats";
 import {FileEntityKind} from "./EntityKind";
@@ -24,6 +24,7 @@ interface FileObjectSyncMethods {
     touchDirectory(): void;
     
     readText(): string;
+    readBytes(): NonSharedBuffer;
     writeText(value: string): void;
     
     readContents(): FileObject[];
@@ -36,15 +37,17 @@ type FileObjectAsyncMethods = AsyncMethods<FileObjectSyncMethods>;
  * Present a wrapper around a path and shortcuts for common file operations.
  * File operations swallow errors and just return `mempty`.
  */
-export interface FileObject extends PathObject, FileObjectSyncMethods, FileObjectAsyncMethods {}
-// TODO: Maybe use Result<T, E> sometime?
+export interface FileObject 
+extends PathObject, FileObjectSyncMethods, FileObjectAsyncMethods {
+    lazyRecursiveGetAllFiles(): AsyncGenerator<FileObject, void>;
+}
 
 interface FileObjectConstructor {
     new(...segments: AnyPath[]): FileObject;
     /** @deprecated Use `new(".")` instead. */
     cwd(): FileObject;
     /** Converts a `file:` URL into a FileObject. */
-    fromUrl(url: ReadonlyURL): FileObject;
+    fromUrl(url: string | URL): FileObject;
 }
 
 export const FileObject
@@ -56,7 +59,7 @@ implements   FileObject {
         return new FileObjectImpl(Path_CurrentDirectory);
     }
     
-    static fromUrl(url: ReadonlyURL): FileObject {
+    static fromUrl(url: string | URL): FileObject {
         return new FileObjectImpl(fileURLToPath(url));
     }
     
@@ -193,6 +196,18 @@ implements   FileObject {
     }
     
     ////////////////
+    // Read bytes //
+    ////////////////
+    
+    readBytes(): NonSharedBuffer {
+        return GetFileSystem().readFileBytes(this);
+    }
+    
+    async readBytes_async(): Promise<NonSharedBuffer> {
+        return await GetFileSystem().readFileBytes_async(this);
+    }
+    
+    ////////////////
     // Write text //
     ////////////////
     
@@ -265,6 +280,10 @@ implements   FileObject {
             )
             .toArray()
         );
+    }
+    
+    async *lazyRecursiveGetAllFiles(): AsyncGenerator<FileObject, void> {
+        __NOT_IMPLEMENTED();
     }
 }
 

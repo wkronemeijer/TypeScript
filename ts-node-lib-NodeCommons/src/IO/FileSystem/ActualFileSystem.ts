@@ -6,7 +6,7 @@ import {FileSystem, FileSystemDirectoryEntry} from "./FileSystem";
 import {FileEntityStats} from "./EntityStats";
 import {FileEntityKind} from "./EntityKind";
 
-const encodingOptions = {
+const EncodingOptions = {
     encoding: "utf-8",
 } satisfies fs.ObjectEncodingOptions;
 
@@ -26,7 +26,10 @@ function FileEntityStats_fromStats(stats: fs.Stats): FileEntityStats {
     };
 }
 
-function normalizeDirents(parentPath: AbsolutePath, dirents: readonly fs.Dirent[]): FileSystemDirectoryEntry[] {
+function normalizeDirents(
+    parentPath: AbsolutePath, 
+    dirents: readonly fs.Dirent[],
+): FileSystemDirectoryEntry[] {
     /*
     Here's the thing:
     dirent's path depends on the type of path passed to readdir/readdirSync;
@@ -40,9 +43,9 @@ function normalizeDirents(parentPath: AbsolutePath, dirents: readonly fs.Dirent[
     and the relative path we want to return is "Folder/Subfolder/MyFile.png".
     */
     return dirents.map(dirent => {
-        const kind = FileEntityKind_infer(dirent);
-        const descendantPath = Path_join(AbsolutePath(dirent.path), dirent.name);
-        const location = Path_relative(parentPath, descendantPath);
+        const kind       = FileEntityKind_infer(dirent);
+        const descendant = Path_join(AbsolutePath(dirent.parentPath), dirent.name);
+        const location   = Path_relative(parentPath, descendant);
         return { kind, location };
     });
 }
@@ -50,31 +53,39 @@ function normalizeDirents(parentPath: AbsolutePath, dirents: readonly fs.Dirent[
 export const ActualFileSystem: FileSystem = {
     description: "node:fs",
     
-    getStats({ path }) {
+    getStats({path}) {
         return FileEntityStats_fromStats(fs.statSync(path));
     },
     
-    async getStats_async({ path }) {
+    async getStats_async({path}) {
         return FileEntityStats_fromStats(await fs_async.stat(path));
     },
     
-    getLinkStats({ path }) {
+    getLinkStats({path}) {
         return FileEntityStats_fromStats(fs.lstatSync(path));
     },
     
-    async getLinkStats_async({ path }) {
+    async getLinkStats_async({path}) {
         return FileEntityStats_fromStats(await fs_async.lstat(path));
     },
     
-    readFile({ path }) {
-        return fs.readFileSync(path, encodingOptions);
+    readFile({path}) {
+        return fs.readFileSync(path, EncodingOptions);
     },
     
-    async readFile_async({ path }) {
-        return await fs_async.readFile(path, encodingOptions);
+    async readFile_async({path}) {
+        return await fs_async.readFile(path, EncodingOptions);
     },
     
-    touchFile({ path }) {
+    readFileBytes({path}) {
+        return fs.readFileSync(path);
+    },
+    
+    async readFileBytes_async({path}) {
+        return (await fs_async.readFile(path)) as NonSharedBuffer;
+    },
+    
+    touchFile({path}) {
         let fd;
         try {
             fd = fs.openSync(path, "a");
@@ -85,7 +96,7 @@ export const ActualFileSystem: FileSystem = {
         }
     },
     
-    async touchFile_async({ path }) {
+    async touchFile_async({path}) {
         let handle;
         try {
             handle = await fs_async.open(path, "a");
@@ -96,33 +107,33 @@ export const ActualFileSystem: FileSystem = {
         }
     },
     
-    writeFile({ path, content }) {
-        fs.writeFileSync(path, content, encodingOptions);
+    writeFile({path, content}) {
+        fs.writeFileSync(path, content, EncodingOptions);
     },
     
-    async writeFile_async({ path, content }) {
-        await fs_async.writeFile(path, content, encodingOptions);
+    async writeFile_async({path, content}) {
+        await fs_async.writeFile(path, content, EncodingOptions);
     },
     
-    readDirectory({ path, recursive }) {
+    readDirectory({path, recursive}) {
         return normalizeDirents(path, fs.readdirSync(path, { 
             recursive, 
             withFileTypes: true,
         }));
     },
     
-    async readDirectory_async({ path, recursive }) {
+    async readDirectory_async({path, recursive}) {
         return normalizeDirents(path, await fs_async.readdir(path, { 
             recursive, 
             withFileTypes: true,
         }));
     },
     
-    touchDirectory({ path }) {
-        fs.mkdirSync(path, { recursive: true });
+    touchDirectory({path}) {
+        fs.mkdirSync(path, {recursive: true});
     },
     
-    async touchDirectory_async({ path }) {
-        await fs_async.mkdir(path, { recursive: true });
+    async touchDirectory_async({path}) {
+        await fs_async.mkdir(path, {recursive: true});
     }
 };

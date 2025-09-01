@@ -27,6 +27,10 @@ export type FileSystem = SyncAndAsync<{
         readonly path: AbsolutePath;
     }): string;
     
+    readFileBytes(options: {
+        readonly path: AbsolutePath;
+    }): NonSharedBuffer;
+    
     touchFile(options: {
         readonly path: AbsolutePath;
     }): void;

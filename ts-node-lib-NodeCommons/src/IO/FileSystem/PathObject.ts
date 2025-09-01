@@ -17,8 +17,8 @@ import {
     RelativePath_toUrl, 
     Path_equals,
 } from "./Path";
-import {FileExtension, OptionalFileExtension} from "./Extension";
 import {EquatableObject, Immutable, Printable} from "@wkronemeijer/system";
+import {FileExtension, OptionalFileExtension} from "./Extension";
 import {pathToFileURL} from "url";
 
 export interface HasAbsolutePath {
@@ -71,11 +71,11 @@ implements   PathObject {
     }
     
     get parent(): this {
-        return this.with({ path: Path_getParent(this.path) });
+        return this.with({path: Path_getParent(this.path)});
     }
     
     join(...segments: readonly AnyPath[]): this {
-        return this.with({ path: Path_join(this.path, ...segments) });
+        return this.with({path: Path_join(this.path, ...segments)});
     }
     
     to(other: HasAbsolutePath): RelativePath {
@@ -131,11 +131,11 @@ implements   PathObject {
     ////////////////
     
     addSuffix(suffix: FileExtension): this {
-        return this.with({ path: Path_addSuffixExtension(this.path, suffix) });
+        return this.with({path: Path_addSuffixExtension(this.path, suffix)});
     }
     
     changeExtension(ext: OptionalFileExtension): this {
-        return this.with({ path: Path_changeExtension(this.path, ext) });
+        return this.with({path: Path_changeExtension(this.path, ext)});
     }
     
     addExtension(ext: FileExtension): this {
