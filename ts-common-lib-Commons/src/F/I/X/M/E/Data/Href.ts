@@ -8,6 +8,7 @@ export const Href = NewtypeChecker("Href", {
     refine: value => URL.canParse(value),
 });
 
+/** Tests whether the argument is an absolute URI. */
 export const isHref = Href.hasInstance;
 
 // TODO: Add AbsoluteHref, RelativeHref and validation fns for those
