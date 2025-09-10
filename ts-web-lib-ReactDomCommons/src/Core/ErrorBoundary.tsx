@@ -1,3 +1,7 @@
+// Error boundary
+// Unlike react-error-boundary, this always shows a retry fallback
+// For a versatile fallback, 
+
 import {Component, ReactNode} from "react";
 import {formatThrowable} from "@wkronemeijer/system";
 
@@ -5,21 +9,21 @@ type  $ok = typeof $ok;
 const $ok = Symbol("ok");
 
 interface Props {
+    readonly children: ReactNode;
+}
+
+interface State {
     // Reminder that in ES, /any/ value can be thrown
     readonly error: $ok | unknown;
 }
 
-interface State {
-    readonly children: ReactNode;
-}
-
-export class ErrorBoundary extends Component<State, Props> {
-    constructor(props: State) {
+export class ErrorBoundary extends Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {error: $ok};
     }
     
-    static getDerivedStateFromError(error: unknown): Partial<Props> {
+    static getDerivedStateFromError(error: unknown): Partial<State> {
         return {error};
     }
     
