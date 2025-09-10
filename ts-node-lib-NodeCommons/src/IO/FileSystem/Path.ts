@@ -249,8 +249,10 @@ export function AbsolutePath_toUrl(self: AbsolutePath): string {
     return node_pathToFileURL(self).toString();
 }
 
-export function RelativePath_toUrl(self: RelativePath): string {
-    return encodeURI(self.replaceAll(node_sep, '/'));
+const EncodedSlash = encodeURIComponent('/');
+export function RelativePath_toUrl(path: RelativePath): string {
+    const posixPath = path.replaceAll(node_sep, '/');
+    return encodeURIComponent(posixPath).replaceAll(EncodedSlash, '/');
 }
 
 export function Path_toUrl(self: Path): string {
