@@ -36,7 +36,8 @@
         "sass": "^1.83.1",
         "sass-embedded": "^1.97.2",
         "sharp": "^0.34.5",
-        "sqlite3": "^5.1.7"
+        "sqlite3": "^5.1.7",
+        "zod": "^4.3.5"
     },
     "devDependencies": {
         "@types/culori": "^4.0.1",
