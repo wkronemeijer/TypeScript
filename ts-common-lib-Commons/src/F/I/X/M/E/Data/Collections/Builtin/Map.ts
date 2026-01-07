@@ -81,9 +81,9 @@ export const Map_fromDictionary = deprecatedAlias("Map_fromDictionary",
  * computes it using the key and stores the result.
  */
 export function Map_computeIfAbsent<K, V>(
-    self: Map<K, V>,
+    self: MutableMapLike<K, V>,
     key: K,
-    compute: (key: K) => V
+    compute: (key: K) => V,
 ): V {
     if (self.has(key)) {
         return self.get(key)!;
