@@ -39,7 +39,6 @@ export const StylesheetRenderer: FileTransform<CssStylesheet> = {
         const compileResult = await scss.compileAsync(path, {
             sourceMap: true,
             sourceMapIncludeSources: true,
-            silenceDeprecations: ["mixed-decls"],
         });
         const absoluteSourceMap = compileResult.sourceMap;
         swear(absoluteSourceMap, "missing sourcemap");
