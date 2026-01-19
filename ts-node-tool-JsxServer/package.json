@@ -19,6 +19,7 @@
         "sass-embedded": "*"
     },
     "bin": {
-        "rasp-server": "dist/bin.js"
+        "rasp-server": "dist/bin.js",
+        "rasp": "dist/bin.js"
     }
 }
