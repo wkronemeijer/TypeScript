@@ -28,7 +28,6 @@
         "luxon": "^3.7.2",
         "mime-types": "^3.0.2",
         "node-notifier": "^10.0.1",
-        "promised-sqlite3": "^2.1.0",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
         "react-reconciler": "^0.33.0",
@@ -36,7 +35,7 @@
         "sass": "^1.83.1",
         "sass-embedded": "^1.97.2",
         "sharp": "^0.34.5",
-        "sqlite3": "^5.1.7",
+        "wgpu-matrix": "^3.4.0",
         "zod": "^4.3.5"
     },
     "devDependencies": {
@@ -51,7 +50,7 @@
         "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",
         "@types/react-reconciler": "^0.32.3",
-        "mocha": "^11.7.5",
+        "mocha": "^11.3.0",
         "ts-node": "^10.9.2",
         "typescript": "^5.9.3"
     }
