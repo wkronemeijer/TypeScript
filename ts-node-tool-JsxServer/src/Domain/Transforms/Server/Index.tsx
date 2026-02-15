@@ -97,15 +97,13 @@ const sequencePages = collect(function*(
     }
 });
 
-function RedirectIfUnambigous({entries: [firstEntry, ...otherEntries]}: {
+function RedirectIfUnambigous({entries: [first, ...rest]}: {
     readonly entries: readonly IndexEntry[];
 }): ReactNode {
-    if (firstEntry && otherEntries.length === 0) {
-        const target = firstEntry.pageUri;
-        return <meta httpEquiv="refresh" content={`0;url=${target}`}/>
-    } else {
-        return <></>
-    }
+    if (!(first !== undefined && rest.length === 0)) {return}
+    
+    const target = first.pageUri;
+    return <meta httpEquiv="refresh" content={`0;url=${target}`}/>
 }
 
 const IndexStyle = String.raw`
