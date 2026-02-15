@@ -157,12 +157,17 @@ export const IndexRenderer: FileTransform<HtmlDocument> = {
     pattern: "/",
     virtual: true,
     async render_async({root}) {
+        const start = performance.now();
+        
         const title = `Index of ${root.name}`;
         const entries = (
             from(iterateIndexEntries(root))
             .orderBy(IndexEntry_compare)
             .toArray()
         );
+        
+        const elapsed = performance.now() - start;
+        
         return HtmlDocument(<html>
             <head>
                 <title>{title}</title>
@@ -178,6 +183,9 @@ export const IndexRenderer: FileTransform<HtmlDocument> = {
                 <main>
                     {sequencePages(entries)}
                 </main>
+                <footer>
+                    Generated in {elapsed.toFixed(0)}ms
+                </footer>
             </body>
         </html>);
     },
