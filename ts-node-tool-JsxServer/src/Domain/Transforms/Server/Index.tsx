@@ -118,6 +118,10 @@ header {
     border-bottom: 1px solid black;
     margin-bottom: 4px;
 }
+footer {
+    text-align: right;
+    color: #0000007f;
+}
 h1 {
     margin: 0;
 }
