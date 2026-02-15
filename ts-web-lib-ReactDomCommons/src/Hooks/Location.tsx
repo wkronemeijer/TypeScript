@@ -52,6 +52,7 @@ declare global {
 const listeners = new Set<() => void>;
 
 function notify() {
+    // TODO: Throw an AggregateError at the end
     for (const listener of listeners) {
         try {
             listener();
@@ -74,6 +75,8 @@ export function useLocation<T>(selector: (href: string) => T): T {
     return useSyncExternalStore(subscribe, () => selector(getSnapshot()));
 }
 
+export const subscribeToWindowLocation = subscribe;
+
 //////////////////////////
 // Register for updates //
 //////////////////////////
@@ -84,11 +87,13 @@ try {
     // We queue notify to make sure they see the NEW value.
     window.navigation.addEventListener(
         "navigate", 
-        () => void setTimeout(notify), 
+        () => {setTimeout(notify)}, 
         {passive: true},
     );
 } catch { 
     // Fall back to polling
+    const interval = 500/*ms*/;
+    
     let lastHref = getSnapshot();
     setInterval(() => {
         const currentHref = getSnapshot();
@@ -96,5 +101,5 @@ try {
             lastHref = currentHref;
             notify();
         }
-    }, 500/*ms*/);
+    }, interval);
 }
