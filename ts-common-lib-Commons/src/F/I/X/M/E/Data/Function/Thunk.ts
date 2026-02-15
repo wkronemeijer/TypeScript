@@ -37,3 +37,5 @@ export function Deferred_normalize<T>(deferred: Deferred<T>): Thunk<T> {
         return () => deferred;
     }
 }
+
+export const undefer = Deferred_normalize;

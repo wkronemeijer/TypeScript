@@ -40,6 +40,13 @@ export function Map_hasAny<K>(
     return self.has(key as any);
 }
 
+export function Map_getAny<V>(
+    self: MapLike<unknown, V>,
+    key: unknown,
+): V | undefined {
+    return self.get(key as any);
+}
+
 // Wtf is this?
 export function Map_update<K, V>(
     map: MutableMapLike<K, V>, 
