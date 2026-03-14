@@ -4,6 +4,8 @@ import {DirectoryObject} from "@wkronemeijer/system-node";
 import {ErrorLogger} from "./Handlers/ErrorLogger";
 import {express} from "../lib";
 
+import expressFn = require("express");
+
 import {JsonManifestRenderer} from "./Transforms/Server/Manifest";
 import {TypeScriptRenderer} from "./Transforms/Client/TypeScript";
 import {StylesheetRenderer} from "./Transforms/Client/Scss";
@@ -44,7 +46,7 @@ function configureRouter(root: DirectoryObject): express.Router {
 }
 
 export function configureServer(root: DirectoryObject): express.Express {
-    const server = express();
+    const server = expressFn();
     server.use(configureRouter(root));
     return server;
 }

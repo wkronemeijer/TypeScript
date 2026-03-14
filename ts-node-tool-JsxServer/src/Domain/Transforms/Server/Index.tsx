@@ -1,9 +1,17 @@
 import {HtmlDocument, MetaViewport, renderHtmlError_async} from "../../ResultTypes/HtmlDocument";
-import {collect, compare, from, Ordering} from "@wkronemeijer/system";
 import {DirectoryObject, FileObject} from "@wkronemeijer/system-node";
+import {collect, compare, Ordering} from "@wkronemeijer/system";
 import {ReactPagePattern} from "./Page";
+import {Array$fromAsync} from "../../../Core/Array";
 import {FileTransform} from "../FileTransform";
+import {isPathValid} from "ignore";
 import {ReactNode} from "react";
+
+import ignore = require("ignore");
+
+/////////////////
+// Index entry //
+/////////////////
 
 function isReactPage(object: FileObject): boolean {
     return ReactPagePattern.test(object.path); 
@@ -34,7 +42,7 @@ function IndexEntry({root, page, favicon}: {
     readonly page: FileObject; 
     readonly favicon?: FileObject | undefined;
 }): IndexEntry {
-    const pageUri = root.urlTo(page);
+    const pageUri    = root.urlTo(page);
     const faviconUri = favicon && root.urlTo(favicon);
     const name = (
         decodeURIComponent(pageUri)
@@ -45,26 +53,93 @@ function IndexEntry({root, page, favicon}: {
     return {root, name, page, pageUri, favicon, faviconUri};
 }
 
-function IndexEntry_compare(lhs: IndexEntry, rhs: IndexEntry): Ordering {
+function IndexEntry$compare(lhs: IndexEntry, rhs: IndexEntry): Ordering {
     return compare(lhs.name.toLowerCase(), rhs.name.toLowerCase());
 }
 
-function* iterateIndexEntries(root: DirectoryObject): Generator<IndexEntry> {
-    const files    = root.recursiveGetAllFiles();
-    const pages    = files.filter(isReactPage);
-    const favicons = files.filter(isFavicon);
+/////////////////////
+// Finding entries //
+/////////////////////
+
+const IgnoreFileName = ".raspignore";
+
+type Ignore = ReturnType<typeof ignore>;
+
+class IgnoreList {
+    private readonly ignores = new Array<{
+        readonly dir: DirectoryObject;
+        readonly ig: Ignore;
+    }>();
     
-    outer:
-    for (const page of pages) {
-        for (const favicon of favicons) {
-            if (favicon.directory === page.directory) {
-                yield IndexEntry({root, page, favicon});
-                continue outer;
-            } 
+    constructor() {}
+    
+    register(dir: DirectoryObject, ig: Ignore): void {
+        this.ignores.push({dir, ig});
+    }
+    
+    accepts = (file: FileObject): boolean => {
+        for (const {dir, ig} of this.ignores) {
+            const path = dir.to(file);
+            if (isPathValid(path) && ig.ignores(path)) {
+                return false;
+            }
         }
-        yield IndexEntry({root, page});
+        return true;
     }
 }
+
+async function* recursiveGetAllFiles(
+    root: DirectoryObject,
+): AsyncGenerator<FileObject> {
+    const bouncer  = new IgnoreList;
+    const frontier = [root];
+    
+    let dir: DirectoryObject | undefined;
+    while (dir = frontier.shift()) {
+        // Check local .raspignore
+        try {
+            const rules = await dir.join(IgnoreFileName).readText_async();
+            const ig = ignore().add(rules);
+            bouncer.register(dir, ig);
+        } catch {/* No such file */}
+        
+        const files = await dir.readContents_async();
+        
+        for (const file of files) {
+            if (bouncer.accepts(file)) {
+                if (file.isDirectory()) {
+                    frontier.push(file);
+                } else {
+                    yield file;
+                }
+            }
+        }
+    }
+}
+
+async function findFavicon(file: FileObject): Promise<FileObject | undefined> {
+    const siblings = await file.parent.readContents_async();
+    for (const sibling of siblings) {
+        if (isFavicon(sibling)) {
+            return sibling;
+        }
+    }
+}
+
+async function* iterateIndexEntries(
+    root: DirectoryObject,
+): AsyncGenerator<IndexEntry> {
+    for await (const page of recursiveGetAllFiles(root)) {
+        if (isReactPage(page)) {
+            const favicon = await findFavicon(page);
+            yield IndexEntry({root, page, favicon});
+        }
+    }
+}
+
+/////////////////
+// CIndexEntry //
+/////////////////
 
 const FaviconSize = 16;
 
@@ -155,6 +230,10 @@ a span {
 }
 `.trim();
 
+/////////////////////
+// Index Transform //
+/////////////////////
+
 export const IndexRenderer: FileTransform<HtmlDocument> = {
     pattern: "/",
     virtual: true,
@@ -162,11 +241,8 @@ export const IndexRenderer: FileTransform<HtmlDocument> = {
         const start = performance.now();
         
         const title = `Index of ${root.name}`;
-        const entries = (
-            from(iterateIndexEntries(root))
-            .orderBy(IndexEntry_compare)
-            .toArray()
-        );
+        const entries = await Array$fromAsync(iterateIndexEntries(root));
+        entries.sort(IndexEntry$compare);
         
         const elapsed = performance.now() - start;
         

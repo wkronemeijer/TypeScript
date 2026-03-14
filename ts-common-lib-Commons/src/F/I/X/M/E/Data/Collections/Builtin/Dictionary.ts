@@ -1,4 +1,4 @@
-import { defineProperty, deleteProperty } from "../../../Re-export/Object";
+import {defineProperty, deleteProperty} from "../../../Re-export/Object";
 
 /** An readonly object-based hash map. */
 export interface ReadonlyDictionary<T> {
@@ -10,16 +10,14 @@ export interface Dictionary<T> {
     [key: string]: T;
 }
 
+const static_key = "whatever";
+
 /** Creates an object-based hash map. */
 export function Dictionary<T>(): Dictionary<T> {
     const dict = Object.create(null) as Dictionary<T>;
     
-    const configurable = true;
-    const key   = "meanwhile";
-    const value = "elsewhere";
-    
-    defineProperty(dict, key, { configurable, value });
-    deleteProperty(dict, key);
+    dict[static_key] = null!;
+    delete dict[static_key];
     
     return dict;
 }

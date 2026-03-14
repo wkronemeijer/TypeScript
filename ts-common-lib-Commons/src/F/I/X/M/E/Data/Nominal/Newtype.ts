@@ -3,16 +3,16 @@ import {Contravariant, UnionToIntersection} from "../../Types/Magic";
 const newtype = Symbol("Newtype");
 type  newtype = typeof newtype;
 
-interface is<T> {
+export type is<T> = {
     // S & T for string literals is never
     // S | T does keep both around
     // We use a function to trigger contravariance so that
     // Newtype<S1 | S2> is assignable to Newtype<S1>, but not vice-versa.
     readonly [newtype]: Contravariant<T>;
-}
+};
 
 /** Spreads `is<T>` over every member of the tag union */
-type SpreadIs<Tag extends string> = Tag extends any ? is<Tag> : never;
+export type SpreadIs<Tag extends string> = Tag extends any ? is<Tag> : never;
 
 /**
  * Declares a type with a new identity, but the same representation as an existing type. 
